@@ -77,6 +77,24 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
+const countryOptions = [
+    { code: 'ZA', name: 'Country A' },
+    { code: 'US', name: 'Country B' },
+    { code: 'GB', name: 'Country C' }
+    // Add more countries as needed
+];
+
+
+const selectElement = document.getElementById('countries');
+for(var key in countryMapping){
+    const newOption = document.createElement('option');
+    newOption.value = key;
+    newOption.textContent = countryMapping[key];
+    selectElement.appendChild(newOption);
+}
+
+selectElement.addEventListener('change', handleSelectionChange);
+
 const downloadSpeedToHexColor = {
     "0-5": "#FF9AA2",       // Slightly more saturated Pastel Red
     "5-10": "#FFDAC1",      // Slightly more saturated Peach Puff
@@ -95,7 +113,36 @@ const colorToSelectionColorMapping = {
     "#B3E5FC": "#81D4FA"   // Light Blue to Sky Blue
 };
 
+function handleSelectionChange(event) {
+    // Get the selected value
+    const selectedValue = event.target.value;
 
+    // Get the selected option text
+    const selectedText = event.target.options[event.target.selectedIndex].text;
+    console.log(selectedValue)
+    fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${selectedValue}`)
+        .then(response => response.json())
+        .then(data => {
+            populateGraphCompare(data, selectedText)
+    })
+}
+
+function populateGraphCompare(data, country){
+   console.log(data)
+   let compare_dataset = {
+        label: country, // Label for the dataset
+        data: getDownloadData(data), // Data points
+        fill: false, // No fill under the line
+        borderColor: getRandomColor(), // Line color
+        tension: 0.1 // Line smoothness
+    }
+    console.log("trying to add data to graph")
+    console.log(compare_dataset)
+    if(country_chart){
+        country_chart.data.datasets.push(compare_dataset)
+        country_chart.update()
+    }
+}
 
 const selectionColorToColorMap = {};
 for (const [color, s_color] of Object.entries(colorToSelectionColorMapping)) {
@@ -136,14 +183,20 @@ function initialiseMap(geojson){
     })
 }
 
-
 function handleClick(event) {
+    const sidebar = document.getElementById('sidebar')
+    const computedStyle = window.getComputedStyle(sidebar);
+    if(computedStyle.display === 'none'){
+        sidebar.style.display = 'flex';
+    }
+
     if (currentlyHovered) {
+        hovered = currentlyHovered+"";
         fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${reversedMapping[currentlyHovered]}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data)
-            populateGraph(data, currentlyHovered)
+            console.log(hovered)
+            populateGraph(data, hovered)
         })
     }
 }
@@ -170,15 +223,28 @@ function getDownloadData(data){
     });
     return out;
 }
+
+function getRandomColor() {
+    // Generate random values for R, G, B
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+
+    // Return the RGB string
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+
 function populateGraph(data, countryName){
     if(!country_chart){
         // Create a new Chart instance
+        console.log("drawing", countryName)
         country_chart = new Chart(country_chart_ctx, {
         type: 'line', // Specify the type of chart
         data: {
             labels: getYears(data), // X-axis labels
             datasets: [{
-                label: currentlyHovered, // Label for the dataset
+                label: countryName, // Label for the dataset
                 data: getDownloadData(data), // Data points
                 fill: false, // No fill under the line
                 borderColor: 'rgb(75, 192, 192)', // Line color
@@ -215,7 +281,7 @@ function populateGraph(data, countryName){
         console.log("trying to change the plot")
         country_chart.data.datasets[0].data = getDownloadData(data)
         country_chart.data.labels = getYears(data)
-        country_chart.data.datasets[0].label = currentlyHovered
+        country_chart.data.datasets[0].label = countryName
         country_chart.update();
     }
 }
