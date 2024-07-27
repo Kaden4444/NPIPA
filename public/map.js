@@ -6,6 +6,8 @@ const ctx = canvas.getContext('2d');
 var geojson;
 var path;
 var currentlyHovered;
+var country_chart = null;
+const country_chart_ctx = document.getElementById('myLineChart').getContext('2d');
 
 const countryMapping = {
     AO: "Angola",
@@ -13,23 +15,23 @@ const countryMapping = {
     BI: "Burundi",
     BJ: "Benin",
     BW: "Botswana",
-    CD: "Democratic Republic of the Congo",
-    CF: "Central African Republic",
-    CG: "Republic of the Congo",
+    CD: "Dem. Rep. Congo",
+    CF: "Central African Rep.",
+    CG: "Congo",
     CI: "Côte d'Ivoire",
     CM: "Cameroon",
     CV: "Cape Verde",
     DJ: "Djibouti",
     DZ: "Algeria",
     EG: "Egypt",
-    EH: "Western Sahara",
+    EH: "W. Sahara",
     ER: "Eritrea",
     ET: "Ethiopia",
     GA: "Gabon",
     GH: "Ghana",
     GM: "Gambia",
     GN: "Guinea",
-    GQ: "Equatorial Guinea",
+    GQ: "Eq. Guinea",
     GW: "Guinea-Bissau",
     KE: "Kenya",
     KM: "Comoros",
@@ -53,10 +55,11 @@ const countryMapping = {
     SH: "Saint Helena",
     SL: "Sierra Leone",
     SN: "Senegal",
-    SO: "Somalia",
-    SS: "South Sudan",
+    SO: "Somaliland",
+    SOM: "Somalia",
+    SS: "S. Sudan",
     ST: "São Tomé and Príncipe",
-    SZ: "Eswatini (Swaziland)",
+    SZ: "Swaziland",
     TD: "Chad",
     TG: "Togo",
     TN: "Tunisia",
@@ -75,16 +78,31 @@ for (const [code, name] of Object.entries(countryMapping)) {
 }
 
 const downloadSpeedToHexColor = {
-    "0-5": "#FF0000",       // Red for very slow speeds
-    "5-10": "#FFA500",      // Orange for slow speeds
-    "10-20": "#FFFF00",     // Yellow for moderate speeds
-    "20-50": "#90EE90",     // Light green for fast speeds
-    "50-100": "#008000",    // Green for very fast speeds
-    "100+": "#0000FF"       // Blue for extremely fast speeds
+    "0-5": "#FF9AA2",       // Slightly more saturated Pastel Red
+    "5-10": "#FFDAC1",      // Slightly more saturated Peach Puff
+    "10-20": "#FFFFB5",     // Slightly more saturated Light Yellow
+    "20-50": "#B9FBC0",     // Slightly more saturated Pastel Green
+    "50-100": "#A1F7A1",    // Slightly more saturated Pale Green
+    "100+": "#B3E5FC"       // Slightly more saturated Light Blue
 };
 
-const card = document.getElementById("card");
+const colorToSelectionColorMapping = {
+    "#FF9AA2": "#FF6F6F",  // Pastel Red to Coral Red
+    "#FFDAC1": "#FFB07C",  // Peach Puff to Light Salmon
+    "#FFFFB5": "#FFFF99",  // Light Yellow to Lemon Yellow
+    "#B9FBC0": "#A2F8B0",  // Pastel Green to Light Green
+    "#A1F7A1": "#8DFF8F",  // Pale Green to Light Lime Green
+    "#B3E5FC": "#81D4FA"   // Light Blue to Sky Blue
+};
 
+
+
+const selectionColorToColorMap = {};
+for (const [color, s_color] of Object.entries(colorToSelectionColorMapping)) {
+    selectionColorToColorMap[s_color] = color;
+}
+
+const card = document.getElementById("card");
 
 var geoSpatialData;
 
@@ -107,15 +125,100 @@ function initialiseMap(geojson){
         //     feature.properties.color = '#FFFFFF'
         // });
         geoSpatialData = data;
+        geoSpatialData["SOM"] = geoSpatialData["SO"]
         for (var countryCode in data){
             // Change colour according to internet speed
-            changeColor(getHexColorForSpeed(data[countryCode].average_download), countryMapping[countryCode])
+            changeColor(getHexColorForSpeed( (geoSpatialData[countryCode].average_download + geoSpatialData[countryCode].average_download)/2), countryMapping[countryCode])
         }
         drawGeoJSON(geojson);
         canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('click', handleClick);
     })
 }
 
+
+function handleClick(event) {
+    if (currentlyHovered) {
+        fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${reversedMapping[currentlyHovered]}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            populateGraph(data, currentlyHovered)
+        })
+    }
+}
+function getYears(data){
+    var out = []
+    data.forEach(element => {
+        out.push(element.year)
+    });
+    return out;
+}
+
+function getUploadData(data){
+    var out = []
+    data.forEach(element => {
+        out.push(element.average_upload)
+    });
+    return out;
+}
+
+function getDownloadData(data){
+    var out = []
+    data.forEach(element => {
+        out.push(element.average_download)
+    });
+    return out;
+}
+function populateGraph(data, countryName){
+    if(!country_chart){
+        // Create a new Chart instance
+        country_chart = new Chart(country_chart_ctx, {
+        type: 'line', // Specify the type of chart
+        data: {
+            labels: getYears(data), // X-axis labels
+            datasets: [{
+                label: currentlyHovered, // Label for the dataset
+                data: getDownloadData(data), // Data points
+                fill: false, // No fill under the line
+                borderColor: 'rgb(75, 192, 192)', // Line color
+                tension: 0.1 // Line smoothness
+            }]
+        },
+        options: {
+            responsive: true, // Make the chart responsive
+            scales: {
+                x: {
+                    beginAtZero: true // Start X-axis at zero
+                },
+                y: {
+                    beginAtZero: true // Start Y-axis at zero
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true, // Display the legend
+                    position: 'top' // Position of the legend
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `Value: ${tooltipItem.raw}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    }
+    else{
+        console.log("trying to change the plot")
+        country_chart.data.datasets[0].data = getDownloadData(data)
+        country_chart.data.labels = getYears(data)
+        country_chart.data.datasets[0].label = currentlyHovered
+        country_chart.update();
+    }
+}
 
 function getHexColorForSpeed(speed) {
     if (speed === null) return "#808080"; // Gray for missing data
@@ -170,6 +273,7 @@ function handleMouseMove(event) {
     let hoveredFeature = null;
     var onContinent = false;
     var currentFeature;
+
     geojson.features.forEach(feature => {
         const geoPath = path(feature);
         if (ctx.isPointInPath(new Path2D(geoPath), x, y)) {
@@ -178,39 +282,32 @@ function handleMouseMove(event) {
             onContinent = true
         }
     });
-    // if(!onContinent){
-    //   if(currentlyHovered){
-    //     console.log("working sometimes")
-    //     console.log(currentlyHovered);
-    //     changeColor("#FFFFFF", currentlyHovered)
-    //     drawGeoJSON(geojson)
-    //     currentlyHovered = null;
-    //   }
-    //   return;
-    // }
 
     if (!onContinent){
         hideCard();
+        if(currentlyHovered){
+            prevCurrColor = getColor(currentlyHovered)
+            console.log(prevCurrColor)
+            console.log(selectionColorToColorMap[prevCurrColor])
+            changeColor(selectionColorToColorMap[prevCurrColor], currentlyHovered);
+            currentlyHovered = null
+            drawGeoJSON(geojson)
+        }
     }
 
     if (hoveredFeature) {
-        // if(!currentlyHovered){
-        //   currentlyHovered = hoveredFeature;
-        //   changeColor('#0000FF', hoveredFeature)
-        //   drawGeoJSON(geojson);
-        //   return;
-        // }
-        
-        // if(currentlyHovered == hoveredFeature){
-        //    return; 
-        // }
-
-        // changeColor('#FFFFFF', currentlyHovered)
-        // changeColor('#0000FF', hoveredFeature)
-        // currentlyHovered = hoveredFeature;
-        // drawGeoJSON(geojson);
+        console.log(hoveredFeature)
         if(card.style.display === "none" || currentlyHovered != hoveredFeature){
             showCard(hoveredFeature, event)
+            if(currentlyHovered){
+                prevCurrColor = getColor(currentlyHovered)
+                changeColor(selectionColorToColorMap[prevCurrColor], currentlyHovered);
+            }
+
+            newCurrColor = getColor(hoveredFeature)
+            changeColor(colorToSelectionColorMapping[newCurrColor], hoveredFeature);
+            drawGeoJSON(geojson)
+
             currentlyHovered = hoveredFeature;
         }
         else{
@@ -220,14 +317,26 @@ function handleMouseMove(event) {
     }
 } 
 
+function getColor(countryName){
+    color = null
+    geojson.features.forEach(feature => {
+        if(feature.properties.name === countryName){
+            color = feature.properties.color
+        }
+    });
+    return color
+}
+
 function showCard(countryName, event) {
-    card.innerHTML = `<h2>${countryName}</h2><p>AVG Download Speed: ${geoSpatialData[reversedMapping[countryName]].average_download} mbps</p?`;
+    const countryData = geoSpatialData[reversedMapping[countryName]];
+    card.innerHTML = `
+    <h2>${countryName}</h2>
+    <p><span class="label">AVG Download Speed:</span> ${countryData.average_download} Mbps</p>
+    <p><span class="label">AVG Upload Speed:</span> ${countryData.average_upload} Mbps</p>
+`;
     card.style.display = "block";
-    console.log(event.pageX);
-    console.log(event.pageY)
-    card.style.left = `${event.pageX + 10}px`; // Adjust position
-    card.style.top = `${event.pageY + 10}px`; // Adjust position
-    
+    card.style.left = `${event.pageX + 10}px`; 
+    card.style.top = `${event.pageY + 10}px`; 
 }
 
 // Function to hide the card

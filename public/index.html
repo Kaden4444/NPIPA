@@ -6,25 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map of Africa</title>
    <script src="https://d3js.org/d3.v7.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="canvas-container">
-        <canvas id="mapCanvas" width="800" height="600"></canvas>
+    <div class="container">
+        <div class="central-div">
+            <canvas id="mapCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-item">
+                <canvas id="myLineChart"></canvas>
+            </div>
+            <!-- Add more sidebar items as needed -->
+        </div>
     </div>
-    <div id="legend">
-        <div class="legend-item"><div class="legend-color" style="background-color: #FF0000;"></div>0-5 Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #FFA500;"></div>5-10 Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #FFFF00;"></div>10-20 Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #90EE90;"></div>20-50 Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #008000;"></div>50-100 Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #0000FF;"></div>100+ Mbps</div>
-        <div class="legend-item"><div class="legend-color" style="background-color: #808080;"></div>No Data</div>
+
+    <!-- <div id="map-container">
+        <div id="canvas-container">
+            <canvas id="mapCanvas" width="800" height="600"></canvas>
+        </div>
+        <div id="legend">
+            <div class="legend-item"><div class="legend-color" style="background-color: #FF0000;"></div>0-5 Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #FFA500;"></div>5-10 Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #FFFF00;"></div>10-20 Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #90EE90;"></div>20-50 Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #008000;"></div>50-100 Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #0000FF;"></div>100+ Mbps</div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #808080;"></div>No Data</div>
+        </div>
     </div>
-    <div id="card">
+
+    <div id="chart-container">
+        <canvas id="lineChart" width="300" height="400"></canvas>
+        
+    </div> -->
+
+    
+    <div id="card" class="card">
         <h2>Country Details</h2>
         <p>Select a country to see details...</p>
     </div>
     <script src="map.js"></script>
+    <script src="chart.js"></script>
+
 </body>
 </html>
 
