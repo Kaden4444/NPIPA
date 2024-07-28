@@ -71,6 +71,11 @@ const countryMapping = {
     ZW: "Zimbabwe"
 };
 
+var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+gradientStroke.addColorStop(1, 'rgba(72,72,176,0.2)');
+gradientStroke.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+gradientStroke.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
+
 // Reverse the mapping
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
@@ -252,27 +257,27 @@ function populateGraph(data, countryName){
             }]
         },
         options: {
-            responsive: true, // Make the chart responsive
             scales: {
                 x: {
-                    beginAtZero: true // Start X-axis at zero
+                    ticks: {
+                        color: 'white' // X-axis labels color
+                    }
                 },
                 y: {
-                    beginAtZero: true // Start Y-axis at zero
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true, // Display the legend
-                    position: 'top' // Position of the legend
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return `Value: ${tooltipItem.raw}`;
-                        }
+                    ticks: {
+                        color: 'white' // Y-axis labels color
                     }
                 }
+            },
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Download Speed'
+              }
             }
         }
     });
