@@ -3,11 +3,16 @@
 // Set up the canvas and context
 const canvas = document.getElementById('mapCanvas');
 const ctx = canvas.getContext('2d');
+
 var geojson;
 var path;
 var currentlyHovered;
-var country_chart = null;
-const country_chart_ctx = document.getElementById('myLineChart').getContext('2d');
+
+var country_chart_download = null;
+var country_chart_upload = null;
+
+const country_chart_ctx_download = document.getElementById('myLineChart').getContext('2d');
+const country_chart_ctx_upload = document.getElementById('myLineChart').getContext('2d');
 
 const countryMapping = {
     AO: "Angola",
@@ -141,11 +146,9 @@ function populateGraphCompare(data, country){
         borderColor: getRandomColor(), // Line color
         tension: 0.1 // Line smoothness
     }
-    console.log("trying to add data to graph")
-    console.log(compare_dataset)
-    if(country_chart){
-        country_chart.data.datasets.push(compare_dataset)
-        country_chart.update()
+    if(country_chart_download){
+        country_chart_download.data.datasets.push(compare_dataset)
+        country_chart_download.update()
     }
 }
 
@@ -241,10 +244,10 @@ function getRandomColor() {
 
 
 function populateGraph(data, countryName){
-    if(!country_chart){
+    if(!country_chart_download){
         // Create a new Chart instance
         console.log("drawing", countryName)
-        country_chart = new Chart(country_chart_ctx, {
+        country_chart_download = new Chart(country_chart_ctx_download, {
         type: 'line', // Specify the type of chart
         data: {
             labels: getYears(data), // X-axis labels
@@ -272,11 +275,23 @@ function populateGraph(data, countryName){
             responsive: true,
             plugins: {
               legend: {
+                labels: {
+                    color: 'white',   // Change the legend text color
+                    font: {
+                        size: 14,    // Set the font size (optional)
+                        style: 'italic' // Set the font style (optional)
+                    }
+                },
                 position: 'top',
               },
               title: {
                 display: true,
-                text: 'Download Speed'
+                color: 'white',
+                font: {
+                    size: 18,    // Set the font size (optional)
+                    style: 'italic' // Set the font style (optional)
+                },
+                text: 'Download Speed (mbps)'
               }
             }
         }
@@ -284,10 +299,10 @@ function populateGraph(data, countryName){
     }
     else{
         console.log("trying to change the plot")
-        country_chart.data.datasets[0].data = getDownloadData(data)
-        country_chart.data.labels = getYears(data)
-        country_chart.data.datasets[0].label = countryName
-        country_chart.update();
+        country_chart_download.data.datasets[0].data = getDownloadData(data)
+        country_chart_download.data.labels = getYears(data)
+        country_chart_download.data.datasets[0].label = countryName
+        country_chart_download.update();
     }
 }
 
