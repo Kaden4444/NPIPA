@@ -11,8 +11,8 @@ var currentlyHovered;
 var country_chart_download = null;
 var country_chart_upload = null;
 
-const country_chart_ctx_download = document.getElementById('myLineChart').getContext('2d');
-const country_chart_ctx_upload = document.getElementById('myLineChart').getContext('2d');
+const country_chart_ctx_download = document.getElementById('download_chart').getContext('2d');
+const country_chart_ctx_upload = document.getElementById('upload_chart').getContext('2d');
 
 const countryMapping = {
     AO: "Angola",
@@ -76,6 +76,8 @@ const countryMapping = {
     ZW: "Zimbabwe"
 };
 
+var countryNameToColorMap = {}
+
 var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 gradientStroke.addColorStop(1, 'rgba(72,72,176,0.2)');
 gradientStroke.addColorStop(0.2, 'rgba(72,72,176,0.0)');
@@ -94,16 +96,7 @@ const countryOptions = [
     // Add more countries as needed
 ];
 
-
-const selectElement = document.getElementById('countries');
-for(var key in countryMapping){
-    const newOption = document.createElement('option');
-    newOption.value = key;
-    newOption.textContent = countryMapping[key];
-    selectElement.appendChild(newOption);
-}
-
-selectElement.addEventListener('change', handleSelectionChange);
+// 
 
 const downloadSpeedToHexColor = {
     "0-5": "#FF9AA2",       // Slightly more saturated Pastel Red
@@ -122,35 +115,6 @@ const colorToSelectionColorMapping = {
     "#A1F7A1": "#8DFF8F",  // Pale Green to Light Lime Green
     "#B3E5FC": "#81D4FA"   // Light Blue to Sky Blue
 };
-
-function handleSelectionChange(event) {
-    // Get the selected value
-    const selectedValue = event.target.value;
-
-    // Get the selected option text
-    const selectedText = event.target.options[event.target.selectedIndex].text;
-    console.log(selectedValue)
-    fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${selectedValue}`)
-        .then(response => response.json())
-        .then(data => {
-            populateGraphCompare(data, selectedText)
-    })
-}
-
-function populateGraphCompare(data, country){
-   console.log(data)
-   let compare_dataset = {
-        label: country, // Label for the dataset
-        data: getDownloadData(data), // Data points
-        fill: false, // No fill under the line
-        borderColor: getRandomColor(), // Line color
-        tension: 0.1 // Line smoothness
-    }
-    if(country_chart_download){
-        country_chart_download.data.datasets.push(compare_dataset)
-        country_chart_download.update()
-    }
-}
 
 const selectionColorToColorMap = {};
 for (const [color, s_color] of Object.entries(colorToSelectionColorMapping)) {
@@ -193,9 +157,8 @@ function initialiseMap(geojson){
 
 function handleClick(event) {
     const sidebar = document.getElementById('sidebar')
-    const computedStyle = window.getComputedStyle(sidebar);
-    if(computedStyle.display === 'none'){
-        sidebar.style.display = 'flex';
+    if( sidebar.className != 'sidebar-show'){
+        sidebar.className = 'sidebar-show'
     }
 
     if (currentlyHovered) {
@@ -203,8 +166,7 @@ function handleClick(event) {
         fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${reversedMapping[currentlyHovered]}`)
         .then(response => response.json())
         .then(data => {
-            console.log(hovered)
-            populateGraph(data, hovered)
+            populateGraphs(data, hovered)
         })
     }
 }
@@ -242,12 +204,8 @@ function getRandomColor() {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
-
-function populateGraph(data, countryName){
-    if(!country_chart_download){
-        // Create a new Chart instance
-        console.log("drawing", countryName)
-        country_chart_download = new Chart(country_chart_ctx_download, {
+function createDownloadChart(data, countryName){
+    return new Chart(country_chart_ctx_download, {
         type: 'line', // Specify the type of chart
         data: {
             labels: getYears(data), // X-axis labels
@@ -273,6 +231,8 @@ function populateGraph(data, countryName){
                 }
             },
             responsive: true,
+            maintainAspectRatio: false, // Allows the chart to use all available space
+        
             plugins: {
               legend: {
                 labels: {
@@ -291,19 +251,92 @@ function populateGraph(data, countryName){
                     size: 18,    // Set the font size (optional)
                     style: 'italic' // Set the font style (optional)
                 },
-                text: 'Download Speed (mbps)'
+                text: 'Download Speed'
               }
             }
         }
     });
+}
+
+function createUploadChart(data, countryName){
+    return new Chart(country_chart_ctx_upload, {
+        type: 'line', // Specify the type of chart
+        data: {
+            labels: getYears(data), // X-axis labels
+            datasets: [{
+                label: countryName, // Label for the dataset
+                data: getUploadData(data), // Data points
+                fill: false, // No fill under the line
+                borderColor: 'rgb(75, 192, 192)', // Line color
+                tension: 0.1 // Line smoothness
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'white' // X-axis labels color
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: 'white' // Y-axis labels color
+                    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false, // Allows the chart to use all available space
+        
+            plugins: {
+              legend: {
+                labels: {
+                    color: 'white',   // Change the legend text color
+                    font: {
+                        size: 14,    // Set the font size (optional)
+                        style: 'italic' // Set the font style (optional)
+                    }
+                },
+                position: 'top',
+              },
+              title: {
+                display: true,
+                color: 'white',
+                font: {
+                    size: 14,    // Set the font size (optional)
+                    style: 'bold' // Set the font style (optional)
+                },
+                text: 'Upload Speed'
+              }
+            }
+        }
+    });
+}
+
+
+function populateGraphs(data, countryName){
+    if(!country_chart_download && !country_chart_upload){
+        // Neither chart has been initalised with a country choice yet
+        // Create a new Chart instance
+        country_chart_download = createDownloadChart(data,countryName)
+        country_chart_upload = createUploadChart(data, countryName)
     }
     else{
-        console.log("trying to change the plot")
-        country_chart_download.data.datasets[0].data = getDownloadData(data)
-        country_chart_download.data.labels = getYears(data)
-        country_chart_download.data.datasets[0].label = countryName
-        country_chart_download.update();
+        updateDownloadChart(data, countryName);
+        updateUploadChart(data, countryName);
     }
+}
+function updateDownloadChart(data, countryName){
+    country_chart_download.data.datasets[0].data = getDownloadData(data)
+    country_chart_download.data.labels = getYears(data)
+    country_chart_download.data.datasets[0].label = countryName
+    country_chart_download.update();
+}
+
+function updateUploadChart(data, countryName){
+    country_chart_upload.data.datasets[0].data = getUploadData(data)
+    country_chart_upload.data.labels = getYears(data)
+    country_chart_upload.data.datasets[0].label = countryName
+    country_chart_upload.update();
 }
 
 function getHexColorForSpeed(speed) {
@@ -317,14 +350,7 @@ function getHexColorForSpeed(speed) {
 }
 
 function changeColor(color, countryName){
-    console.log("trying to change color of", countryName)
-    geojson.features.forEach(feature => {
-        if(feature.properties.name === countryName){
-            console.log("tried to change color of", countryName)
-            feature.properties.color = color;
-            return;
-        }
-    });
+    countryNameToColorMap[countryName] = color
 }
 // Define a function to draw GeoJSON data
 function drawGeoJSON(geojson) {
@@ -343,7 +369,8 @@ function drawGeoJSON(geojson) {
         ctx.strokeStyle = '#000'; // Border color
         ctx.lineWidth = 3;
         ctx.stroke(pathData);
-        ctx.fillStyle = feature.properties.color; // Color based on country name
+        // ctx.fillStyle = feature.properties.color; // Color based on country name
+        ctx.fillStyle = countryNameToColorMap[feature.properties.name]
         ctx.fill(pathData);
     });
 }
@@ -373,8 +400,6 @@ function handleMouseMove(event) {
         hideCard();
         if(currentlyHovered){
             prevCurrColor = getColor(currentlyHovered)
-            console.log(prevCurrColor)
-            console.log(selectionColorToColorMap[prevCurrColor])
             changeColor(selectionColorToColorMap[prevCurrColor], currentlyHovered);
             currentlyHovered = null
             drawGeoJSON(geojson)
@@ -404,13 +429,7 @@ function handleMouseMove(event) {
 } 
 
 function getColor(countryName){
-    color = null
-    geojson.features.forEach(feature => {
-        if(feature.properties.name === countryName){
-            color = feature.properties.color
-        }
-    });
-    return color
+    return countryNameToColorMap[countryName]
 }
 
 function showCard(countryName, event) {
@@ -429,3 +448,35 @@ function showCard(countryName, event) {
 function hideCard() {
     card.style.display = "none";
 }
+
+
+// function populateGraphCompare(data, country){
+    //    console.log(data)
+    //    let compare_dataset = {
+    //         label: country, // Label for the dataset
+    //         data: getDownloadData(data), // Data points
+    //         fill: false, // No fill under the line
+    //         borderColor: getRandomColor(), // Line color
+    //         tension: 0.1 // Line smoothness
+    //     }
+    //     if(country_chart_download){
+    //         country_chart_download.data.datasets.push(compare_dataset)
+    //         country_chart_download.update()
+    //     }
+    // }
+
+
+   // function handleSelectionChange(event) {
+        //     // Get the selected value
+        //     const selectedValue = event.target.value;
+        
+        //     // Get the selected option text
+        //     const selectedText = event.target.options[event.target.selectedIndex].text;
+        //     console.log(selectedValue)
+        //     fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${selectedValue}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             populateGraphCompare(data, selectedText)
+        //     })
+        // }
+
