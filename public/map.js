@@ -77,6 +77,7 @@ const countryMapping = {
 };
 
 var countryNameToColorMap = {}
+const right_sidebar = document.getElementById("sidebar-right");
 
 var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 gradientStroke.addColorStop(1, 'rgba(72,72,176,0.2)');
@@ -168,8 +169,54 @@ function handleClick(event) {
         .then(data => {
             populateGraphs(data, hovered)
         })
+        // Create a new search bar
+        createCountryEntry(currentlyHovered)
     }
+
 }
+
+results = 1;
+
+function createCountryEntry(countryName){
+    var input_id = `input-box-${results}`
+    var result_id = `result-box-${results}`
+    results += 1;
+    var content = `<div class="sidebar-item-right">
+    <h3>${countryName}</h3>
+    <p>Filter By:<p>
+    <div class="search-box">
+        <div class="row">
+            <input type="text" id="${input_id}" placeholder="Enter ISP Name" onkeydown="handleKeyDown(event)" autocomplete="off">
+            <button> Add ISP </button>
+        </div>
+        <div class="result-box" id="${result_id}">
+        </div>
+    </div>
+</div>`
+
+    right_sidebar.insertAdjacentHTML('beforeend', content)
+}
+
+function handleKeyDown(event){
+    id = event.target.id.split("-")[2];
+    resultBox = document.getElementById(`result-box-${id}`)
+    inputBox = document.getElementById(`input-box-${id}`)
+    result = ["Afrihost", "Comcast", "UCT Network"]
+    const content = result.map((list)=>{
+        return "<li onclick=handleSearchResultClick(event,this)>" + list+ "</li>"
+    })
+    resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"
+
+    // Send api request to get api names and then update the result box accordingly
+}
+
+function handleSearchResultClick(event,list){
+    var id = event.target.parentElement.parentElement.id
+    var inputBoxId = "input-box-" + id.split("-")[2]
+    document.getElementById(inputBoxId).value = list.innerHTML;
+    document.getElementById(id).innerHTML = ''
+}
+
 function getYears(data){
     var out = []
     data.forEach(element => {
@@ -407,7 +454,6 @@ function handleMouseMove(event) {
     }
 
     if (hoveredFeature) {
-        console.log(hoveredFeature)
         if(card.style.display === "none" || currentlyHovered != hoveredFeature){
             showCard(hoveredFeature, event)
             if(currentlyHovered){
@@ -479,4 +525,21 @@ function hideCard() {
         //             populateGraphCompare(data, selectedText)
         //     })
         // }
+
+//result box logic
+
+// const resultBox = document.getElementById("result-box");
+// const inputBox = document.getElementById("input-box")
+
+// inputBox.onkeyup = function(){
+//     result = ["hello"]
+//     display(result, inputBox)
+// }
+
+// function display(result){
+//     const content = result.map((list)=>{
+//         return "<li>" + list + "</li"
+//     })
+//     resultBoxinnerHTML = "<ul>" + content + "</ul>"
+//}
 
