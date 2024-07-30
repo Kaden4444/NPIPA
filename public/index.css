@@ -1,19 +1,54 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color:  #373441;
 }
 .central-div {
     flex: 3;
+    position: relative;
     background: #35384b;
     border-radius: 8px;
     margin: 20px;
     /* Adjust size if needed */
 }
 
+#modeButton{
+    position: absolute;
+    color:white;
+    top: 20px;;
+    right: 30rem;
+    background-color: #323142; /* Green background */
+    border: none;              /* Remove border */
+    color: white;              /* White text */
+    padding: 10px 20px;        /* Padding for size */
+    text-align: center;        /* Center text */
+    text-decoration: none;     /* Remove underline */
+    display: none;     /* Inline block for positioning */
+    font-size: 16px;           /* Font size */
+    margin: 10px 0;            /* Margin for spacing */
+    cursor: pointer;           /* Pointer cursor on hover */
+    border-radius: 5px;        /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+#modeButton:hover {
+    background-color: #222327; /* Darker green on hover */
+}
+
 .container {
     display: flex;
     height: 100vh;
+}
+
+.exit-button{
+    margin-left: 95%;
+    color:rgb(195, 191, 255);
+}
+.exit-button:hover{
+    color:white
+}
+
+h3{
+    margin:0
 }
 
 .sidebar {
@@ -42,6 +77,19 @@ body {
     padding: 10px;
     transition: transform 750ms ease-in;
     transform: translateX(0rem);
+}
+.sidebar-right {
+    flex: 1;  
+    background: #373441;
+    border-radius: 8px;
+    margin: 20px;
+    display: flex;
+    position: fixed;
+    height:100%;
+    right:0;
+    flex-direction: column;
+    padding: 10px;
+    transition: transform 750ms ease-out;
 }
 .search-box{
     width: 350px;
@@ -89,19 +137,7 @@ button{
     outline: 0;
 }
 
-.sidebar-right {
-    flex: 1;  
-    background: #373441;
-    border-radius: 8px;
-    margin: 20px;
-    display: flex;
-    position: fixed;
-    top: 0;
-    right:0;
-    flex-direction: column;
-    padding: 10px;
-    transition: transform 750ms ease-out;
-}
+
 
 
 .sidebar-item {
@@ -126,7 +162,21 @@ button{
     /* Adjust size if needed */
 }
 
-
+.top-bar {
+    background-color: #333; /* Dark background color */
+    color: white;           /* White text color */
+    padding: 10px 20px;     /* Padding for spacing */
+    font-size: 24px;        /* Font size */
+    font-weight: bold;      /* Bold text */
+    position: fixed;        /* Fixed position */
+    text-align: left;  
+    width: 100%;            /* Full width */
+    top: 0;                 /* Stick to the top */
+    z-index: 1000;          /* Ensure it sits above other elements */
+}
+.container{
+    margin-top: 35px;
+}
 
 #mapContainer {
     margin-left: auto;
@@ -203,14 +253,10 @@ button{
     font-weight: bold;
 }
 #mapCanvas {
-    border: 1px solid #35384b;
-    ;
-    
     display: block;
     margin-top:100px;
     margin-left: auto;
     margin-right: auto;
-    
 }
 
 .dropdown {
@@ -253,3 +299,10 @@ button{
 .dropdown.show .dropdown-content {
     display: block;
 }
+
+
+
+
+
+
+
