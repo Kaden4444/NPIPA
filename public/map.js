@@ -133,15 +133,6 @@ const colorToSelectionColorMapping = {
     "#33CC33": "#009B77"   // More vivid Green to a bright, high-contrast Green
 };
 
-
-
-
-
-
-
-
-
-
 const selectionColorToColorMap = {};
 for (const [color, s_color] of Object.entries(colorToSelectionColorMapping)) {
     selectionColorToColorMap[s_color] = color;
