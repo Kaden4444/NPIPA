@@ -133,15 +133,6 @@ const colorToSelectionColorMapping = {
     "#33CC33": "#009B77"   // More vivid Green to a bright, high-contrast Green
 };
 
-
-
-
-
-
-
-
-
-
 const selectionColorToColorMap = {};
 for (const [color, s_color] of Object.entries(colorToSelectionColorMapping)) {
     selectionColorToColorMap[s_color] = color;
@@ -163,7 +154,7 @@ fetch('africa.json')
     });
 
 function initialiseMap(geojson){
-    fetch('http://localhost:5000/getGeoData')
+    fetch('https://CadeSayner.pythonanywhere.com/getGeoData')
     .then(response => response.json())
     .then(data => {
         // geojson.features.forEach(feature => {
@@ -189,7 +180,7 @@ function handleClick(event) {
 
     if (currentlyHovered) {
         hovered = currentlyHovered+"";
-        fetch(`http://localhost:5000/getCountryData?country=${reversedMapping[currentlyHovered]}&isp=ALL`)
+        fetch(`https://CadeSayner.pythonanywhere.com/getCountryData?country=${reversedMapping[currentlyHovered]}&isp=ALL`)
         .then(response => response.json())
         .then(data => {
             populateGraphs(data, hovered)
@@ -267,7 +258,7 @@ function handleKeyDown(event){
     // look in the dom for the country name
     var h3Element = inputBox.parentElement.parentElement.previousElementSibling.previousElementSibling.previousElementSibling;
     country_name = h3Element.innerText
-    fetch(`http://localhost:5000/getISPs?country=${reversedMapping[country_name]}&search=${inputBox.value}`)
+    fetch(`https://CadeSayner.pythonanywhere.com/getISPs?country=${reversedMapping[country_name]}&search=${inputBox.value}`)
         .then(response => response.json())
         .then(data => {
             console.log(data)
@@ -302,7 +293,7 @@ function handleSearchResultClick(event,list){
 // updates the graph when a filter value gets altered.
 function updateGraphsFilterISP(dataIndex, isp_name, country_name){
     console.log("Trying to update the graph data " + dataIndex + " for " + isp_name + " for " + country_name)
-    fetch(`http://localhost:5000/getCountryData?country=${reversedMapping[country_name]}&isp=${isp_name}`)
+    fetch(`https://CadeSayner.pythonanywhere.com/getCountryData?country=${reversedMapping[country_name]}&isp=${isp_name}`)
         .then(response => response.json())
         .then(data => {
             console.log(data)
@@ -655,52 +646,3 @@ function showCard(countryName, event) {
 function hideCard() {
     card.style.display = "none";
 }
-
-
-// function populateGraphCompare(data, country){
-    //    console.log(data)
-    //    let compare_dataset = {
-    //         label: country, // Label for the dataset
-    //         data: getDownloadData(data), // Data points
-    //         fill: false, // No fill under the line
-    //         borderColor: getRandomColor(), // Line color
-    //         tension: 0.1 // Line smoothness
-    //     }
-    //     if(country_chart_download){
-    //         country_chart_download.data.datasets.push(compare_dataset)
-    //         country_chart_download.update()
-    //     }
-    // }
-
-
-   // function handleSelectionChange(event) {
-        //     // Get the selected value
-        //     const selectedValue = event.target.value;
-        
-        //     // Get the selected option text
-        //     const selectedText = event.target.options[event.target.selectedIndex].text;
-        //     console.log(selectedValue)
-        //     fetch(`https://cadesayner.pythonanywhere.com/getCountryData?country=${selectedValue}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             populateGraphCompare(data, selectedText)
-        //     })
-        // }
-
-//result box logic
-
-// const resultBox = document.getElementById("result-box");
-// const inputBox = document.getElementById("input-box")
-
-// inputBox.onkeyup = function(){
-//     result = ["hello"]
-//     display(result, inputBox)
-// }
-
-// function display(result){
-//     const content = result.map((list)=>{
-//         return "<li>" + list + "</li"
-//     })
-//     resultBoxinnerHTML = "<ul>" + content + "</ul>"
-//}
-
