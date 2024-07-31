@@ -115,40 +115,30 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-// const downloadSpeedToHexColor = {
-//     "0-5": "#FF9AA2",       // Slightly more saturated Pastel Red
-//     "5-10": "#FFDAC1",      // Slightly more saturated Peach Puff
-//     "10-20": "#FFFFB5",     // Slightly more saturated Light Yellow
-//     "20-50": "#B9FBC0",     // Slightly more saturated Pastel Green
-//     "50-100": "#A1F7A1",    // Slightly more saturated Pale Green
-//     "100+": "#B3E5FC"       // Slightly more saturated Light Blue
-// };
-
-// const colorToSelectionColorMapping = {
-//     "#FF9AA2": "#FF6F6F",  // Pastel Red to Coral Red
-//     "#FFDAC1": "#FFB07C",  // Peach Puff to Light Salmon
-//     "#FFFFB5": "#FFFF99",  // Light Yellow to Lemon Yellow
-//     "#B9FBC0": "#A2F8B0",  // Pastel Green to Light Green
-//     "#A1F7A1": "#8DFF8F",  // Pale Green to Light Lime Green
-//     "#B3E5FC": "#81D4FA"   // Light Blue to Sky Blue
-// };
 const downloadSpeedToHexColor = {
-    "0-5": "#E63946",       // Bright, high-contrast Red
-    "5-10": "#FF6F61",      // Darker Peach with more saturation
-    "10-20": "#F1C40F",     // Intense Yellow
-    "20-50": "#388E3C",     // Bold Green
-    "50-100": "#4CAF50",    // Bright Lime Green
-    "100+": "#0277BD"       // Vivid Blue
+    "0-5": "#FF6F6F",       // Slightly darker Pastel Red
+    "5-10": "#FFB07C",      // Slightly darker Peach Puff
+    "10-20": "#FFFF99",     // Slightly darker Light Yellow
+    "20-50": "#9DFFB6",     // More vivid Pastel Green
+    "50-100": "#66FF66",    // More vivid Light Green
+    "100+": "#33CC33"       // More vivid Green
 };
 
 const colorToSelectionColorMapping = {
-    "#E63946": "#D62839",  // High-contrast Red to a more intense Red
-    "#FF6F61": "#FF3F34",  // Dark Peach to a deeper and more intense Peach
-    "#F1C40F": "#F39C12",  // Intense Yellow to a stronger Yellow
-    "#388E3C": "#2C6B2F",  // Bold Green to a deeper Green
-    "#4CAF50": "#388E3C",  // Bright Lime Green to a more intense Lime Green
-    "#0277BD": "#01579B"   // Vivid Blue to a more saturated Blue
+    "#FF6F6F": "#FF3D3D",  // Pastel Red to a vivid, high-contrast Red
+    "#FFB07C": "#FF7E4C",  // Peach Puff to a bright, intense Orange
+    "#FFFF99": "#FFFF66",  // Light Yellow to a luminous Yellow
+    "#9DFFB6": "#7CFF8C",  // More vivid Pastel Green to a bright, intense Green
+    "#66FF66": "#33FF33",  // More vivid Light Green to a bright, luminescent Green
+    "#33CC33": "#009B77"   // More vivid Green to a bright, high-contrast Green
 };
+
+
+
+
+
+
+
 
 
 
