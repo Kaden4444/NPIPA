@@ -115,15 +115,6 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-const countryOptions = [
-    { code: 'ZA', name: 'Country A' },
-    { code: 'US', name: 'Country B' },
-    { code: 'GB', name: 'Country C' }
-    // Add more countries as needed
-];
-
-// 
-
 // const downloadSpeedToHexColor = {
 //     "0-5": "#FF9AA2",       // Slightly more saturated Pastel Red
 //     "5-10": "#FFDAC1",      // Slightly more saturated Peach Puff
@@ -208,7 +199,7 @@ function handleClick(event) {
 
     if (currentlyHovered) {
         hovered = currentlyHovered+"";
-        fetch(`http://localhost:5000/getCountryData?country=${reversedMapping[currentlyHovered]}`)
+        fetch(`http://localhost:5000/getCountryData?country=${reversedMapping[currentlyHovered]}&isp=ALL`)
         .then(response => response.json())
         .then(data => {
             populateGraphs(data, hovered)
@@ -255,13 +246,6 @@ function handleExit(event){
     country_div.remove()
 }
 
-// // removes country entry from the sidebar
-// function removeCountryEntry(entryNumber){
-//     var country_div_id = "country-entry-" + entryNumber
-//     var country_div = document.getElementById(country_div_id)
-//     removeChartData(country_div);
-//     country_div.remove()
-// }
 
 function removeChartData(country_div){
     console.log("trying")
@@ -290,31 +274,51 @@ function handleKeyDown(event){
     id = event.target.id.split("-")[2];
     resultBox = document.getElementById(`result-box-${id}`)
     inputBox = document.getElementById(`input-box-${id}`)
-    result = ["Afrihost", "Comcast", "UCT Network"]
-    const content = result.map((list)=>{
-        return "<li onclick=handleSearchResultClick(event,this)>" + list+ "</li>"
-    })
-    resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"
-    //TODO:
-    // Send api request to get api names and then update the result box accordingly
+    // look in the dom for the country name
+    var h3Element = inputBox.parentElement.parentElement.previousElementSibling.previousElementSibling.previousElementSibling;
+    country_name = h3Element.innerText
+    fetch(`http://localhost:5000/getISPs?country=${reversedMapping[country_name]}&search=${inputBox.value}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            const content = data.map((list)=>{
+                return "<li onclick=handleSearchResultClick(event,this)>" + list+ "</li>"
+            })
+            resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"
+        })
+    
 }
 
 function handleSearchResultClick(event,list){
     var id = event.target.parentElement.parentElement.id
     var inputBoxId = "input-box-" + id.split("-")[2]
-    document.getElementById(inputBoxId).value = list.innerHTML;
-    document.getElementById(id).innerHTML = ''
+    resultBox = document.getElementById(id)
+    inputBox = document.getElementById(inputBoxId)
+    inputBox.value = list.innerHTML;
+    var h3Element = inputBox.parentElement.parentElement.previousElementSibling.previousElementSibling.previousElementSibling;
+    country_name = h3Element.innerText
+    resultBox.innerHTML = ''
+    country_div = resultBox.parentElement.parentElement
+    const parentElement = country_div.parentElement;
+    const children = Array.from(parentElement.children);
+    var index;
+    if(children.includes(country_div)){
+        index = children.indexOf(country_div);
+    }
+    updateGraphsFilterISP(index, list.innerHTML, country_name)
+    // Now we need to update the results on the graphs
 }
 
 // updates the graph when a filter value gets altered.
-function updateGraphsFilterISP(dataIndex, isp_name){
-    // this function needs to make a query to the backend for the new data and then update the charts with that data
-    // remember to change the name of the label here
-    //example:
-    //getData()
-    // updateDownloadChart(data, isp_name, true, dataIndex)
-    // updateUploadChart(data, isp_name, true, dataIndex)
-    return;
+function updateGraphsFilterISP(dataIndex, isp_name, country_name){
+    console.log("Trying to update the graph data " + dataIndex + " for " + isp_name + " for " + country_name)
+    fetch(`http://localhost:5000/getCountryData?country=${reversedMapping[country_name]}&isp=${isp_name}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            updateDownloadChart(data, country_name + "-" + isp_name, true, dataIndex)
+            updateUploadChart(data, country_name + "-" + isp_name, true, dataIndex)
+    })
 }
 
 function getYears(data){
@@ -492,6 +496,13 @@ function populateGraphs(data, countryName){
 }
 
 function updateDownloadChart(data, labelName, isupdate=false, update_index=null){
+
+    if(isupdate&&update_index!=null){
+        country_chart_download.data.datasets[update_index].data = getDownloadData(data);
+        country_chart_download.data.datasets[update_index].label = labelName;
+        country_chart_download.update()
+        return
+    }
     if(compare_mode){
         // Create a sidebar entry
         
@@ -507,6 +518,7 @@ function updateDownloadChart(data, labelName, isupdate=false, update_index=null)
             country_chart_download.update()
         }
     }
+
     else{
         country_chart_download.data.datasets[0].data = getDownloadData(data)
         country_chart_download.data.labels = getYears(data)
@@ -516,6 +528,12 @@ function updateDownloadChart(data, labelName, isupdate=false, update_index=null)
 }
 
 function updateUploadChart(data, labelName, isupdate=false, update_index=null){
+    if(isupdate && update_index!=null){
+        country_chart_upload.data.datasets[update_index].data = getUploadData(data);
+        country_chart_upload.data.datasets[update_index].label = labelName;
+        country_chart_upload.update()
+        return
+    }
     if(compare_mode){
         let compare_dataset = {
             label: labelName, // Label for the dataset
