@@ -1,6 +1,5 @@
 import { Box, Card, Button, Flex, TextField } from '@radix-ui/themes';
 import { FaLock, FaUnlock} from 'react-icons/fa'; // Importing lock icons from react-icons
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 

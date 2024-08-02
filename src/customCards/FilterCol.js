@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Flex, Box, Card, Button } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
-export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback}) {
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards}) {
   const [cards, setCards] = useState([]);
   const [showColumn, setShowColumn] = useState(true);
   console.log(countryFilters)
@@ -14,14 +14,17 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     filter_change_callback(countryName,isp,id)
   }
 
-  const purgeCards = () => {
+  const onPurgeCards = () => {
     // Needs to be altered here to remove data from the cards
-    setCards(cards.filter(card => !card.locked));
+    console.log("heres your cards:")
+    console.log(countryFilters)
+    purgeCards();
   };
 
   const toggleCardLock = (index) => {
     // Needs to instead update the shared countryFilter state
     onCountryLockChange(index, !countryFilters[index].locked)
+    console.log(countryFilters)
   };
 
   const handleHideClick = () => {
@@ -40,8 +43,8 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">
-                  {/* You can add this back!}
-                  {/* <Button
+                  
+                   <Button
                     variant="outline"
                     size="1"
                     radius="full"
@@ -49,7 +52,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     style={{position: 'absolute',left: 0,top: 0}}
                   >
                     Hide
-                  </Button> */}
+                  </Button> 
 
                   <h1 style={{textAlign: 'center', fontSize:"20px"}} >
                     Your Countries
@@ -66,7 +69,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                 />
               ))}
               <Flex gapX="3">
-                <Button variant="soft" color='red' onClick={purgeCards}>Purge</Button>
+                <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
               </Flex>
             </Flex>
           </Card>

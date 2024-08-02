@@ -8,10 +8,11 @@ import { Flex, Box, Card } from '@radix-ui/themes';
 
 function Dashboard() {
     const [countryFilters, setCountryFilters] = useState([]);
+
     const addCountryFilter = (countryName) => {
       setCountryFilters((prevCards) => [
         ...prevCards,
-        { countryName, locked: true, isp:"ALL"}
+        { countryName, locked: false, isp:"ALL"}
       ]);
       console.log(countryFilters)
     };
@@ -36,11 +37,16 @@ function Dashboard() {
       console.log(countryFilters)
     }
 
+    function  onPurge(){
+        let lockedCards = countryFilters.filter(card => card.locked);
+        setCountryFilters(lockedCards)
+    }
+
     return (
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
         <MapComponent onCountryClick={addCountryFilter}/>
-        <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange}/>
+        <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge}/>
       </Flex>  
     );
   }
