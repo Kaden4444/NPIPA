@@ -148,7 +148,7 @@ function MapComponent({ onCountryClick }) {
         layer.setStyle({
           weight: 0,
           color: 'black',
-          fillOpacity: 0.4
+          fillOpacity: 0.7
         });
       }
     });
@@ -159,7 +159,7 @@ function MapComponent({ onCountryClick }) {
     weight: 0,
     opacity: 1,
     fillColor: countryColors[feature.properties.name] || 'grey', // Use the color from API data or default to grey
-    fillOpacity: 0.8,
+    fillOpacity: 0.7,
   });
 
   const bounds = [
@@ -172,7 +172,7 @@ function MapComponent({ onCountryClick }) {
     whenCreated={setMap}
     style={{ height: '100vh', width: '100%' }}
     center={[0, 35]} // Center of Africa
-    zoom={3} // Zoom level to focus on Africa
+    zoom={3.5} // Zoom level to focus on Africa
     scrollWheelZoom={true}
     minZoom={3} // Minimum zoom level
     maxZoom={3.5} // Maximum zoom level
