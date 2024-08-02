@@ -3,23 +3,25 @@ import { useState } from 'react';
 import { Flex, Box, Card, Button } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
-export function FilterCol() {
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback}) {
   const [cards, setCards] = useState([]);
   const [showColumn, setShowColumn] = useState(true);
+  console.log(countryFilters)
 
-  const addCard = () => {
-    const nextNumber = cards.length > 0 ? Math.max(...cards.map(c => c.number)) + 1 : 1;
-    setCards([...cards, { number: nextNumber, locked: true }]);
-  };
+  function onIspSelect(countryName, isp, id){
+    console.log("selected" + isp + "for" + countryName + "for card" + id)
+    // on_card_change_callback(countryName, isp, id)
+    filter_change_callback(countryName,isp,id)
+  }
 
   const purgeCards = () => {
+    // Needs to be altered here to remove data from the cards
     setCards(cards.filter(card => !card.locked));
   };
 
   const toggleCardLock = (index) => {
-    setCards(cards.map((card, i) => 
-      i === index ? { ...card, locked: !card.locked } : card
-    ));
+    // Needs to instead update the shared countryFilter state
+    onCountryLockChange(index, !countryFilters[index].locked)
   };
 
   const handleHideClick = () => {
@@ -38,7 +40,8 @@ export function FilterCol() {
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">
-                  <Button
+                  {/* You can add this back!}
+                  {/* <Button
                     variant="outline"
                     size="1"
                     radius="full"
@@ -46,21 +49,23 @@ export function FilterCol() {
                     style={{position: 'absolute',left: 0,top: 0}}
                   >
                     Hide
-                  </Button>
+                  </Button> */}
+
                   <h1 style={{textAlign: 'center', fontSize:"20px"}} >
-                    This is where you can see your filters!
+                    Your Countries
                   </h1> 
               </Box>
-              {cards.map((card, index) => (
+              {countryFilters.map((country, index) => (
                 <FilterCard
                   key={index}
-                  CountryName={`Country ${card.number}`}
-                  isLocked={card.locked}
+                  card_index={index}
+                  CountryName={`${country.countryName}`}
+                  isLocked={country.locked}
                   onToggleLock={() => toggleCardLock(index)}
+                  onIspSelect={onIspSelect}
                 />
               ))}
               <Flex gapX="3">
-                <Button variant="outline" onClick={addCard}>Add a new country</Button>
                 <Button variant="soft" color='red' onClick={purgeCards}>Purge</Button>
               </Flex>
             </Flex>
