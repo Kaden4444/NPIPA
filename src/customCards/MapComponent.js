@@ -86,12 +86,9 @@ function getColor(countryName, data){
 function createColorsObject(data){
     var object = {}
     for(var item in data){
-        console.log(item)
-        console.log(countryMapping[item])
         object[countryMapping[item]] = getHexColorForSpeed((data[item].average_download + data[item].average_download)/2)
     }
     object["Somalia"] = object["Somaliland"]
-    console.log(object)
     return object
 }
 
@@ -110,7 +107,6 @@ const fetchCountryColors = async () => {
   // Replace with your API endpoint
   const response = await fetch('https:CadeSayner.pythonanywhere.com/getGeoData');
   const data = await response.json();
-  console.log(data)
   return createColorsObject(data); // Expected format: { "Country Name": "#ff0000", ... }
 };
 
@@ -163,16 +159,26 @@ function MapComponent({ onCountryClick }) {
     weight: 0,
     opacity: 1,
     fillColor: countryColors[feature.properties.name] || 'grey', // Use the color from API data or default to grey
-    fillOpacity: 0.6,
+    fillOpacity: 0.8,
   });
+
+  const bounds = [
+    [-90, -120], // Southwest corner of the bounds
+    [100, 220]   // Northeast corner of the bounds
+  ];
 
   return (
     <MapContainer
     whenCreated={setMap}
     style={{ height: '100vh', width: '100%' }}
-    center={[0, 50]} // Center of Africa
+    center={[0, 35]} // Center of Africa
     zoom={3} // Zoom level to focus on Africa
     scrollWheelZoom={true}
+    minZoom={3} // Minimum zoom level
+    maxZoom={3.5} // Maximum zoom level
+    dragging={true}
+    maxBounds={bounds}
+    maxBoundsViscosity={0.1} // Make the bounds strict (0.0 - 1.0)
   >
     {/* Transparent Tile Layer */}
     

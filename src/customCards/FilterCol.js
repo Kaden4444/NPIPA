@@ -3,21 +3,18 @@ import { useState } from 'react';
 import { Flex, Box, Card, Button } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
-export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards}) {
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, loading}) {
   const [cards, setCards] = useState([]);
+  
   const [showColumn, setShowColumn] = useState(true);
-  console.log(countryFilters)
 
   function onIspSelect(countryName, isp, id){
-    console.log("selected" + isp + "for" + countryName + "for card" + id)
     // on_card_change_callback(countryName, isp, id)
     filter_change_callback(countryName,isp,id)
   }
 
   const onPurgeCards = () => {
     // Needs to be altered here to remove data from the cards
-    console.log("heres your cards:")
-    console.log(countryFilters)
     purgeCards();
   };
 
@@ -69,13 +66,13 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                 />
               ))}
               <Flex gapX="3">
-                <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
+                <Button disabled={loading} variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
               </Flex>
             </Flex>
           </Card>
         </Box>
       ) : (
-        <Button variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
+        <Button  variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
           Show
         </Button>
       )}

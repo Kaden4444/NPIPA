@@ -90,70 +90,49 @@ const graphLineColors = [
   ];
   
 
-const fetchCardData = async (card_country_name, isp) => {
-    console.log("trying")
-    try {
-      const response = await fetch(`https://CadeSayner.pythonanywhere.com/getCountryData?country=${reversedMapping[card_country_name]}&isp=${isp}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Failed to fetch card data:', error);
-      return null;
-    }
-};
 
-function getChartData(download_data, cards){
+function getDownloadChartData(cards){
     var out = []
-    for(var i =0; i < download_data.length; i++)
+    for(var i =0; i < cards.length; i++)
     {
-        console.log(download_data[i])
+        let download_data = cards[i].countryData.map(element => element.average_download)
         const item = {
             borderColor: graphLineColors[i],
             backgroundColor: graphLineColors[i],
             pointRadius: 1,
             label: cards[i].countryName,
-            data:download_data[i]
+            data:download_data
         }
         out.push(item)
     }
-    console.log(out)
     return out
 }
 
-export function ChartCol({ countryFilters }) {
+function getUploadChartData(cards){
+  var out = []
+  for(var i =0; i < cards.length; i++)
+  {
+      let upload_data = cards[i].countryData.map(element => element.average_upload)
+      const item = {
+          borderColor: graphLineColors[i],
+          backgroundColor: graphLineColors[i],
+          pointRadius: 1,
+          label: cards[i].countryName,
+          data:upload_data
+      }
+      out.push(item)
+  }
+  return out
+}
+
+export function ChartCol({countryFilters}) {
     // data for both charts
   const [downloadChartData, setDownloadChartData] = useState([]);
   const [uploadChartData, setUploadChartData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  console.log(countryFilters)
   useEffect(() => {
-    const fetchAllCardData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const dataPromises = countryFilters.map(card => fetchCardData(card.countryName, card.isp));
-        const dataResults = await Promise.all(dataPromises);
-        const download_data = dataResults.map(innerArray => 
-            innerArray.map(item => item.average_download)
-        );
-        const upload_data = dataResults.map(innerArray => 
-            innerArray.map(item => item.average_upload)
-        );
-       
-        setDownloadChartData(getChartData(download_data,countryFilters))
-        setUploadChartData(getChartData(upload_data,countryFilters))
-      } catch (fetchError) {
-        setError('Failed to fetch card data');
-        console.error('Fetch error:', fetchError);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllCardData();
+      setDownloadChartData(getDownloadChartData(countryFilters))
+      setUploadChartData(getUploadChartData(countryFilters))
   }, [countryFilters]);
 
   return (

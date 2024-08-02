@@ -76,7 +76,6 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
   
   const handleIspSelect = (isp) => {
     hasSearched = true;
-    console.log("Event triggers")
     setIspSearch(isp); // Update the input to the selected ISP name
     setIspOptions([]); // Clear the options
     onIspSelect(CountryName, isp, card_index); // Call the parent function with the selected ISP
