@@ -11,7 +11,7 @@ function Dashboard() {
     const addCountryFilter = (countryName) => {
       setCountryFilters((prevCards) => [
         ...prevCards,
-        { countryName, locked: true, isp:"ALL"} // Adjust card data as needed
+        { countryName, locked: true, isp:"ALL"}
       ]);
       console.log(countryFilters)
     };
@@ -26,7 +26,6 @@ function Dashboard() {
           );
     }
 
-
     function onCountryFilterChange(countryName, isp, id){
       console.log(countryName + isp + id)
       setCountryFilters(prevCards =>
@@ -36,6 +35,7 @@ function Dashboard() {
       );
       console.log(countryFilters)
     }
+
     return (
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
@@ -44,4 +44,5 @@ function Dashboard() {
       </Flex>  
     );
   }
+  
 export default Dashboard;
