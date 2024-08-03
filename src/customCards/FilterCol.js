@@ -36,7 +36,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     <>
       {showColumn ? (
         <Box
-          style={{ width: '400px', zIndex: 20, transform: showColumn ? 'translateX(0)' : 'translateX(100%)', position: 'fixed',top: 0,right: 0,height: '100vh',overflow: 'auto',transitionProperty: 'transform',transitionDuration: '300ms',transitionTimingFunction: 'ease-in-out' }}>
+          style={{ backgroundColor: '#fff',width: '400px', zIndex: 20, transform: showColumn ? 'translateX(0)' : 'translateX(100%)', position: 'fixed',top: 0,right: 0,height: '100vh',overflow: 'auto',transitionProperty: 'transform',transitionDuration: '300ms',transitionTimingFunction: 'ease-in-out' }}>
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">

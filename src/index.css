@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.leaflet-tooltip-style {
+  background-color: rgb(220, 221, 248);
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  pointer-events: none; /* Ensure it doesn't interfere with map interactions */
+}

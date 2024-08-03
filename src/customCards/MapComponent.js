@@ -79,9 +79,6 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-function getColor(countryName, data){
-    getHexColorForSpeed( (data[reversedMapping[countryName]].average_download + data[reversedMapping[countryName]].average_download)/2)
-}
 
 function createColorsObject(data){
     var object = {}
@@ -110,14 +107,16 @@ const fetchCountryColors = async () => {
   return createColorsObject(data); // Expected format: { "Country Name": "#ff0000", ... }
 };
 
-function MapComponent({ onCountryClick }) {
+function MapComponent({ onCountryClick}) {
   const [map, setMap] = useState(null);
   const [countryColors, setCountryColors] = useState({});
+  const [hoverState, setHoverState] = useState(null); // hover state = [countryName, mousePosition : []]
+  console.log(hoverState)
 
   useEffect(() => {
     if (map) {
       // Center the map on Africa and set zoom level
-      map.setView([0, 20], 5); // Latitude and Longitude for Africa, zoom level 3
+      //map.setView([0, 20], 5); // Latitude and Longitude for Africa, zoom level 3
     }
   }, [map]);
 
@@ -136,52 +135,51 @@ function MapComponent({ onCountryClick }) {
         onCountryClick(feature.properties.name);
       },
       mouseover: (e) => {
-        const layer = e.target;
-        layer.setStyle({
-          weight: 1.5,
-          color: 'black',
-          fillOpacity: 1
-        });
+        layer.setStyle({ fillOpacity: 0.8 });
       },
       mouseout: (e) => {
         const layer = e.target;
         layer.setStyle({
-          weight: 0,
-          color: 'black',
-          fillOpacity: 0.7
+          fillOpacity: 1,
         });
+        // setHoverState(null)
       }
+    });
+    // Add a tooltip to each layer
+    const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.name}</strong></div>`;
+    layer.bindTooltip(tooltipContent, {
+      permanent: false,
+      direction: 'auto',
+      className: 'leaflet-tooltip-style'
     });
   };
 
   const style = (feature) => ({
-    color: 'black',
-    weight: 0,
+    color: 'white',
+    weight: 0.7,
     opacity: 1,
     fillColor: countryColors[feature.properties.name] || 'grey', // Use the color from API data or default to grey
-    fillOpacity: 0.7,
+    fillOpacity: 1,
   });
 
   const bounds = [
-    [-90, -120], // Southwest corner of the bounds
-    [100, 220]   // Northeast corner of the bounds
+    [-45, -60], // Southwest corner of the bounds
+    [50, 160]   // Northeast corner of the bounds
   ];
 
   return (
     <MapContainer
     whenCreated={setMap}
-    style={{ height: '100vh', width: '100%' }}
-    center={[0, 35]} // Center of Africa
+    style={{ height: '100vh', width: '100%', backgroundColor: "#c8d4e3"}}
+    center={[0, 40]} // Center of Africa
     zoom={3.5} // Zoom level to focus on Africa
     scrollWheelZoom={true}
     minZoom={3} // Minimum zoom level
     maxZoom={3.5} // Maximum zoom level
     dragging={true}
     maxBounds={bounds}
-    maxBoundsViscosity={0.1} // Make the bounds strict (0.0 - 1.0)
+    maxBoundsViscosity={1} // Make the bounds strict (0.0 - 1.0)
   >
-    {/* Transparent Tile Layer */}
-    
     <GeoJSON
       data={africaGeoJson}
       onEachFeature={onEachFeature}

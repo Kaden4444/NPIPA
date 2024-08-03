@@ -118,7 +118,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
             </Flex>
             <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
               {ispOptions.length > 0 && (
-                <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '1px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
+                <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
                   {ispOptions.map((isp, index) => (
                     <li
                       key={index}
