@@ -101,7 +101,8 @@ function getDownloadChartData(cards){
             backgroundColor: graphLineColors[i],
             pointRadius: 1,
             label: cards[i].countryName,
-            data:download_data
+            data:download_data,
+            tension:0.1
         }
         out.push(item)
     }
@@ -118,7 +119,8 @@ function getUploadChartData(cards){
           backgroundColor: graphLineColors[i],
           pointRadius: 1,
           label: cards[i].countryName,
-          data:upload_data
+          data:upload_data,
+          tension: 0.1, // Smooths the line
       }
       out.push(item)
   }
@@ -133,10 +135,11 @@ export function ChartCol({countryFilters}) {
   useEffect(() => {
       setDownloadChartData(getDownloadChartData(countryFilters))
       setUploadChartData(getUploadChartData(countryFilters))
+      console.log("trying to update graphs")
   }, [countryFilters]);
 
   return (
-    <Flex direction="column"  style={{ width: '35%', padding: '25px', borderRight: '1px solid #ccc'}}>
+    <Flex direction="column"  style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}>
       <DownloadChart chartData={downloadChartData} />
       <UploadChart chartData={uploadChartData} />
     </Flex>

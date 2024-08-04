@@ -77,7 +77,6 @@ for (const [code, name] of Object.entries(countryMapping)) {
 
 function Dashboard() {
     const [countryFilters, setCountryFilters] = useState([]);
-    const [hoveredData, setHoveredData] = useState(null);
 
     const pushCountry = (data, countryName) =>{
       setCountryFilters((prevCards) => [
@@ -90,15 +89,6 @@ function Dashboard() {
       .then(response => pushCountry(response.data, countryName)) //
       .catch(error => console.error(error));
     };
-    
-    // Set the filters locked value to the value passed here
-    function onCountryLockChange(index, value){
-        setCountryFilters(prevCards =>
-            prevCards.map((card, i) =>
-              i === parseInt(index) ? { countryName : card.countryName, locked:value,isp:card.isp,populated:card.populated, countryData:card.countryData} : card
-            )
-          );
-    }
 
     const insertCountry = (countryName, id, data,isp) =>{
       setCountryFilters(prevCards =>
@@ -108,6 +98,16 @@ function Dashboard() {
       );
     }
 
+    console.log(countryFilters)
+    // Set the filters locked value to the value passed here
+    function onCountryLockChange(index, value){
+        setCountryFilters(prevCards =>
+            prevCards.map((card, i) =>
+              i === parseInt(index) ? { countryName : card.countryName, locked:value,isp:card.isp,populated:card.populated, countryData:card.countryData} : card
+            )
+          );
+    }
+    
     function onCountryFilterChange(countryName, isp, id){
       axios.get(`https://CadeSayner.pythonanywhere.com/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}`)
       .then(response => insertCountry(countryName, id, response.data, isp)) //
@@ -123,20 +123,6 @@ function Dashboard() {
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
         <MapComponent onCountryClick={addCountryFilter}/>
-        {hoveredData && (<div
-          style={{
-            position: 'absolute',
-            top: hoveredData[0].y + 10,
-            left: hoveredData[0].x + 10,
-            background: 'white',
-            padding: '10px',
-            borderRadius: '5px',
-            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <h3>{hoveredData[1]}</h3>
-          {/* Add more information as needed */}
-        </div>)}
         <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge}/>
       </Flex>  
     );

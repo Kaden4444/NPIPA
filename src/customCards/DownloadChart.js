@@ -1,13 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
 function DownloadChart({ chartData }) {
-  const chartRef = useRef(null);
-  const data = {
-    labels: ["2020", "2021", "2022", "2023", "2024"],
-    datasets: chartData
-  };
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    console.log(chartData)
+    setData({
+      labels: ["2020", "2021", "2022", "2023", "2024"],
+      datasets: chartData
+    });
+    console.log("trying to update graphs")
+  }, [chartData]);
+  
   const options = {
     plugins: {
       title: {
@@ -68,9 +73,17 @@ function DownloadChart({ chartData }) {
     maintainAspectRatio: false
   };
 
+  const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
+
   return (
-    <div style={{ position: 'relative', height: '400px', width: '100%' , borderRadius:7, backgroundColor: '#E1E5EA', marginBottom:'20px'}}>
-      <Line data={data} options={options} />
+    <div style={{ position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+      {hasData ? (
+        <Line data={data} options={options} />
+      ) : (
+        <div style={{ textAlign: 'center', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
+          No data available
+        </div>
+      )}
     </div>
   );
 }
