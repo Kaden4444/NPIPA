@@ -98,7 +98,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
   }, [ispSearch]);
 
   return (
-    <Box width="350px" maxWidth="400px" height="400">
+    <Box width="350px" maxWidth="400px" height="400" >
       <Card size="3">
         <Box>
             <Flex gap="4" direction="column" >
