@@ -145,16 +145,6 @@ function MapComponent({ onCountryClick}) {
         // setHoverState(null)
       }
     });
-    layer.on('wheel', function (e) {
-      e.preventDefault();
-
-      // Check if the event is a scroll event
-      if (e.originalEvent.deltaY < 0) {
-        layer.zoomIn();
-      } else {
-        layer.zoomOut();
-      }
-    });
     // Add a tooltip to each layer
     const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.name}</strong></div>`;
     layer.bindTooltip(tooltipContent, {
@@ -174,7 +164,7 @@ function MapComponent({ onCountryClick}) {
 
   const bounds = [
     [-45, -60], // Southwest corner of the bounds
-    [50, 160]   // Northeast corner of the bounds
+    [50, 80]   // Northeast corner of the bounds
   ];
 
   return (
@@ -183,10 +173,10 @@ function MapComponent({ onCountryClick}) {
     style={{ height: '100vh', width: '100%', backgroundColor: "#c8d4e3"}}
     center={[0, 20]} // Center of Africa
     zoom={3.5} // Zoom level to focus on Africa
-    scrollWheelZoom={false}
+    scrollWheelZoom={true}
     minZoom={3} // Minimum zoom level
     maxZoom={3.5} // Maximum zoom level
-    dragging={false}
+    dragging={true}
     maxBounds={bounds}
     maxBoundsViscosity={1} // Make the bounds strict (0.0 - 1.0)
   >
