@@ -35,8 +35,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   return (
     <>
       {showColumn ? (
-        <Box
-          style={{ backgroundColor: '#fff',width: '400px', zIndex: 20, transform: showColumn ? 'translateX(0)' : 'translateX(100%)', position: 'fixed',top: 0,right: 0,height: '100vh',overflow: 'auto',transitionProperty: 'transform',transitionDuration: '300ms',transitionTimingFunction: 'ease-in-out' }}>
+        <Flex>
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">
@@ -70,7 +69,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
               </Flex>
             </Flex>
           </Card>
-        </Box>
+        </Flex>
       ) : (
         <Button  variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
           Show

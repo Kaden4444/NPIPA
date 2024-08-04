@@ -98,7 +98,7 @@ function Dashboard() {
       );
     }
 
-    
+    console.log(countryFilters)
     // Set the filters locked value to the value passed here
     function onCountryLockChange(index, value){
         setCountryFilters(prevCards =>

@@ -1,14 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
 function UploadChart({ chartData }) {
-  const chartRef = useRef(null);
-
-  const data = {
-    labels: ["2020", "2021", "2022", "2023", "2024"],
-    datasets: chartData
-  };
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    setData({
+      labels: ["2020", "2021", "2022", "2023", "2024"],
+      datasets: chartData
+    });
+  }, [chartData]);
 
   const options = {
     plugins: {
@@ -69,10 +70,16 @@ function UploadChart({ chartData }) {
     responsive: true,
     maintainAspectRatio: false
   };
-
+  const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
   return (
-    <div style={{ position: 'relative', height: '400px', width: '100%' , borderRadius:7, backgroundColor: '#E1E5EA'}}>
-      <Line data={data} options={options} />
+    <div style={{marginTop:'20px', position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+      {hasData ? (
+        <Line data={data} options={options} />
+      ) : (
+        <div style={{ textAlign: 'center',  paddingTop: '100px', color: '#999' }}>
+          No data available
+        </div>
+      )}
     </div>
   );
 }
