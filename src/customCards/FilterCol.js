@@ -1,6 +1,7 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
-import { Flex, Box, Card, Button } from '@radix-ui/themes';
+import { Flex, Box, Card, Button,  } from '@radix-ui/themes';
+import * as ScrollArea from '@radix-ui/react-scroll-area' ;
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, loading}) {
@@ -36,6 +37,13 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     <>
       {showColumn ? (
         <Flex>
+          
+        <ScrollArea.Root>
+        <ScrollArea.Viewport>
+        <ScrollArea.Scrollbar orientation="vertical">
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+      
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">
@@ -69,6 +77,10 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
               </Flex>
             </Flex>
           </Card>
+
+          </ScrollArea.Viewport>
+          </ScrollArea.Root>
+
         </Flex>
       ) : (
         <Button  variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
