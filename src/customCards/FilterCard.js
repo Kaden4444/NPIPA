@@ -102,8 +102,16 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
       <Card size="3">
         <Box>
             <Flex gap="4" direction="column" >
+              <Flex gap="8" direction="row">
               <h1>{CountryName}</h1>
+                            <Button style={{right: "0"}} onClick={onToggleLock}>
+                  {isLocked ? <FaLock /> : <FaUnlock />}
+                </Button>
+
+              </Flex>
+
               <Flex gap="4" direction="row">
+
               <input
                 type="text"
                 placeholder="Search ISP..."
@@ -111,9 +119,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
                 onChange={handleInputChange}
                 style={{ width: '100%', padding: '3px', marginTop: '5px' }}
               />
-              <Button onClick={onToggleLock}>
-                  {isLocked ? <FaLock /> : <FaUnlock />}
-                </Button>
+
               </Flex>
             </Flex>
             <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
