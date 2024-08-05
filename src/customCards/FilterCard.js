@@ -1,7 +1,8 @@
-import { Box, Card, Button, Flex, TextField } from '@radix-ui/themes';
-import { FaLock, FaUnlock} from 'react-icons/fa'; // Importing lock icons from react-icons
+import { Box, Card, Button, Flex } from '@radix-ui/themes';
+import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 
 const countryMapping = {
   AO: "Angola",
@@ -70,6 +71,7 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 var hasSearched = false;
+
 export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index}) {
   const [ispSearch, setIspSearch] = useState('');
   const [ispOptions, setIspOptions] = useState([]);
@@ -98,11 +100,29 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
   }, [ispSearch]);
 
   return (
-    <Box width="350px" maxWidth="400px" height="400" >
-      <Card size="3">
-        <Box>
+
+      <Card size="3" style={{width:"80%", minWidth: "80%"}}>
             <Flex gap="4" direction="column" >
-              <h1>{CountryName}</h1>
+              <Flex direction="row" >
+                
+                <Box width="70%">  
+                <h1 style={{left:0, textAlign:"start"}}>{CountryName}</h1>
+                </Box> 
+
+                <Box style={{}}>
+              
+                <Flex direction="row" gap="4">
+                  <Button variant="soft" color='red' >
+                    <FaTrash/>
+                  </Button>
+
+                  <Button onClick={onToggleLock}>
+                    {isLocked ? <FaLock /> : <FaUnlock />}
+                  </Button>
+                </Flex>
+                </Box>
+              </Flex>
+
               <Flex gap="4" direction="row">
               <input
                 type="text"
@@ -111,11 +131,9 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
                 onChange={handleInputChange}
                 style={{ width: '100%', padding: '3px', marginTop: '5px' }}
               />
-              <Button onClick={onToggleLock}>
-                  {isLocked ? <FaLock /> : <FaUnlock />}
-                </Button>
               </Flex>
             </Flex>
+
             <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
               {ispOptions.length > 0 && (
                 <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
@@ -130,8 +148,8 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
                 </ul>
               )}
             </Flex> 
-        </Box>
-      </Card>
-    </Box>
+            
+    </Card>
+    
   );
 }

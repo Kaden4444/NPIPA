@@ -3,6 +3,7 @@ import { Flex, Box, Card } from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
+import TestComponent from './testComponent';
 
 const countryMapping = {
     AO: "Angola",
@@ -139,7 +140,7 @@ export function ChartCol({countryFilters}) {
   }, [countryFilters]);
 
   return (
-    <Flex direction="column"  style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}>
+    <Flex direction="column"  style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}> 
       <DownloadChart chartData={downloadChartData} />
       <UploadChart chartData={uploadChartData} />
     </Flex>

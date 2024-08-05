@@ -84,6 +84,7 @@ function DownloadChart({ chartData }) {
           No data available
         </div>
       )}
+      
     </div>
   );
 }
