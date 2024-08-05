@@ -1,4 +1,4 @@
-import { Box, Card, Button, Flex } from '@radix-ui/themes';
+import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
 import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -73,68 +73,63 @@ for (const [code, name] of Object.entries(countryMapping)) {
 var hasSearched = false;
 
 export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index}) {
-  const [ispSearch, setIspSearch] = useState('');
-  const [ispOptions, setIspOptions] = useState([]);
-  
-  const handleIspSelect = (isp) => {
-    hasSearched = true;
-    setIspSearch(isp); // Update the input to the selected ISP name
-    setIspOptions([]); // Clear the options
-    onIspSelect(CountryName, isp, card_index); // Call the parent function with the selected ISP
-  };
+    const [ispSearch, setIspSearch] = useState('');
+    const [ispOptions, setIspOptions] = useState([]);
 
-  const handleInputChange = (e)=>{
-    setIspSearch(e.target.value)
-    if(hasSearched){
-      hasSearched = false;
-    }
-  }
-  useEffect(() => {
-  if (ispSearch.length >= 1 && !hasSearched) { // Fetch only if more than 1 characters are entered
-    axios.get(`https://CadeSayner.pythonanywhere.com/getISPs?country=${reversedMapping[CountryName]}&search=${ispSearch}`)
-      .then(response => setIspOptions(response.data)) //
-      .catch(error => console.error(error));
-  } else {
-    setIspOptions([]); // Clear options if search term is too short
-  }
-  }, [ispSearch]);
+    const handleIspSelect = (isp) => {
+        hasSearched = true;
+        setIspSearch(isp); // Update the input to the selected ISP name
+        setIspOptions([]); // Clear the options
+        onIspSelect(CountryName, isp, card_index); // Call the parent function with the selected ISP
+      };
+    
+      const handleInputChange = (e)=>{
+        setIspSearch(e.target.value)
+        if(hasSearched){
+          hasSearched = false;
+        }
+      }
+      useEffect(() => {
+      if (ispSearch.length >= 1 && !hasSearched) { // Fetch only if more than 1 characters are entered
+        axios.get(`https://CadeSayner.pythonanywhere.com/getISPs?country=${reversedMapping[CountryName]}&search=${ispSearch}`)
+          .then(response => setIspOptions(response.data)) //
+          .catch(error => console.error(error));
+      } else {
+        setIspOptions([]); // Clear options if search term is too short
+      }
+      }, [ispSearch]);
 
-  return (
-
-      <Card size="3" style={{width:"80%", minWidth: "80%"}}>
-            <Flex gap="4" direction="column" >
-              <Flex direction="row" >
-                
-                <Box width="70%">  
-                <h1 style={{left:0, textAlign:"start"}}>{CountryName}</h1>
-                </Box> 
-
-                <Box style={{}}>
-              
-                <Flex direction="row" gap="4">
-                  <Button variant="soft" color='red' >
-                    <FaTrash/>
-                  </Button>
-
-                  <Button onClick={onToggleLock}>
-                    {isLocked ? <FaLock /> : <FaUnlock />}
-                  </Button>
-                </Flex>
-                </Box>
-              </Flex>
-
-              <Flex gap="4" direction="row">
-              <input
-                type="text"
-                placeholder="Search ISP..."
-                value={ispSearch}
-                onChange={handleInputChange}
-                style={{ width: '100%', padding: '3px', marginTop: '5px' }}
-              />
-              </Flex>
+    return (
+    <Box width="350px">
+      <Card size="3">
+        <Box position="relative">
+          <Flex direction="column" gap="2">
+            <Flex direction="row" gap="2" minWidth="350px" width="350px">
+              <Box>
+                <Text as="div" size="2" weight="bold">{CountryName}</Text>
+              </Box>
             </Flex>
 
-            <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
+            <Box position="absolute" top="0" right="0">
+              <Flex direction="row" gap="2">
+                <Button variant="soft" color='red'><FaTrash /></Button>
+                <Button onClick={onToggleLock}>{isLocked ? <FaLock /> : <FaUnlock />}</Button>
+              </Flex>
+            </Box>
+
+            <Flex direction="row" gap="3" align="center">
+              <Text> City:</Text>
+              <input type="text" placeholder="Search City..." style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+            </Flex>
+
+            <Flex direction="row" gap="3" align="center">
+            <Text>ISP:</Text>
+              <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+            </Flex>
+          </Flex>
+        </Box>
+
+        <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
               {ispOptions.length > 0 && (
                 <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
                   {ispOptions.map((isp, index) => (
@@ -147,9 +142,9 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
                   ))}
                 </ul>
               )}
-            </Flex> 
-            
-    </Card>
-    
+            </Flex>
+
+      </Card>
+    </Box>
   );
 }
