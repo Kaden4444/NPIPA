@@ -47,7 +47,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     size="1"
                     radius="full"
                     onClick={handleHideClick}
-                    style={{position: 'absolute',left: 0,top: 0}}
+                    style={{position: 'absolute',right: 0,top: 0}}
                   >
                     Hide
                   </Button> 
@@ -80,8 +80,8 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
 
         </Flex>
       ) : (
-        <Button  variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
-          Show
+        <Button  variant="solid" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
+          Countries 
         </Button>
       )}
     </>

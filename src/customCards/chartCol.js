@@ -1,5 +1,5 @@
 import '@radix-ui/themes/styles.css';
-import { Flex, Box, Card } from '@radix-ui/themes';
+import { Flex, Box, Card, Button} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
@@ -131,6 +131,16 @@ export function ChartCol({countryFilters}) {
     // data for both charts
   const [downloadChartData, setDownloadChartData] = useState([]);
   const [uploadChartData, setUploadChartData] = useState([]);
+  const [showColumn, setShowColumn] = useState(true);
+
+  const handleHideClick = () => {
+    setShowColumn(false);
+  };
+
+  const handleShowClick = () => {
+    setShowColumn(true);
+  };
+
   console.log(countryFilters)
   useEffect(() => {
       setDownloadChartData(getDownloadChartData(countryFilters))
@@ -139,9 +149,21 @@ export function ChartCol({countryFilters}) {
   }, [countryFilters]);
 
   return (
+    <>
+    {showColumn ? (
     <Flex direction="column"  style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}> 
+      <Button variant="outline" size="1" radius="full" onClick={handleHideClick} style={{position: 'absolute',left: 0,top: 0}}>
+        Hide
+      </Button> 
       <DownloadChart chartData={downloadChartData} />
       <UploadChart chartData={uploadChartData} />
     </Flex>
+  ) : (
+        <Button  variant="solid" size="1" radius="full"  style={{position: 'fixed',top: 0,left: 0,zIndex: 30}} onClick={handleShowClick}>
+          Charts 
+        </Button>
+      )}
+    </>
   );
+  
 } 
