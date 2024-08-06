@@ -3,7 +3,10 @@ import { Flex, Box, Card, Button, ScrollArea} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
+import UploadLatencyChart from './UploadLatencyChart';
+import DownloadLatencyChart from './DownloadLatencyChart';
 
+import axios from 'axios';
 const countryMapping = {
     AO: "Angola",
     BF: "Burkina Faso",
@@ -90,48 +93,95 @@ const graphLineColors = [
   ];
   
 
-
-function getDownloadChartData(cards){
+function getDownloadChartData(cards, timeScale){ // Needs to return an array of arrays 
     var out = []
     for(var i =0; i < cards.length; i++)
     {
-        let download_data = cards[i].countryData.map(element => element.average_download)
+        let download_data = cards[i].countryData[parseInt(timeScale)].download_data
         const item = {
             borderColor: graphLineColors[i],
             backgroundColor: graphLineColors[i],
             pointRadius: 1,
             label: cards[i].countryName,
             data:download_data,
-            tension:0.1
+            tension:0.15
         }
         out.push(item)
     }
     return out
 }
 
-function getUploadChartData(cards){
+function getUploadChartData(cards, timeScale){
   var out = []
   for(var i =0; i < cards.length; i++)
   {
-      let upload_data = cards[i].countryData.map(element => element.average_upload)
+      let upload_data = cards[i].countryData[parseInt(timeScale)].upload_data
       const item = {
           borderColor: graphLineColors[i],
           backgroundColor: graphLineColors[i],
           pointRadius: 1,
           label: cards[i].countryName,
           data:upload_data,
-          tension: 0.1, // Smooths the line
+          tension:0.15
       }
       out.push(item)
   }
   return out
 }
 
+function getUploadLatencyChartData(cards, timeScale){
+  var out = []
+  for(var i =0; i < cards.length; i++)
+  {
+      let upload_latency_data = cards[i].countryData[parseInt(timeScale)].upload_latency_data
+      const item = {
+          borderColor: graphLineColors[i],
+          backgroundColor: graphLineColors[i],
+          pointRadius: 1,
+          label: cards[i].countryName,
+          data:upload_latency_data,
+          tension:0.15
+      }
+      out.push(item)
+  }
+  return out
+}
+
+function getDownloadLatencyChartData(cards, timeScale){
+  var out = []
+  for(var i =0; i < cards.length; i++)
+  {
+      let download_latency_data = cards[i].countryData[parseInt(timeScale)].download_latency_data
+      const item = {
+          borderColor: graphLineColors[i],
+          backgroundColor: graphLineColors[i],
+          pointRadius: 1,
+          label: cards[i].countryName,
+          data:download_latency_data,
+          tension:0.15
+      }
+      out.push(item)
+  }
+  return out
+}
+
+const timeScaleIndexToQueryMap = {
+  '0' : '5',
+  '1' : '6',
+  '2' : '1'
+}
+
+
 export function ChartCol({countryFilters}) {
     // data for both charts
   const [downloadChartData, setDownloadChartData] = useState([]);
   const [uploadChartData, setUploadChartData] = useState([]);
+  const [downloadLatencyChartData, setDownloadLatencyChartData] = useState([]);
+  const [uploadLatencyChartData, setUploadLatencyChartData] = useState([]);
   const [showColumn, setShowColumn] = useState(true);
+  const [timeScale, setTimeScale] = useState("0");
+  const [labels, setLabels] = useState([]); // The labels used by all charts in this column
+  const [selectedValue, setSelectedValue] = useState("0")
 
   const handleHideClick = () => {
     setShowColumn(false);
@@ -141,12 +191,29 @@ export function ChartCol({countryFilters}) {
     setShowColumn(true);
   };
 
-  console.log(countryFilters)
   useEffect(() => {
-      setDownloadChartData(getDownloadChartData(countryFilters))
-      setUploadChartData(getUploadChartData(countryFilters))
-      console.log("trying to update graphs")
-  }, [countryFilters]);
+      console.log("URGENT", timeScaleIndexToQueryMap[timeScale])
+      setDownloadChartData(getDownloadChartData(countryFilters, timeScale))
+      setUploadChartData(getUploadChartData(countryFilters, timeScale))
+      setDownloadLatencyChartData(getDownloadLatencyChartData(countryFilters, timeScale))
+      setUploadLatencyChartData(getUploadLatencyChartData(countryFilters, timeScale))
+
+      axios.get(`http://localhost:5000/getLabels?q=${timeScaleIndexToQueryMap[timeScale]}`)
+      .then(response => setLabels(response.data)) //
+      .catch(error => console.error(error));
+  }, [countryFilters, timeScale]);
+
+  useEffect(()=>
+  {
+    console.log("changing time scale to", selectedValue)
+    setTimeScale(selectedValue)
+  },[selectedValue])
+
+  useEffect(()=>
+    {
+      console.log(labels)
+    },[labels])
+
 
   return (
     <>
@@ -157,12 +224,22 @@ export function ChartCol({countryFilters}) {
           Hide
           </Button> 
           <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
+          <select
+            id="timeScaleSelect"
+            value={selectedValue}
+            onChange={e => setSelectedValue(e.target.value)}
+          >
+            <option value="2">Last 12 Months</option>
+            <option value="1">Last 6 months</option>
+            <option value="0">Last 5 years</option>
+          </select>
 
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
             <Box>
-            <DownloadChart chartData={downloadChartData} />
-            <UploadChart chartData={uploadChartData} />
-            <UploadChart chartData={uploadChartData} />
+            <DownloadChart chartData={downloadChartData} labels={labels}/>
+            <UploadChart chartData={uploadChartData} labels={labels} />
+            <DownloadLatencyChart chartData={downloadLatencyChartData} labels={labels}/>
+            <UploadLatencyChart chartData={uploadLatencyChartData} labels={labels}/>
           </Box>
         </ScrollArea>
       </Flex>

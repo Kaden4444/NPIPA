@@ -2,14 +2,14 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
-function UploadChart({ chartData }) {
+function UploadChart({ chartData, labels}) {
   const [data, setData] = useState([]);
   useEffect(() => {
     setData({
-      labels: ["2020", "2021", "2022", "2023", "2024"],
+      labels: labels,
       datasets: chartData
     });
-  }, [chartData]);
+  }, [chartData, labels]);
 
   const options = {
     plugins: {

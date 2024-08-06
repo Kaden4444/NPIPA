@@ -8,6 +8,7 @@ import { Flex, Box, Card } from '@radix-ui/themes';
 import axios from 'axios';
 import { hover } from '@testing-library/user-event/dist/hover';
 
+const api_endpoint = "http://localhost:5000"
 const countryMapping = {
   AO: "Angola",
   BF: "Burkina Faso",
@@ -84,10 +85,32 @@ function Dashboard() {
         { countryName, locked: false, isp:"ALL", populated:false, countryData:data}
       ]);
     }
+
     const addCountryFilter = (countryName) => {
-      axios.get(`https://CadeSayner.pythonanywhere.com/getCountryData?country=${reversedMapping[countryName]}&isp=ALL`)
-      .then(response => pushCountry(response.data, countryName)) //
-      .catch(error => console.error(error));
+      const timeScales = [5, 6, 1];
+  
+      const requests = timeScales.map((timeScale) => 
+        axios.get(`${api_endpoint}/getCountryData`, {
+          params: {
+            country: reversedMapping[countryName],
+            isp: 'ALL',
+            city: 'ALL',
+            time_scale: timeScale
+          }
+        })
+      );
+      Promise.all(requests)
+        .then((responses) => {
+          // Process all responses
+          let data = []
+          responses.forEach((response, index) => {
+            data.push(response.data)
+          });
+          pushCountry(data, countryName);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
     };
 
     const insertCountry = (countryName, id, data,isp) =>{
@@ -97,8 +120,6 @@ function Dashboard() {
         )
       );
     }
-
-    console.log(countryFilters)
     // Set the filters locked value to the value passed here
     function onCountryLockChange(index, value){
         setCountryFilters(prevCards =>

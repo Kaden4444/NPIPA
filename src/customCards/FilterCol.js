@@ -38,7 +38,6 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     <>
       {showColumn ? (
         <Flex >
-          
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">

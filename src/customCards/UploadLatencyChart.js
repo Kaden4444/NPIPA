@@ -1,26 +1,21 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
-function DownloadChart({ chartData, labels }) {
+function UploadLatencyChart({ chartData, labels}) {
   const [data, setData] = useState([]);
   useEffect(() => {
     setData({
       labels: labels,
       datasets: chartData
     });
-    console.log("trying to update graphs")
   }, [chartData, labels]);
-  
+
   const options = {
-    animation: {
-      duration: 500, // Animation duration in milliseconds
-      easing: 'linear', // Animation easing function
-    },
     plugins: {
       title: {
         display: true,
-        text: 'Download Speed',
+        text: 'Upload Latency',
         font: {
           size: 18,
           weight: 'bold'
@@ -40,7 +35,7 @@ function DownloadChart({ chartData, labels }) {
       tooltip: {
         callbacks: {
           label: function(tooltipItem) {
-            return `Speed: ${tooltipItem.raw} Mbps`;
+            return `RTT: ${tooltipItem.raw} ms`;
           }
         }
       }
@@ -67,7 +62,7 @@ function DownloadChart({ chartData, labels }) {
             size: 12
           },
           callback: function(value) {
-            return `${value} Mbps`;
+            return `${value} ms`;
           }
         }
       }
@@ -75,23 +70,18 @@ function DownloadChart({ chartData, labels }) {
     responsive: true,
     maintainAspectRatio: false
   };
-
   const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
-
   return (
-    <div style={{ position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+    <div style={{marginTop:'20px', position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
       {hasData ? (
         <Line data={data} options={options} />
       ) : (
-        <div style={{ textAlign: 'center', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
+        <div style={{ textAlign: 'center',  paddingTop: '100px', color: '#999' }}>
           No data available
         </div>
       )}
-      
     </div>
   );
 }
 
-export default DownloadChart;
-
-
+export default UploadLatencyChart;
