@@ -78,40 +78,20 @@ for (const [code, name] of Object.entries(countryMapping)) {
 
 function Dashboard() {
     const [countryFilters, setCountryFilters] = useState([]);
-
+    console.log(countryFilters)
     const pushCountry = (data, countryName) =>{
       setCountryFilters((prevCards) => [
         ...prevCards,
         { countryName, locked: false, isp:"ALL", populated:false, countryData:data}
       ]);
+      
     }
 
     const addCountryFilter = (countryName) => {
-      const timeScales = [5, 6, 1];
-  
-      const requests = timeScales.map((timeScale) => 
-        axios.get(`${api_endpoint}/getCountryData`, {
-          params: {
-            country: reversedMapping[countryName],
-            isp: 'ALL',
-            city: 'ALL',
-            time_scale: timeScale
-          }
-        })
-      );
-      Promise.all(requests)
-        .then((responses) => {
-          // Process all responses
-          let data = []
-          responses.forEach((response, index) => {
-            data.push(response.data)
-          });
-          pushCountry(data, countryName);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-        });
-    };
+      axios.get(`http://localhost:5000/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL`)
+      .then(response => pushCountry(response.data, countryName)) //
+      .catch(error => console.error(error));
+    }
 
     const insertCountry = (countryName, id, data,isp) =>{
       setCountryFilters(prevCards =>
