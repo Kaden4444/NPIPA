@@ -1,7 +1,7 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
-import { Flex, Box, Card, Button,  } from '@radix-ui/themes';
-import * as ScrollArea from '@radix-ui/react-scroll-area' ;
+import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
+
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
@@ -37,7 +37,8 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   return (
     <>
       {showColumn ? (
-        <Flex>
+        <Flex >
+          
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="350px" maxWidth="400px">
@@ -57,26 +58,24 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                   </h1> 
               </Box>
               
+              <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
+                <Flex gap="5" align="center" direction="column" >
+                  {countryFilters.map((country, index) => (
+                  <FilterCard
+                    key={index}
+                    card_index={index}
+                    CountryName={`${country.countryName}`}
+                    isLocked={country.locked}
+                    onToggleLock={() => toggleCardLock(index)}
+                    onIspSelect={onIspSelect}
+                  />
+                  ))}
+                  <Button disabled={loading} variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
+                </Flex>
+              </ScrollArea>
 
-              {countryFilters.map((country, index) => (
-                <FilterCard
-                  key={index}
-                  card_index={index}
-                  CountryName={`${country.countryName}`}
-                  isLocked={country.locked}
-                  onToggleLock={() => toggleCardLock(index)}
-                  onIspSelect={onIspSelect}
-                />
-              ))}
-
-
-              <Flex gapX="3">
-                <Button disabled={loading} variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
-              </Flex>
             </Flex>
           </Card>
-
-
 
         </Flex>
       ) : (
