@@ -234,7 +234,7 @@ export function ChartCol({countryFilters}) {
           </Button> 
           <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
 
-          <SegmentedControl.Root id="timeScaleSelect" defaultValue="inbox" onChange={e => setSelectedValue(e.target.value)}>
+          <SegmentedControl.Root id="timeScaleSelect" defaultValue="1" onChange={e => setSelectedValue(e.target.value)}>
             <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
             <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
             <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
