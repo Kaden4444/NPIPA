@@ -1,5 +1,5 @@
 import '@radix-ui/themes/styles.css';
-import { Flex, Box, Card, Button, ScrollArea} from '@radix-ui/themes';
+import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
@@ -171,7 +171,6 @@ const timeScaleIndexToQueryMap = {
   '2' : '1'
 }
 
-
 export function ChartCol({countryFilters}) {
     // data for both charts
   const [downloadChartData, setDownloadChartData] = useState([]);
@@ -190,6 +189,16 @@ export function ChartCol({countryFilters}) {
   const handleShowClick = () => {
     setShowColumn(true);
   };
+
+  const expandGraph = (value) => {
+    
+      <Portal.Root >
+        <Box width="50vh" height="50vh" top="5" left="5">
+          <DownloadChart chartData={downloadChartData} labels={labels}/>
+        </Box>  
+      </Portal.Root>;  
+    
+  }
 
   useEffect(() => {
       console.log("URGENT", timeScaleIndexToQueryMap[timeScale])
@@ -224,6 +233,14 @@ export function ChartCol({countryFilters}) {
           Hide
           </Button> 
           <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
+
+          <SegmentedControl.Root id="timeScaleSelect" defaultValue="inbox" onChange={e => setSelectedValue(e.target.value)}>
+            <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
+            <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
+            <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
+          </SegmentedControl.Root>
+
+          {/*  
           <select
             id="timeScaleSelect"
             value={selectedValue}
@@ -232,11 +249,18 @@ export function ChartCol({countryFilters}) {
             <option value="2">Last 12 Months</option>
             <option value="1">Last 6 months</option>
             <option value="0">Last 5 years</option>
-          </select>
+          </select> 
+          */}
+ 
+
+  
 
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
             <Box>
-            <DownloadChart chartData={downloadChartData} labels={labels}/>
+              <Box onClick={expandGraph(0)}> {/* Attempted Portal */}
+                <DownloadChart chartData={downloadChartData} labels={labels}/>
+              </Box>
+            
             <UploadChart chartData={uploadChartData} labels={labels} />
             <DownloadLatencyChart chartData={downloadLatencyChartData} labels={labels}/>
             <UploadLatencyChart chartData={uploadLatencyChartData} labels={labels}/>
