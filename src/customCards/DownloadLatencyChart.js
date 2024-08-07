@@ -12,6 +12,7 @@ function DownloadLatencyChart({ chartData, labels}) {
   }, [chartData, labels]);
 
   const options = {
+    spanGaps:true,
     plugins: {
       title: {
         display: true,

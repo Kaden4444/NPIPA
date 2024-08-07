@@ -17,6 +17,7 @@ function DownloadChart({ chartData, labels }) {
       duration: 500, // Animation duration in milliseconds
       easing: 'linear', // Animation easing function
     },
+    spanGaps:true,
     plugins: {
       title: {
         display: true,

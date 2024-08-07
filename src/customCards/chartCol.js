@@ -5,69 +5,8 @@ import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
 import UploadLatencyChart from './UploadLatencyChart';
 import DownloadLatencyChart from './DownloadLatencyChart';
-
+import countryMapping from '../countries.json'
 import axios from 'axios';
-const countryMapping = {
-    AO: "Angola",
-    BF: "Burkina Faso",
-    BI: "Burundi",
-    BJ: "Benin",
-    BW: "Botswana",
-    CD: "Dem. Rep. Congo",
-    CF: "Central African Rep.",
-    CG: "Congo",
-    CI: "Côte d'Ivoire",
-    CM: "Cameroon",
-    CV: "Cape Verde",
-    DJ: "Djibouti",
-    DZ: "Algeria",
-    EG: "Egypt",
-    EH: "W. Sahara",
-    ER: "Eritrea",
-    ET: "Ethiopia",
-    GA: "Gabon",
-    GH: "Ghana",
-    GM: "Gambia",
-    GN: "Guinea",
-    GQ: "Eq. Guinea",
-    GW: "Guinea-Bissau",
-    KE: "Kenya",
-    KM: "Comoros",
-    LR: "Liberia",
-    LS: "Lesotho",
-    LY: "Libya",
-    MA: "Morocco",
-    MG: "Madagascar",
-    ML: "Mali",
-    MR: "Mauritania",
-    MU: "Mauritius",
-    MW: "Malawi",
-    MZ: "Mozambique",
-    NA: "Namibia",
-    NE: "Niger",
-    NG: "Nigeria",
-    RE: "Réunion",
-    RW: "Rwanda",
-    SC: "Seychelles",
-    SD: "Sudan",
-    SH: "Saint Helena",
-    SL: "Sierra Leone",
-    SN: "Senegal",
-    SO: "Somaliland",
-    SOM: "Somalia",
-    SS: "S. Sudan",
-    ST: "São Tomé and Príncipe",
-    SZ: "Swaziland",
-    TD: "Chad",
-    TG: "Togo",
-    TN: "Tunisia",
-    TZ: "Tanzania",
-    UG: "Uganda",
-    YT: "Mayotte",
-    ZA: "South Africa",
-    ZM: "Zambia",
-    ZW: "Zimbabwe"
-};
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
@@ -91,6 +30,25 @@ const graphLineColors = [
     '#F28D35',  // Bright Orange
     '#F9A825'   // Bright Amber
   ];
+
+  const graphLineColors_alpha = [
+    'rgba(255, 111, 97, 0.1)',  // Coral
+    'rgba(107, 91, 149, 0.1)',  // Purple
+    'rgba(136, 176, 75, 0.1)',  // Lime Green
+    'rgba(247, 202, 201, 0.1)',  // Light Pink
+    'rgba(146, 168, 209, 0.1)',  // Light Blue
+    'rgba(246, 213, 92, 0.1)',  // Bright Yellow
+    'rgba(255, 154, 139, 0.1)',  // Peach
+    'rgba(213, 170, 255, 0.1)',  // Lavender
+    'rgba(109, 157, 197, 0.1)',  // Sky Blue
+    'rgba(255, 191, 0, 0.1)',    // Golden Yellow
+    'rgba(185, 217, 235, 0.1)',  // Light Sky Blue
+    'rgba(255, 111, 145, 0.1)',  // Hot Pink
+    'rgba(136, 192, 216, 0.1)',  // Pastel Blue
+    'rgba(242, 141, 53, 0.1)',   // Bright Orange
+    'rgba(249, 168, 37, 0.1)'    // Bright Amber
+];
+
   
 
 function getDownloadChartData(cards, timeScale){ // Needs to return an array of arrays 
@@ -100,10 +58,11 @@ function getDownloadChartData(cards, timeScale){ // Needs to return an array of 
         let download_data = cards[i].countryData[parseInt(timeScale)].download_data
         const item = {
             borderColor: graphLineColors[i],
-            backgroundColor: graphLineColors[i],
+            backgroundColor: graphLineColors_alpha[i],
             pointRadius: 1,
             label: cards[i].countryName,
             data:download_data,
+            fill:true,
             tension:0.15
         }
         out.push(item)
@@ -118,10 +77,11 @@ function getUploadChartData(cards, timeScale){
       let upload_data = cards[i].countryData[parseInt(timeScale)].upload_data
       const item = {
           borderColor: graphLineColors[i],
-          backgroundColor: graphLineColors[i],
+          backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
           label: cards[i].countryName,
           data:upload_data,
+          fill:true,
           tension:0.15
       }
       out.push(item)
@@ -136,9 +96,10 @@ function getUploadLatencyChartData(cards, timeScale){
       let upload_latency_data = cards[i].countryData[parseInt(timeScale)].upload_latency_data
       const item = {
           borderColor: graphLineColors[i],
-          backgroundColor: graphLineColors[i],
+          backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
           label: cards[i].countryName,
+          fill:true,
           data:upload_latency_data,
           tension:0.15
       }
@@ -154,10 +115,11 @@ function getDownloadLatencyChartData(cards, timeScale){
       let download_latency_data = cards[i].countryData[parseInt(timeScale)].download_latency_data
       const item = {
           borderColor: graphLineColors[i],
-          backgroundColor: graphLineColors[i],
+          backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
           label: cards[i].countryName,
           data:download_latency_data,
+          fill:true,
           tension:0.15
       }
       out.push(item)
@@ -191,17 +153,15 @@ export function ChartCol({countryFilters}) {
   };
 
   const expandGraph = (value) => {
-    
       <Portal.Root >
         <Box width="50vh" height="50vh" top="5" left="5">
           <DownloadChart chartData={downloadChartData} labels={labels}/>
         </Box>  
       </Portal.Root>;  
-    
   }
 
   useEffect(() => {
-      console.log("URGENT", timeScaleIndexToQueryMap[timeScale])
+      console.log(countryFilters)
       setDownloadChartData(getDownloadChartData(countryFilters, timeScale))
       setUploadChartData(getUploadChartData(countryFilters, timeScale))
       setDownloadLatencyChartData(getDownloadLatencyChartData(countryFilters, timeScale))
@@ -210,6 +170,7 @@ export function ChartCol({countryFilters}) {
       axios.get(`http://localhost:5000/getLabels?q=${timeScaleIndexToQueryMap[timeScale]}`)
       .then(response => setLabels(response.data)) //
       .catch(error => console.error(error));
+
   }, [countryFilters, timeScale]);
 
   useEffect(()=>
@@ -217,12 +178,6 @@ export function ChartCol({countryFilters}) {
     console.log("changing time scale to", selectedValue)
     setTimeScale(selectedValue)
   },[selectedValue])
-
-  useEffect(()=>
-    {
-      console.log(labels)
-    },[labels])
-
 
   return (
     <>
@@ -234,32 +189,17 @@ export function ChartCol({countryFilters}) {
           </Button> 
           <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
 
-          <SegmentedControl.Root id="timeScaleSelect" defaultValue="1" onChange={e => setSelectedValue(e.target.value)}>
+          <SegmentedControl.Root id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)}>
             <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
             <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
             <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
           </SegmentedControl.Root>
 
-          {/*  
-          <select
-            id="timeScaleSelect"
-            value={selectedValue}
-            onChange={e => setSelectedValue(e.target.value)}
-          >
-            <option value="2">Last 12 Months</option>
-            <option value="1">Last 6 months</option>
-            <option value="0">Last 5 years</option>
-          </select> 
-          */}
- 
-
-  
-
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
             <Box>
-              <Box onClick={expandGraph(0)}> {/* Attempted Portal */}
+              {/* <Box onClick={expandGraph(0)}> Attempted Portal */}
                 <DownloadChart chartData={downloadChartData} labels={labels}/>
-              </Box>
+              {/* </Box> */}
             
             <UploadChart chartData={uploadChartData} labels={labels} />
             <DownloadLatencyChart chartData={downloadLatencyChartData} labels={labels}/>

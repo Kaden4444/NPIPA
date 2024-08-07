@@ -5,14 +5,12 @@ import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
-export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, loading}) {
-  const [cards, setCards] = useState([]);
-  
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback}) {
   const [showColumn, setShowColumn] = useState(true);
 
-  function onIspSelect(countryName, isp, id){
+  function onIspSelect(countryName, isp, id, city){
     // on_card_change_callback(countryName, isp, id)
-    filter_change_callback(countryName,isp,id)
+    filter_change_callback(countryName,isp,id, city)
   }
 
   const onPurgeCards = () => {
@@ -33,6 +31,10 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   const handleShowClick = () => {
     setShowColumn(true);
   };
+
+  function onDelete(index){
+    onCountryDeleteCallback(index)
+  } 
 
   return (
     <>
@@ -67,9 +69,10 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     isLocked={country.locked}
                     onToggleLock={() => toggleCardLock(index)}
                     onIspSelect={onIspSelect}
+                    onDelete={() => onDelete(index)}
                   />
                   ))}
-                  <Button disabled={loading} variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
+                  <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
                 </Flex>
               </ScrollArea>
 

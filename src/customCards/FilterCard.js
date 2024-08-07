@@ -2,105 +2,94 @@ import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
 import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import cities from '../cities.json'
+import countryMapping from '../countries.json'
 
-
-const countryMapping = {
-  AO: "Angola",
-  BF: "Burkina Faso",
-  BI: "Burundi",
-  BJ: "Benin",
-  BW: "Botswana",
-  CD: "Dem. Rep. Congo",
-  CF: "Central African Rep.",
-  CG: "Congo",
-  CI: "Côte d'Ivoire",
-  CM: "Cameroon",
-  CV: "Cape Verde",
-  DJ: "Djibouti",
-  DZ: "Algeria",
-  EG: "Egypt",
-  EH: "W. Sahara",
-  ER: "Eritrea",
-  ET: "Ethiopia",
-  GA: "Gabon",
-  GH: "Ghana",
-  GM: "Gambia",
-  GN: "Guinea",
-  GQ: "Eq. Guinea",
-  GW: "Guinea-Bissau",
-  KE: "Kenya",
-  KM: "Comoros",
-  LR: "Liberia",
-  LS: "Lesotho",
-  LY: "Libya",
-  MA: "Morocco",
-  MG: "Madagascar",
-  ML: "Mali",
-  MR: "Mauritania",
-  MU: "Mauritius",
-  MW: "Malawi",
-  MZ: "Mozambique",
-  NA: "Namibia",
-  NE: "Niger",
-  NG: "Nigeria",
-  RE: "Réunion",
-  RW: "Rwanda",
-  SC: "Seychelles",
-  SD: "Sudan",
-  SH: "Saint Helena",
-  SL: "Sierra Leone",
-  SN: "Senegal",
-  SO: "Somaliland",
-  SOM: "Somalia",
-  SS: "S. Sudan",
-  ST: "São Tomé and Príncipe",
-  SZ: "Swaziland",
-  TD: "Chad",
-  TG: "Togo",
-  TN: "Tunisia",
-  TZ: "Tanzania",
-  UG: "Uganda",
-  YT: "Mayotte",
-  ZA: "South Africa",
-  ZM: "Zambia",
-  ZW: "Zimbabwe"
-};
+function searchCities(countryCode, searchQuery) {
+  const country = cities.find(d => d.country_code === countryCode);
+  if (!country) {
+    return [];
+  }
+  const results = country.cities.filter(city =>
+    city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  return results.slice(0, 5);
+}
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
-var hasSearched = false;
+var hasSearchedISP = true;
+var hasSearchedCity = true;
 
-export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index}) {
-    const [ispSearch, setIspSearch] = useState('');
+export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index, onDelete}) {
+    const [ispSearch, setIspSearch] = useState('ALL');
     const [ispOptions, setIspOptions] = useState([]);
+    const [citySearch, setCitySearch] = useState("ALL");
+    const [cityOptions, setCityOptions] = useState([]);
 
     const handleIspSelect = (isp) => {
-        hasSearched = true;
+        hasSearchedISP = true;
         setIspSearch(isp); // Update the input to the selected ISP name
         setIspOptions([]); // Clear the options
-        onIspSelect(CountryName, isp, card_index); // Call the parent function with the selected ISP
+        onIspSelect(CountryName, isp, card_index, citySearch); // Call the parent function with the selected ISP
+      };
+
+      const handleCitySelect = (city) => {
+        hasSearchedCity = true;
+        setCitySearch(city); // Update the input to the selected ISP name
+        setCityOptions([]); // Clear the options
+        onIspSelect(CountryName, ispSearch, card_index, city); // Call the parent function with the selected ISP
       };
     
-      const handleInputChange = (e)=>{
+      const handleISPInputChange = (e)=>{
         setIspSearch(e.target.value)
-        if(hasSearched){
-          hasSearched = false;
+        if(hasSearchedISP){
+          hasSearchedISP = false;
         }
       }
+
       useEffect(() => {
-      if (ispSearch.length >= 1 && !hasSearched) { // Fetch only if more than 1 characters are entered
+      if (ispSearch.length >= 1 && !hasSearchedISP) { 
         axios.get(`https://CadeSayner.pythonanywhere.com/getISPs?country=${reversedMapping[CountryName]}&search=${ispSearch}`)
-          .then(response => setIspOptions(response.data)) //
+          .then(response => setIspOptions(response.data)) 
           .catch(error => console.error(error));
       } else {
-        setIspOptions([]); // Clear options if search term is too short
+        setIspOptions([]); 
       }
       }, [ispSearch]);
 
+      const handleCityInputChange = (e)=>{
+        setCitySearch(e.target.value)
+        if(hasSearchedCity){
+          hasSearchedCity = false;
+        }
+      }
+
+      function handleIspFocus(){
+        if(ispSearch === "ALL"){
+          setIspSearch("");
+        }
+      }
+
+      function handleCityFocus(){
+        if(citySearch === "ALL"){
+          setCitySearch("")
+        }
+      }
+
+      useEffect(() => {
+      if (citySearch.length >= 1 && !hasSearchedCity) { // Fetch only if more than 1 characters are entered
+        setCityOptions(searchCities(reversedMapping[CountryName], citySearch))
+      } else {
+        setCityOptions([]); // Clear options if search term is too short
+      }
+      }, [citySearch]);
+
+
     return (
-    <Box width="350px">
+    <Box  width="350px">
       <Card size="3">
         <Box position="relative">
           <Flex direction="column" gap="2">
@@ -112,19 +101,34 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
             <Box position="absolute" top="0" right="0">
               <Flex direction="row" gap="2">
-                <Button variant="soft" color='red'><FaTrash /></Button>
+                <Button variant="soft" onClick={onDelete} color='red'><FaTrash /></Button>
                 <Button onClick={onToggleLock}>{isLocked ? <FaLock /> : <FaUnlock />}</Button>
               </Flex>
             </Box>
 
             <Flex direction="row" gap="3" align="center">
               <Text> City:</Text>
-              <input type="text" placeholder="Search City..." style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+              <input onFocus={handleCityFocus} type="text" placeholder="Search City..." value={citySearch} onChange={handleCityInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+            </Flex>
+
+            <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
+              {cityOptions.length > 0 &&(
+                <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
+                  {cityOptions.map((city, index) => (
+                    <li
+                      key={index}
+                      style={{ padding: '5px', cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }}
+                      onClick={() => handleCitySelect(city)}>
+                      {city}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Flex>
 
             <Flex direction="row" gap="3" align="center">
             <Text>ISP:</Text>
-              <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+              <input onFocus={handleIspFocus} type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleISPInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
             </Flex>
           </Flex>
         </Box>
@@ -143,7 +147,6 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
                 </ul>
               )}
             </Flex>
-
       </Card>
     </Box>
   );

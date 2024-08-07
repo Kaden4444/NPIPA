@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
 
 function UploadLatencyChart({ chartData, labels}) {
   const [data, setData] = useState([]);
@@ -12,6 +11,7 @@ function UploadLatencyChart({ chartData, labels}) {
   }, [chartData, labels]);
 
   const options = {
+    spanGaps:true,
     plugins: {
       title: {
         display: true,
