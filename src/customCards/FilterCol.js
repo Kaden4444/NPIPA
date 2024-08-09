@@ -42,7 +42,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
         <Flex >
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
-              <Box width="350px" maxWidth="400px">
+              <Box width="400px" maxWidth="400px">
                   
                    <Button
                     variant="outline"
@@ -65,6 +65,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                   <FilterCard
                     key={index}
                     card_index={index}
+                    initialRegion={country.city}
                     CountryName={`${country.countryName}`}
                     isLocked={country.locked}
                     onToggleLock={() => toggleCardLock(index)}

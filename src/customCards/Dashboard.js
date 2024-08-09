@@ -8,6 +8,8 @@ import { Flex, Box, Card } from '@radix-ui/themes';
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
+import regions from '../json/regions.json'
+import region_name_iso from '../json/region_name_to_iso366.json'
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 
@@ -19,17 +21,25 @@ for (const [code, name] of Object.entries(countryMapping)) {
 function Dashboard() {
     const [countryFilters, setCountryFilters] = useState([]);
 
-    const pushCountry = (data, countryName) =>{
+    const pushCountry = (data, countryName,regionName="ALL") =>{
       setCountryFilters((prevCards) => [
         ...prevCards,
-        { countryName, locked: false, isp:"ALL", countryData:data, city:"ALL"}
+        { countryName, locked: false, isp:"ALL", countryData:data, city:regionName}
       ]);
     }
 
     const addCountryFilter = (countryName) => {
       console.log(countryName)
-      axios.get(`${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL`)
+      axios.get(`${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL&region=ALL`)
       .then(response => pushCountry(response.data, countryName)) //
+      .catch(error => console.error(error));
+    }
+
+    const addCountryFilter_Region = (countryName, regionName) => {
+      console.log(countryName, regionName)
+      let request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL&region=${region_name_iso[regionName]}`
+      axios.get(request_endpoint)
+      .then(response => pushCountry(response.data, countryName, regionName)) //
       .catch(error => console.error(error));
     }
 
@@ -57,7 +67,17 @@ function Dashboard() {
     }
     
     function onCountryFilterChange(countryName, isp, id, city){
-      axios.get(`${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=${city}`)
+      let request_endpoint = ''
+      if(regions.includes(city)){
+        console.log("we got a region!!")
+        console.log(region_name_iso[city])
+        request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=ALL&region=${region_name_iso[city]}`
+      }
+      else{
+        request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=${city}&region=ALL`
+      }
+      console.log(request_endpoint)
+      axios.get(request_endpoint)
       .then(response => insertCountry(countryName, id, response.data, isp, city)) //
       .catch(error => console.error(error));
     }
@@ -71,7 +91,7 @@ function Dashboard() {
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
         {/* <MapComponent onCountryClick={addCountryFilter}/> */}
-        <Map countryClickCallback={addCountryFilter}/>
+        <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
         <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
       </Flex>  
     );

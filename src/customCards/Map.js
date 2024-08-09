@@ -79,7 +79,7 @@ function onCountryClick(feature, setFocusedData){
         });
 }
 
-function Map({countryClickCallback}) {
+function Map({countryClickCallback, provinceClickCallback}) {
     const [focusedData, setFocusedData] = useState(null);
     const [countryColors, setCountryColors] = useState({});
     const [focusedColors, setFocusedColors] = useState({});
@@ -142,11 +142,10 @@ function Map({countryClickCallback}) {
     };
     const onEachFeatureProvince = (feature, layer) => {
       layer.on({
-          // click: () => {
-          //     onCountryClick(feature, setFocusedData);
-          //     setSelectedFeature(feature.properties.NAME) // set the selected feature here
-          //     countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
-          //   }, This has to be removed for now since provinces are not clickable add this back in if we change our minds later
+            click: () => {
+                provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
+            }, 
+
             mouseover: (e) => {
               layer.setStyle({ fillOpacity: 0.8 });
             },
