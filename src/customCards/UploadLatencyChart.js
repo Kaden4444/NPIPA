@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
 
-function UploadChart({ chartData, labels}) {
+function UploadLatencyChart({ chartData, labels}) {
   const [data, setData] = useState([]);
   useEffect(() => {
     setData({
@@ -12,11 +11,11 @@ function UploadChart({ chartData, labels}) {
   }, [chartData, labels]);
 
   const options = {
-    spanGaps: true,
+    spanGaps:true,
     plugins: {
       title: {
         display: true,
-        text: 'Upload Speed',
+        text: 'Upload Latency',
         font: {
           size: 18,
           weight: 'bold'
@@ -36,7 +35,7 @@ function UploadChart({ chartData, labels}) {
       tooltip: {
         callbacks: {
           label: function(tooltipItem) {
-            return `Speed: ${tooltipItem.raw} Mbps`;
+            return `RTT: ${tooltipItem.raw} ms`;
           }
         }
       }
@@ -63,7 +62,7 @@ function UploadChart({ chartData, labels}) {
             size: 12
           },
           callback: function(value) {
-            return `${value} Mbps`;
+            return `${value} ms`;
           }
         }
       }
@@ -85,6 +84,4 @@ function UploadChart({ chartData, labels}) {
   );
 }
 
-export default UploadChart;
-
-
+export default UploadLatencyChart;

@@ -1,17 +1,16 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
-import { Flex, Box, Card, Button,  } from '@radix-ui/themes';
-import * as ScrollArea from '@radix-ui/react-scroll-area' ;
+import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
+
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
-export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, loading}) {
-  const [cards, setCards] = useState([]);
-  
+
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback}) {
   const [showColumn, setShowColumn] = useState(true);
 
-  function onIspSelect(countryName, isp, id){
+  function onIspSelect(countryName, isp, id, city){
     // on_card_change_callback(countryName, isp, id)
-    filter_change_callback(countryName,isp,id)
+    filter_change_callback(countryName,isp,id, city)
   }
 
   const onPurgeCards = () => {
@@ -33,27 +32,24 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     setShowColumn(true);
   };
 
+  function onDelete(index){
+    onCountryDeleteCallback(index)
+  } 
+
   return (
     <>
       {showColumn ? (
-        <Flex>
-          
-        <ScrollArea.Root>
-        <ScrollArea.Viewport>
-        <ScrollArea.Scrollbar orientation="vertical">
-          <ScrollArea.Thumb />
-        </ScrollArea.Scrollbar>
-      
+        <Flex >
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
-              <Box width="350px" maxWidth="400px">
+              <Box width="400px" maxWidth="400px">
                   
                    <Button
                     variant="outline"
                     size="1"
                     radius="full"
                     onClick={handleHideClick}
-                    style={{position: 'absolute',left: 0,top: 0}}
+                    style={{position: 'absolute',right: 0,top: 0}}
                   >
                     Hide
                   </Button> 
@@ -62,29 +58,32 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     Your Countries
                   </h1> 
               </Box>
-              {countryFilters.map((country, index) => (
-                <FilterCard
-                  key={index}
-                  card_index={index}
-                  CountryName={`${country.countryName}`}
-                  isLocked={country.locked}
-                  onToggleLock={() => toggleCardLock(index)}
-                  onIspSelect={onIspSelect}
-                />
-              ))}
-              <Flex gapX="3">
-                <Button disabled={loading} variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
-              </Flex>
+              
+              <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
+                <Flex gap="5" align="center" direction="column" >
+                  {countryFilters.map((country, index) => (
+                  <FilterCard
+                    key={index}
+                    card_index={index}
+                    initialRegion={country.city}
+                    CountryName={`${country.countryName}`}
+                    isLocked={country.locked}
+                    onToggleLock={() => toggleCardLock(index)}
+                    onIspSelect={onIspSelect}
+                    onDelete={() => onDelete(index)}
+                  />
+                  ))}
+                  <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
+                </Flex>
+              </ScrollArea>
+
             </Flex>
           </Card>
 
-          </ScrollArea.Viewport>
-          </ScrollArea.Root>
-
         </Flex>
       ) : (
-        <Button  variant="outline" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
-          Show
+        <Button  variant="solid" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
+          Countries 
         </Button>
       )}
     </>

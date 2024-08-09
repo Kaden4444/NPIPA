@@ -2,18 +2,22 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
-function DownloadChart({ chartData }) {
+function DownloadChart({ chartData, labels }) {
   const [data, setData] = useState([]);
   useEffect(() => {
-    console.log(chartData)
     setData({
-      labels: ["2020", "2021", "2022", "2023", "2024"],
+      labels: labels,
       datasets: chartData
     });
     console.log("trying to update graphs")
-  }, [chartData]);
+  }, [chartData, labels]);
   
   const options = {
+    animation: {
+      duration: 500, // Animation duration in milliseconds
+      easing: 'linear', // Animation easing function
+    },
+    spanGaps:true,
     plugins: {
       title: {
         display: true,
@@ -84,6 +88,7 @@ function DownloadChart({ chartData }) {
           No data available
         </div>
       )}
+      
     </div>
   );
 }
