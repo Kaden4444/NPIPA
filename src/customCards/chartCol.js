@@ -5,7 +5,7 @@ import DownloadChart from './/DownloadChart';
 import UploadChart from './UploadChart';
 import UploadLatencyChart from './UploadLatencyChart';
 import DownloadLatencyChart from './DownloadLatencyChart';
-import countryMapping from '../countries.json'
+import countryMapping from '../json/countries.json'
 import axios from 'axios';
 
 const reversedMapping = {};
@@ -167,7 +167,7 @@ export function ChartCol({countryFilters}) {
       setDownloadLatencyChartData(getDownloadLatencyChartData(countryFilters, timeScale))
       setUploadLatencyChartData(getUploadLatencyChartData(countryFilters, timeScale))
 
-      axios.get(`http://localhost:5000/getLabels?q=${timeScaleIndexToQueryMap[timeScale]}`)
+      axios.get(`https://cadesayner.pythonanywhere.com/getLabels?q=${timeScaleIndexToQueryMap[timeScale]}`)
       .then(response => setLabels(response.data)) //
       .catch(error => console.error(error));
 

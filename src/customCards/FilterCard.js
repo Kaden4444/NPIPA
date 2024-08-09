@@ -3,7 +3,7 @@ import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock ico
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cities from '../cities.json'
-import countryMapping from '../countries.json'
+import countryMapping from '../json/countries.json'
 
 function searchCities(countryCode, searchQuery) {
   const country = cities.find(d => d.country_code === countryCode);
@@ -52,13 +52,13 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
       useEffect(() => {
       if (ispSearch.length >= 1 && !hasSearchedISP) { 
-        axios.get(`https://CadeSayner.pythonanywhere.com/getISPs?country=${reversedMapping[CountryName]}&search=${ispSearch}`)
+        axios.get(`https://cadesayner.pythonanywhere.com/getISPs?country=${reversedMapping[CountryName]}&search=${ispSearch}`)
           .then(response => setIspOptions(response.data)) 
           .catch(error => console.error(error));
       } else {
         setIspOptions([]); 
       }
-      }, [ispSearch]);
+      }, [ispSearch, CountryName]);
 
       const handleCityInputChange = (e)=>{
         setCitySearch(e.target.value)
@@ -85,7 +85,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
       } else {
         setCityOptions([]); // Clear options if search term is too short
       }
-      }, [citySearch]);
+      }, [citySearch, CountryName]);
 
 
     return (

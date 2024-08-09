@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import africaGeoJson from './/africa.json'; // Adjust the path to your GeoJSON file
+import africaGeoJson from '../json/africa_boundaries.json'; // Adjust the path to your GeoJSON file
 import { Flex, Box, Card } from '@radix-ui/themes';
 const countryMapping = {
     AO: "Angola",

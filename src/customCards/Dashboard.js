@@ -6,9 +6,10 @@ import { FilterCol } from './FilterCol';
 import MapComponent from './MapComponent';
 import { Flex, Box, Card } from '@radix-ui/themes';
 import axios from 'axios';
-import countryMapping from '../countries.json'
+import countryMapping from '../json/countries.json'
+import Map from './Map';
 
-const api_endpoint = "http://localhost:5000"
+const api_endpoint = "https://cadesayner.pythonanywhere.com"
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
@@ -17,7 +18,6 @@ for (const [code, name] of Object.entries(countryMapping)) {
 
 function Dashboard() {
     const [countryFilters, setCountryFilters] = useState([]);
-    console.log(countryFilters)
 
     const pushCountry = (data, countryName) =>{
       setCountryFilters((prevCards) => [
@@ -27,12 +27,14 @@ function Dashboard() {
     }
 
     const addCountryFilter = (countryName) => {
+      console.log(countryName)
       axios.get(`${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL`)
       .then(response => pushCountry(response.data, countryName)) //
       .catch(error => console.error(error));
     }
 
     const insertCountry = (countryName, id, data, isp, city) =>{
+      console.log("trying to enter the following data", data)
       setCountryFilters(prevCards =>
         prevCards.map((card, i) =>
           i === parseInt(id) ? { countryName, locked:false, isp:isp, countryData:data, city:city} : card
@@ -68,7 +70,8 @@ function Dashboard() {
     return (
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
-        <MapComponent onCountryClick={addCountryFilter}/>
+        {/* <MapComponent onCountryClick={addCountryFilter}/> */}
+        <Map countryClickCallback={addCountryFilter}/>
         <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
       </Flex>  
     );
