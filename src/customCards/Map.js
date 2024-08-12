@@ -64,7 +64,7 @@ function SetViewOnClick() {
 }
 
 function onCountryClick(feature, setFocusedData){
-        fetch(`https://cadesayner.pythonanywhere.com/getCountryGeoJson?country=${feature.properties.NAME}`) // Replace with your API URL
+        fetch(`https://cadesayner.pythonanywhere.com/getCountryGeoJson?country=${feature.properties.NAME}`) 
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -107,6 +107,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
       },
     []);
 
+    // TODO: Fix this by making the style of the map stateful
     useEffect(()=>{
         setRefresh(!refresh); // Need this to get the chartjs component to wake the fuck up
     },[selectedFeature])
@@ -181,10 +182,10 @@ function Map({countryClickCallback, provinceClickCallback}) {
             key:{refresh},
             fillColor: countryColors[feature.properties.NAME] || 'grey',
             color: 'black',           // Border color
-            weight: feature.properties.NAME === selectedFeature ? 2: 0.5,                // Border thickness
+            weight: feature.properties.NAME === selectedFeature ? 2: 0.5,              
             opacity: feature.properties.NAME === selectedFeature ? 1: 0.5,
             
-            fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 // Hide specific country
+            fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 
           })}
           />
 
