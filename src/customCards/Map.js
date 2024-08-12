@@ -48,7 +48,6 @@ function getHexColorForSpeed(speed) {
 }
 
 const fetchCountryColors = async () => {
-    // Replace with your API endpoint
     const response = await fetch('https://cadesayner.pythonanywhere.com/getGeoData');
     const data = await response.json();
     return createColorsObject(data); // Expected format: { "Country Name": "#ff0000", ... }

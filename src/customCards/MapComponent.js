@@ -102,7 +102,7 @@ function getHexColorForSpeed(speed) {
 // Example API call function
 const fetchCountryColors = async () => {
   // Replace with your API endpoint
-  const response = await fetch('https:CadeSayner.pythonanywhere.com/getGeoData');
+  const response = await fetch('https://CadeSayner.pythonanywhere.com/getGeoData');
   const data = await response.json();
   return createColorsObject(data); // Expected format: { "Country Name": "#ff0000", ... }
 };
@@ -132,7 +132,7 @@ function MapComponent({ onCountryClick}) {
     layer.on({
       click: () => {
         // Pass the name of the country or other relevant data to the parent
-        onCountryClick(feature.properties.name);
+        onCountryClick(feature.properties.NAME);
       },
       mouseover: (e) => {
         layer.setStyle({ fillOpacity: 0.8 });
@@ -146,7 +146,7 @@ function MapComponent({ onCountryClick}) {
       }
     });
     // Add a tooltip to each layer
-    const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.name}</strong></div>`;
+    const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.NAME}</strong></div>`;
     layer.bindTooltip(tooltipContent, {
       permanent: false,
       direction: 'auto',
@@ -158,7 +158,7 @@ function MapComponent({ onCountryClick}) {
     color: 'white',
     weight: 0.7,
     opacity: 1,
-    fillColor: countryColors[feature.properties.name] || 'grey', // Use the color from API data or default to grey
+    fillColor: countryColors[feature.properties.NAME] || 'grey', // Use the color from API data or default to grey
     fillOpacity: 1,
   });
 

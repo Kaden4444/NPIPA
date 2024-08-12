@@ -90,8 +90,8 @@ function Dashboard() {
     return (
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
-        {/* <MapComponent onCountryClick={addCountryFilter}/> */}
-        <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <MapComponent onCountryClick={addCountryFilter}/>
+        {/* <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/> */}
         <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
       </Flex>  
     );
