@@ -179,7 +179,7 @@ export function ChartCol({countryFilters}) {
   return (
     <>
     {showColumn ? (
-      <Flex direction="column"  style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}> 
+      <Flex direction="column" gapY="1" style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}> 
         
           <Button variant="outline" size="1" radius="full" onClick={handleHideClick} style={{position: 'absolute',left: 0,top: 0}}>
           Hide
@@ -192,15 +192,14 @@ export function ChartCol({countryFilters}) {
             <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
           </SegmentedControl.Root>
 
+
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
-            <Box>
-
-              <ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/>
-              <ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/>
-              <ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/>
-              <ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/>
-
-          </Box>
+            <Flex direction="column" gapY="1">
+              <Box><ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></Box>
+              <Box><ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></Box>
+              <Box><ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></Box>
+              <Box><ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></Box>        
+            </Flex>
         </ScrollArea>
       </Flex>
   ) : (
