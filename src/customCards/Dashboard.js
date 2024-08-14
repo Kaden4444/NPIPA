@@ -6,6 +6,7 @@ import { Flex, Box, Card } from '@radix-ui/themes';
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
+import MapComponent from './MapComponent';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
 
@@ -88,7 +89,8 @@ function Dashboard() {
     return (
       <Flex > 
         <ChartCol countryFilters={countryFilters}/>
-        <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <MapComponent onCountryClick={addCountryFilter}/>
+        {/* <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/> */}
         <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
       </Flex>  
     );

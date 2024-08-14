@@ -109,12 +109,12 @@ function Map({countryClickCallback, provinceClickCallback}) {
 
     // TODO: Fix this by making the style of the map stateful
     useEffect(()=>{
-        setRefresh(!refresh); // Need this to get the chartjs component to wake the fuck up
+        setRefresh(!refresh); 
     },[selectedFeature])
 
     useEffect(()=>{
         console.log("Focused data", focusedData)
-        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? idk fuck it
+        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? 
     },[focusedData])
 
     const onEachFeature = (feature, layer) => {
@@ -122,7 +122,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
             click: () => {
                 onCountryClick(feature, setFocusedData);
                 setSelectedFeature(feature.properties.NAME) // set the selected feature here
-                countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
+                countryClickCallback(feature.properties.NAME) 
               },
               mouseover: (e) => {
                 layer.setStyle({ fillOpacity: 0.8 });
@@ -144,7 +144,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
     const onEachFeatureProvince = (feature, layer) => {
       layer.on({
             click: () => {
-                provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
+                provinceClickCallback(feature.properties.admin, feature.properties.name) 
             }, 
 
             mouseover: (e) => {
