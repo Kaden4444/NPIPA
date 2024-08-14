@@ -86,7 +86,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
     <Box  width="400px">
       <Card size="3">
         <Box position="relative">
-          <Flex direction="column" gap="2">
+          <Flex direction="column" gap="1">
             <Flex direction="row" gap="2" minWidth="350px" width="350px">
               <Box>
                 <Text as="div" size="2" weight="bold">{CountryName}</Text>
@@ -100,9 +100,8 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
               </Flex>
             </Box>
 
-            <Flex direction="row" gap="3" align="center">
-              <Text> City/Region:</Text>
-              <Text> {current_city_or_region_selection}</Text>
+            <Flex direction="column" gap="1" align="left">
+              <Text> City/Region: {current_city_or_region_selection}</Text>
               <input type="text" placeholder="Search City or Region" value={region_or_city_search} onChange={handleCityInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
             </Flex>
 
@@ -121,9 +120,8 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
               )}
             </Flex>
 
-            <Flex direction="row" gap="3" align="center">
-            <Text>ISP:</Text>
-            <Text> {current_isp_selection}</Text>
+            <Flex direction="column" gap="1" align="left">
+            <Text>ISP: {current_isp_selection}</Text>
               <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleISPInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
             </Flex>
           </Flex>

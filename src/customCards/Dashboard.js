@@ -1,9 +1,7 @@
 import React, {useState} from 'react'
 import '@radix-ui/themes/styles.css';
-import {Theme, ThemePanel } from '@radix-ui/themes';
-import { ChartCol } from './chartCol';
+import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import MapComponent from './MapComponent';
 import { Flex, Box, Card } from '@radix-ui/themes';
 import axios from 'axios';
 import countryMapping from '../json/countries.json'

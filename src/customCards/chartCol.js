@@ -1,10 +1,7 @@
 import '@radix-ui/themes/styles.css';
 import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
-import DownloadChart from './/DownloadChart';
-import UploadChart from './UploadChart';
-import UploadLatencyChart from './UploadLatencyChart';
-import DownloadLatencyChart from './DownloadLatencyChart';
+import ChartCard from './ChartCard';
 import countryMapping from '../json/countries.json'
 import axios from 'axios';
 
@@ -155,7 +152,7 @@ export function ChartCol({countryFilters}) {
   const expandGraph = (value) => {
       <Portal.Root >
         <Box width="50vh" height="50vh" top="5" left="5">
-          <DownloadChart chartData={downloadChartData} labels={labels}/>
+          
         </Box>  
       </Portal.Root>;  
   }
@@ -197,13 +194,12 @@ export function ChartCol({countryFilters}) {
 
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
             <Box>
-              {/* <Box onClick={expandGraph(0)}> Attempted Portal */}
-                <DownloadChart chartData={downloadChartData} labels={labels}/>
-              {/* </Box> */}
-            
-            <UploadChart chartData={uploadChartData} labels={labels} />
-            <DownloadLatencyChart chartData={downloadLatencyChartData} labels={labels}/>
-            <UploadLatencyChart chartData={uploadLatencyChartData} labels={labels}/>
+
+              <ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/>
+              <ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/>
+              <ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/>
+              <ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/>
+
           </Box>
         </ScrollArea>
       </Flex>
