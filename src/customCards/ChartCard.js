@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
+import { Button, Dialog } from '@radix-ui/themes';
+import { FaExpandArrowsAlt } from "react-icons/fa";
 
 function ChartCard({ chartTitle, chartData, labels }) {
+
   const [data, setData] = useState([]);
   useEffect(() => {
     setData({
@@ -81,6 +84,15 @@ function ChartCard({ chartTitle, chartData, labels }) {
 
   return (
     <div style={{ position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+    <Dialog.Root>
+        <Dialog.Trigger asChild>
+            <Button size={1} style={{position: "absolute", margin: '10px'}}><FaExpandArrowsAlt /></Button>
+        </Dialog.Trigger>  
+        {/*<ChartCard chartTitle={this.chartTitle} chartData={this.downloadChartData} labels={this.labels}/>*/}
+          
+        
+    </Dialog.Root>
+
       {hasData ? (
         <Line data={data} options={options} />
       ) : (
