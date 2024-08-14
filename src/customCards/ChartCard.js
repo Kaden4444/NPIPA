@@ -92,7 +92,6 @@ function ChartCard({ chartTitle, chartData, labels }) {
     </div>
   );
 }
-
 export default ChartCard;
 
 

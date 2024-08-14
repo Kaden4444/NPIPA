@@ -46,7 +46,6 @@ const graphLineColors = [
     'rgba(249, 168, 37, 0.1)'    // Bright Amber
 ];
 
-  
 
 function getDownloadChartData(cards, timeScale){ // Needs to return an array of arrays 
     var out = []
@@ -158,7 +157,6 @@ export function ChartCol({countryFilters}) {
   }
 
   useEffect(() => {
-      console.log(countryFilters)
       setDownloadChartData(getDownloadChartData(countryFilters, timeScale))
       setUploadChartData(getUploadChartData(countryFilters, timeScale))
       setDownloadLatencyChartData(getDownloadLatencyChartData(countryFilters, timeScale))
