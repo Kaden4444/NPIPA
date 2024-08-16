@@ -87,10 +87,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
     <Dialog.Root>
         <Dialog.Trigger asChild>
             <Button size={1} style={{position: "absolute", margin: '10px'}}><FaExpandArrowsAlt /></Button>
-        </Dialog.Trigger>  
-        {/*<ChartCard chartTitle={this.chartTitle} chartData={this.downloadChartData} labels={this.labels}/>*/}
-          
-        
+        </Dialog.Trigger>      
     </Dialog.Root>
 
       {hasData ? (

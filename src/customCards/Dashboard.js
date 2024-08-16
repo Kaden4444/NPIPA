@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import { Flex, Box, Card } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
