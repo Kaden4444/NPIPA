@@ -1,7 +1,7 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
-
+import Flag from 'react-flagpack';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
@@ -39,7 +39,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   return (
     <>
       {showColumn ? (
-        <Flex >
+        <Flex width={"360px"}>
           <Card size="3">
             <Flex gap="5" align="center" direction="column" >
               <Box width="400px" maxWidth="400px">
@@ -57,6 +57,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                   <h1 style={{textAlign: 'center', fontSize:"20px"}} >
                     Your Countries
                   </h1> 
+                  
               </Box>
               
               <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>

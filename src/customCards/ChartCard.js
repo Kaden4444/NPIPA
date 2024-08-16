@@ -3,6 +3,7 @@ import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { Button, Dialog } from '@radix-ui/themes';
 import { FaExpandArrowsAlt } from "react-icons/fa";
+import { DialogContent } from '@radix-ui/react-dialog';
 
 function ChartCard({ chartTitle, chartData, labels }) {
 
@@ -87,7 +88,12 @@ function ChartCard({ chartTitle, chartData, labels }) {
     <Dialog.Root>
         <Dialog.Trigger asChild>
             <Button size={1} style={{position: "absolute", margin: '10px'}}><FaExpandArrowsAlt /></Button>
-        </Dialog.Trigger>      
+        </Dialog.Trigger>   
+        <DialogContent>
+          <div style={{ position: 'absolute', height: '70vh', width: '100%', borderRadius: 7, backgroundColor: 'brown' }}>
+
+          </div>
+        </DialogContent>   
     </Dialog.Root>
 
       {hasData ? (

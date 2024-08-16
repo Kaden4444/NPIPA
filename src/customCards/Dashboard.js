@@ -8,6 +8,7 @@ import countryMapping from '../json/countries.json'
 import Map from './Map';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
+import NavBar from './Navbar';
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 
