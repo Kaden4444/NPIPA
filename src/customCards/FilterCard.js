@@ -1,4 +1,4 @@
-import { Box, Card, Button, Flex, Text, Theme } from '@radix-ui/themes';
+import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
 import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';

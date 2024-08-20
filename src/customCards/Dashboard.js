@@ -10,6 +10,7 @@ import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
 import NavBar from './Navbar';
 
+
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 
 const reversedMapping = {};
@@ -18,6 +19,17 @@ for (const [code, name] of Object.entries(countryMapping)) {
 }
 
 function Dashboard() {
+  const [showChartCol, setShowChartCol] = useState(false);
+  const [showFilterCol, setShowFilterCol] = useState(false);
+
+  const toggleChartCol = () => {
+      setShowChartCol(prevChartState => !prevChartState);
+  };
+
+  const toggleFilterCol = () => {
+      setShowFilterCol(prevFilterState => !prevFilterState);
+  };
+
     const [countryFilters, setCountryFilters] = useState([]);
 
     const pushCountry = (data, countryName,regionName="ALL") =>{
@@ -88,9 +100,11 @@ function Dashboard() {
 
     return (
       <Flex > 
-        <ChartCol countryFilters={countryFilters}/>
         <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
-        <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
+        {showChartCol && <ChartCol countryFilters={countryFilters}/>}
+        {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
+         filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>}
+        <NavBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol}/>
       </Flex>  
     );
   }

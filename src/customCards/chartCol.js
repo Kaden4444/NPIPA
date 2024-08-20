@@ -178,20 +178,18 @@ export function ChartCol({countryFilters}) {
 
   return (
     <>
-    {showColumn ? (
-      <Flex direction="column" gapY="1" style={{ width: '45%', padding: '25px', borderRight: '1px solid #ccc'}}> 
-        
-          <Button variant="outline" size="1" radius="full" onClick={handleHideClick} style={{position: 'absolute',left: 0,top: 0}}>
-          Hide
-          </Button> 
+ (
+      
+      
+        <Card size={3} variant='classic' style={{ alignContent:"center", position:"fixed", padding: '25px', borderRight: '1px solid #ccc'}} >
+
           <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
 
-          <SegmentedControl.Root id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)}>
+          <SegmentedControl.Root id="timeScaleSelect" content='center' value={selectedValue} onValueChange={e => setSelectedValue(e)} >
             <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
             <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
             <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
           </SegmentedControl.Root>
-
 
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
             <Flex direction="column" gapY="1">
@@ -201,13 +199,8 @@ export function ChartCol({countryFilters}) {
               <Box><ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></Box>        
             </Flex>
         </ScrollArea>
-      </Flex>
-  ) : (
-        <Button  variant="solid" size="1" radius="full"  style={{position: 'fixed',top: 0,left: 0,zIndex: 30}} onClick={handleShowClick}>
-          Charts 
-        </Button>
-      )}
-    </>
-  );
+        </Card>
+      
+  )</>);
   
 } 

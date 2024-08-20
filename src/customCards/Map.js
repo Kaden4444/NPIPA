@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css';
 import africa from '../json/africa_boundaries.json'
 import iso_metrics from '../json/iso_metrics.json'
 import countryMapping from '../json/countries.json'
-import Flag from 'react-flagpack';
 import 'react-flagpack/dist/style.css'
 
 const downloadSpeedToHexColor = {
@@ -174,15 +173,15 @@ function Map({countryClickCallback, provinceClickCallback}) {
           });
   };
     return (
-      <div style={{ height: "100vh", width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <MapContainer zoomControl={false} center={[0, 16]} zoom={3.8} minZoom={3.8} maxZoom={10} style={{ height: "100%", width: "100%" }}>
+      
+        <MapContainer zoomControl={false} center={[0, 16]} zoom={3.4} minZoom={3.4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
            
-          
+       {  
         <TileLayer
             url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
             attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
         />
-            
+      }     
 
           <GeoJSON onEachFeature={(feature, layer) => onEachFeature(feature, layer)} data={africa} 
           style={(feature) => ({
@@ -205,7 +204,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
           
         <SetViewOnClick />
         </MapContainer>
-      </div>
+      
     );
   }
 

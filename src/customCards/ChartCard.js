@@ -103,7 +103,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
   const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
 
   return (
-    <div style={{ position: 'relative', height: '300px', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+    <div style={{ position: 'relative', height: '300px', width: '50vh', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
       <Dialog.Root>
         <Dialog.Trigger asChild>
           <Button size={1} style={{ position: "absolute", margin: '10px' }}>
