@@ -8,7 +8,8 @@ import countryMapping from '../json/countries.json'
 import Map from './Map';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
-import NavBar from './Navbar';
+import ComponentBar from './ComponentBar';
+import Help from './Help';
 
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
@@ -21,6 +22,7 @@ for (const [code, name] of Object.entries(countryMapping)) {
 function Dashboard() {
   const [showChartCol, setShowChartCol] = useState(false);
   const [showFilterCol, setShowFilterCol] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const toggleChartCol = () => {
       setShowChartCol(prevChartState => !prevChartState);
@@ -29,6 +31,10 @@ function Dashboard() {
   const toggleFilterCol = () => {
       setShowFilterCol(prevFilterState => !prevFilterState);
   };
+
+  const toggleShowHelp = () => {
+      setShowHelp(prevHelpState => !prevHelpState);
+  }
 
     const [countryFilters, setCountryFilters] = useState([]);
 
@@ -104,8 +110,9 @@ function Dashboard() {
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>}
-        <NavBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol}/>
-      </Flex>  
+        {showHelp && <Help/>}
+        <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+      </Flex>
     );
   }
   

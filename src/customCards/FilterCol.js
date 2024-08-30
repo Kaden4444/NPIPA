@@ -1,7 +1,6 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
-import Flag from 'react-flagpack';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
