@@ -67,8 +67,6 @@ function Dashboard() {
     function onCountryFilterChange(countryName, isp, id, city){
       let request_endpoint = ''
       if(regions.includes(city)){
-        console.log("we got a region!!")
-        console.log(region_name_iso[city])
         request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=ALL&region=${region_name_iso[city]}`
       }
       else{

@@ -2,7 +2,6 @@ import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
 import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import cities from '../cities.json'
 import regions_cities from '../json/regions_and_cities.json'
 import countryMapping from '../json/countries.json'
 

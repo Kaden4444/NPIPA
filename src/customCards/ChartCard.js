@@ -71,7 +71,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
             size: 12
           },
           callback: function(value) {
-            return `${value} Mbps`;
+            return `${value} Mbps`; // TODO: make this change depending on the title or pass it via a prop
           }
         }
       }
