@@ -25,6 +25,7 @@ function createColorsObject(data){
     for(var item in data){
         object[countryMapping[item]] = getHexColorForSpeed((data[item].average_download + data[item].average_download)/2)
     }
+
     object["Somalia"] = object["Somaliland"]
     return object
 }
@@ -176,7 +177,6 @@ function Map({countryClickCallback, provinceClickCallback}) {
             attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
         />
             
-
           <GeoJSON onEachFeature={(feature, layer) => onEachFeature(feature, layer)} data={africa} 
           style={(feature) => ({
             key:{refresh},
@@ -184,7 +184,6 @@ function Map({countryClickCallback, provinceClickCallback}) {
             color: 'black',           // Border color
             weight: feature.properties.NAME === selectedFeature ? 2: 0.5,              
             opacity: feature.properties.NAME === selectedFeature ? 1: 0.5,
-            
             fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 
           })}
           />
@@ -195,7 +194,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
             style={provinceGeoJsonStyle}
             onEachFeature={(feature, layer) => onEachFeatureProvince(feature, layer)}
             data={focusedData}/>)}
-          
+
         <SetViewOnClick />
         </MapContainer>
       </div>
