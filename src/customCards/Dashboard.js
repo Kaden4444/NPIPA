@@ -2,7 +2,10 @@ import React, {useState} from 'react'
 import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import { Flex } from '@radix-ui/themes';
+import { Flex, Card} from '@radix-ui/themes';
+
+import MetricSelect from './MapMenu'
+
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
@@ -23,6 +26,8 @@ function Dashboard() {
   const [showChartCol, setShowChartCol] = useState(false);
   const [showFilterCol, setShowFilterCol] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [mapMenuMetric, setMapMenuMetric] = useState("average");
+  const [countryFilters, setCountryFilters] = useState([]);
 
   const toggleChartCol = () => {
       setShowChartCol(prevChartState => !prevChartState);
@@ -36,7 +41,7 @@ function Dashboard() {
       setShowHelp(prevHelpState => !prevHelpState);
   }
 
-    const [countryFilters, setCountryFilters] = useState([]);
+    
 
     const pushCountry = (data, countryName,regionName="ALL") =>{
       setCountryFilters((prevCards) => [
@@ -82,6 +87,14 @@ function Dashboard() {
       let del_arr = countryFilters.slice(0, index).concat(countryFilters.slice(index + 1));
       setCountryFilters(del_arr);
     }
+
+    function onCountryCopy(index){
+      let countryCard = countryFilters[index];
+      setCountryFilters((prevCards) => [
+        ...prevCards,
+        countryCard
+      ]);
+    }
     
     function onCountryFilterChange(countryName, isp, id, city){
       let request_endpoint = ''
@@ -102,14 +115,20 @@ function Dashboard() {
         setCountryFilters(lockedCards)
     }
 
+    function onMapMenuMetricChange(metric){
+      setMapMenuMetric(metric)
+    }
+
     return (
       <Flex > 
-        <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <MetricSelect metricChangeCallback={onMapMenuMetricChange}></MetricSelect>
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
-         filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>}
+         filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+        
       </Flex>
     );
   }

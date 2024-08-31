@@ -52,11 +52,18 @@ function getDownloadChartData(cards, timeScale){ // Needs to return an array of 
     for(var i =0; i < cards.length; i++)
     {
         let download_data = cards[i].countryData[parseInt(timeScale)].download_data
+        let label = cards[i].countryName;
+        if (cards[i].city != "ALL"){
+          label += `-${cards[i].city}`
+        }
+        if (cards[i].isp != "ALL"){
+          label += `-${cards[i].isp}`
+        }
         const item = {
             borderColor: graphLineColors[i],
             backgroundColor: graphLineColors_alpha[i],
             pointRadius: 1,
-            label: cards[i].countryName,
+            label: label,
             data:download_data,
             fill:true,
             tension:0.15
@@ -71,11 +78,18 @@ function getUploadChartData(cards, timeScale){
   for(var i =0; i < cards.length; i++)
   {
       let upload_data = cards[i].countryData[parseInt(timeScale)].upload_data
+      let label = cards[i].countryName;
+      if (cards[i].city != "ALL"){
+        label += `-${cards[i].city}`
+      }
+      if (cards[i].isp != "ALL"){
+        label += `-${cards[i].isp}`
+      }
       const item = {
           borderColor: graphLineColors[i],
           backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
-          label: cards[i].countryName,
+          label: label,
           data:upload_data,
           fill:true,
           tension:0.15
@@ -90,11 +104,18 @@ function getUploadLatencyChartData(cards, timeScale){
   for(var i =0; i < cards.length; i++)
   {
       let upload_latency_data = cards[i].countryData[parseInt(timeScale)].upload_latency_data
+      let label = cards[i].countryName;
+      if (cards[i].city != "ALL"){
+        label += `-${cards[i].city}`
+      }
+      if (cards[i].isp != "ALL"){
+        label += `-${cards[i].isp}`
+      }
       const item = {
           borderColor: graphLineColors[i],
           backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
-          label: cards[i].countryName,
+          label: label,
           fill:true,
           data:upload_latency_data,
           tension:0.15
@@ -109,11 +130,18 @@ function getDownloadLatencyChartData(cards, timeScale){
   for(var i =0; i < cards.length; i++)
   {
       let download_latency_data = cards[i].countryData[parseInt(timeScale)].download_latency_data
+      let label = cards[i].countryName;
+      if (cards[i].city != "ALL"){
+        label += `-${cards[i].city}`
+      }
+      if (cards[i].isp != "ALL"){
+        label += `-${cards[i].isp}`
+      }
       const item = {
           borderColor: graphLineColors[i],
           backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
-          label: cards[i].countryName,
+          label: label,
           data:download_latency_data,
           fill:true,
           tension:0.15
@@ -170,14 +198,12 @@ export function ChartCol({countryFilters}) {
 
   useEffect(()=>
   {
-    console.log("changing time scale to", selectedValue)
     setTimeScale(selectedValue)
   },[selectedValue])
 
   return (
     <>
  (
-      
       
         <Card size={3} variant='classic' style={{ alignContent:"center", position:"fixed", padding: '25px', borderRight: '1px solid #ccc'}} >
 

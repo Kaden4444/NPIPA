@@ -4,7 +4,7 @@ import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
-export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback}) {
+export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback, onCountryCopyCallback}) {
   const [showColumn, setShowColumn] = useState(true);
 
   function onIspSelect(countryName, isp, id, city){
@@ -35,6 +35,10 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     onCountryDeleteCallback(index)
   } 
 
+  function onCopy(index){
+    onCountryCopyCallback(index)
+  }
+
   return (
     <> 
         <Card size={2} variant='classic' content='center' style={{ position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0"}} >
@@ -54,11 +58,13 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     key={index}
                     card_index={index}
                     initialRegion={country.city}
+                    initialISP={country.isp}
                     CountryName={`${country.countryName}`}
                     isLocked={country.locked}
                     onToggleLock={() => toggleCardLock(index)}
                     onIspSelect={onIspSelect}
                     onDelete={() => onDelete(index)}
+                    onCopy={() => onCopy(index)}
                   />
                   ))}
                   <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>

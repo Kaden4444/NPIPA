@@ -1,5 +1,5 @@
 import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
-import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
+import {FaCopy, FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import regions_cities from '../json/regions_and_cities.json';
@@ -28,13 +28,13 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index, onDelete, initialRegion}) {
+export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index, onDelete, initialRegion, initialISP, onCopy}) {
     const [ispSearch, setIspSearch] = useState('');
     const [ispOptions, setIspOptions] = useState([]);
     const [region_or_city_search, setCitySearch] = useState('');
     const [region_or_city_options, setCityOptions] = useState([]);
     const [current_city_or_region_selection, setCurrentRegionCity] = useState('');
-    const [current_isp_selection, setCurrentISP] = useState('ALL');
+    const [current_isp_selection, setCurrentISP] = useState('');
   
     const handleIspSelect = (isp) => {
         setIspSearch(''); // Update the input to the selected ISP name
@@ -56,9 +56,13 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
       useEffect(()=>{
         // populate the region field if there is already a region
-        console.log("ha")
-        setCurrentRegionCity(initialRegion)
-      },[initialRegion])
+        if(initialRegion){
+          setCurrentRegionCity(initialRegion)
+        }
+        if(initialISP){
+          setCurrentISP(initialISP)
+        }
+      },[])
 
       useEffect(() => {
       if (ispSearch.length >= 1) { 
@@ -73,7 +77,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
       const handleCityInputChange = (e)=>{
         setCitySearch(e.target.value)
       }
-
+      
       useEffect(() => {
       if (region_or_city_search.length >= 1) { // Fetch only if more than 1 characters are entered
         setCityOptions(searchCities(reversedMapping[CountryName], region_or_city_search))
@@ -97,6 +101,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
             <Box position="absolute" top="0" right="0">
               <Flex direction="row" gap="2">
+                <Button variant="soft" onClick={onCopy} color='purple' size={'1'}><FaCopy/></Button>
                 <Button variant="soft" onClick={onDelete} color='red' size={'1'}><FaTrash /></Button>
                 <Button onClick={onToggleLock} size={"1"} variant={ isLocked ? 'solid' : "outline"}   >{isLocked ? <FaLock /> : <FaUnlock />}</Button>
               </Flex>
