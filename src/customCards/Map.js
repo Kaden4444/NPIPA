@@ -1,10 +1,11 @@
 
 import React, { useEffect,useRef, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import africa from '../json/africa_boundaries.json'
 import iso_metrics from '../json/iso_metrics.json'
 import countryMapping from '../json/countries.json'
+import 'react-flagpack/dist/style.css'
 
 const downloadSpeedToHexColor = {
     "0-5": "#FF6F6F",       // Brighter Red
@@ -85,7 +86,6 @@ function Map({countryClickCallback, provinceClickCallback}) {
     const [countryColors, setCountryColors] = useState({});
     const [focusedColors, setFocusedColors] = useState({});
     const [selectedFeature, setSelectedFeature] = useState(null);
-
     const [force, setForce] = useState(false)
     const [refresh, setRefresh] = useState(false)
 
@@ -110,12 +110,12 @@ function Map({countryClickCallback, provinceClickCallback}) {
 
     // TODO: Fix this by making the style of the map stateful
     useEffect(()=>{
-        setRefresh(!refresh); // Need this to get the chartjs component to wake the fuck up
+        setRefresh(!refresh); // Need this to get the chartjs component to wake up
     },[selectedFeature])
 
     useEffect(()=>{
         console.log("Focused data", focusedData)
-        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? idk fuck it
+        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? 
     },[focusedData])
 
     const onEachFeature = (feature, layer) => {
@@ -135,7 +135,11 @@ function Map({countryClickCallback, provinceClickCallback}) {
                 });
               }
             });
-            const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.NAME ? feature.properties.NAME : feature.properties.name}</strong></div>`;
+
+            {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
+            const tooltipContent = `<div class="leaflet-tooltip-style">
+            <strong>${feature.properties.NAME ? feature.properties.NAME : feature.properties.name}</strong>
+            </div>`;
             layer.bindTooltip(tooltipContent, {
               permanent: false,
               direction: 'auto',
@@ -150,6 +154,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
 
             mouseover: (e) => {
               layer.setStyle({ fillOpacity: 0.8 });
+
             },
             mouseout: (e) => {
               const layer = e.target;
@@ -170,13 +175,16 @@ function Map({countryClickCallback, provinceClickCallback}) {
           });
   };
     return (
-      <div style={{ height: "100vh", width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <MapContainer center={[0, 16]} zoom={3.8} minZoom={3.8} maxZoom={10} style={{ height: "100%", width: "100%" }}>
+      
+        <MapContainer zoomControl={false} center={[0, 16]} zoom={3.4} minZoom={3.4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
+           
+       {  
         <TileLayer
             url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
             attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
         />
-            
+      }     
+
           <GeoJSON onEachFeature={(feature, layer) => onEachFeature(feature, layer)} data={africa} 
           style={(feature) => ({
             key:{refresh},
@@ -197,7 +205,7 @@ function Map({countryClickCallback, provinceClickCallback}) {
 
         <SetViewOnClick />
         </MapContainer>
-      </div>
+      
     );
   }
 

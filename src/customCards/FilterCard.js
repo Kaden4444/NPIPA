@@ -2,8 +2,10 @@ import { Box, Card, Button, Flex, Text } from '@radix-ui/themes';
 import { FaLock, FaUnlock, FaTrash} from 'react-icons/fa'; // Importing lock icons from react-icons
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import regions_cities from '../json/regions_and_cities.json'
-import countryMapping from '../json/countries.json'
+import regions_cities from '../json/regions_and_cities.json';
+import countryMapping from '../json/countries.json';
+import Flag from 'react-flagpack';
+import 'react-flagpack/dist/style.css'
 
 function searchCities(countryCode, searchQuery) {
   const country = regions_cities.find(d => d.country_code === countryCode);
@@ -82,24 +84,25 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
 
     return (
-    <Box  width="400px">
-      <Card size="3">
+    <Box  width="40vh">
+      <Card size="2">
         <Box position="relative">
           <Flex direction="column" gap="1">
             <Flex direction="row" gap="2" minWidth="350px" width="350px">
-              <Box>
-                <Text as="div" size="2" weight="bold">{CountryName}</Text>
-              </Box>
+              <Flex direction={"row"} gapX="2" align={"center"}>
+                <Text as="div" size="2" weight="bold" >{CountryName}</Text>  
+                <Flag hasDropShadow="true" code={reversedMapping[CountryName]} hasBorder="True"/>
+              </Flex>
             </Flex>
 
             <Box position="absolute" top="0" right="0">
               <Flex direction="row" gap="2">
-                <Button variant="soft" onClick={onDelete} color='red'><FaTrash /></Button>
-                <Button onClick={onToggleLock}>{isLocked ? <FaLock /> : <FaUnlock />}</Button>
+                <Button variant="soft" onClick={onDelete} color='red' size={'1'}><FaTrash /></Button>
+                <Button onClick={onToggleLock} size={"1"} variant={ isLocked ? 'solid' : "outline"}   >{isLocked ? <FaLock /> : <FaUnlock />}</Button>
               </Flex>
             </Box>
 
-            <Flex direction="column" gap="1" align="left">
+            <Flex direction="column" gap="" align="left">
               <Text> City/Region: {current_city_or_region_selection}</Text>
               <input type="text" placeholder="Search City or Region" value={region_or_city_search} onChange={handleCityInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
             </Flex>
@@ -119,7 +122,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
               )}
             </Flex>
 
-            <Flex direction="column" gap="1" align="left">
+            <Flex direction="column" gap="" align="left">
             <Text>ISP: {current_isp_selection}</Text>
               <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleISPInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
             </Flex>

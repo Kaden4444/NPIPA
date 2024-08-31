@@ -7,7 +7,7 @@ import  Dashboard  from './customCards/Dashboard';
 function App() {
   return (
     <Theme>
-    <Dashboard/>
+      <Dashboard/>
     </Theme> 
   );
 }

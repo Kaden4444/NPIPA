@@ -1,7 +1,6 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
-
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
@@ -37,26 +36,15 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   } 
 
   return (
-    <>
-      {showColumn ? (
-        <Flex >
-          <Card size="3">
+    <> 
+        <Card size={2} variant='classic' content='center' style={{ position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0"}} >
             <Flex gap="5" align="center" direction="column" >
-              <Box width="400px" maxWidth="400px">
-                  
-                   <Button
-                    variant="outline"
-                    size="1"
-                    radius="full"
-                    onClick={handleHideClick}
-                    style={{position: 'absolute',right: 0,top: 0}}
-                  >
-                    Hide
-                  </Button> 
+              <Box maxWidth="400px">           
 
                   <h1 style={{textAlign: 'center', fontSize:"20px"}} >
                     Your Countries
                   </h1> 
+                
               </Box>
               
               <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
@@ -76,16 +64,8 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                   <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
                 </Flex>
               </ScrollArea>
-
             </Flex>
           </Card>
-
-        </Flex>
-      ) : (
-        <Button  variant="solid" size="1" radius="full" style={{position: 'fixed',top: 0,right: 0,zIndex: 30}} onClick={handleShowClick}>
-          Countries 
-        </Button>
-      )}
     </>
   );
 }
