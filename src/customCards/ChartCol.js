@@ -1,9 +1,13 @@
 import '@radix-ui/themes/styles.css';
 import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
+import {FaSave} from 'react-icons/fa'; 
 import ChartCard from './ChartCard';
 import countryMapping from '../json/countries.json'
 import axios from 'axios';
+import * as htmlToImage from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { jsPDF } from "jspdf";
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
@@ -184,6 +188,22 @@ export function ChartCol({countryFilters}) {
       </Portal.Root>;  
   }
 
+  const onSave = () => {
+    htmlToImage.toPng(document.getElementById('chart-group'), { quality: 1 })
+        .then(function (dataUrl) {
+          
+          const pdf = new jsPDF();
+          const imgProps= pdf.getImageProperties(dataUrl);
+          const pdfWidth = pdf.internal.pageSize.getWidth()/2;
+          const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width);
+          
+          pdf.addImage(dataUrl, 'PNG', 50, 5,pdfWidth, pdfHeight);
+          let date = new Date().toString().split(' ')
+          date = date[1] + '-' + date[2]
+          pdf.save(`NPIP-Report-${date}.pdf`); 
+        });
+  }
+
   useEffect(() => {
       setDownloadChartData(getDownloadChartData(countryFilters, timeScale))
       setUploadChartData(getUploadChartData(countryFilters, timeScale))
@@ -215,13 +235,18 @@ export function ChartCol({countryFilters}) {
             <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
           </SegmentedControl.Root>
 
+          <Button style={{position:'relative', left:"10%"}} onClick={onSave}> <FaSave/></Button>
+          
           <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
+            
+            <div id="chart-group">
             <Flex direction="column" gapY="1">
-              <Box><ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></Box>
-              <Box><ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></Box>
-              <Box><ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></Box>
-              <Box><ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></Box>        
+                <Box><ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></Box>
+                <Box><ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></Box>
+                <Box><ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></Box>
+                <Box><ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></Box>        
             </Flex>
+            </div>
         </ScrollArea>
         </Card>
       
