@@ -1,15 +1,19 @@
 import React, {useState} from 'react'
 import '@radix-ui/themes/styles.css';
-import {Theme, ThemePanel } from '@radix-ui/themes';
-import { ChartCol } from './chartCol';
+import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import MapComponent from './MapComponent';
-import { Flex, Box, Card } from '@radix-ui/themes';
+import { Flex, Card} from '@radix-ui/themes';
+
+import MetricSelect from './MapMenu'
+
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
+import ComponentBar from './ComponentBar';
+import Help from './Help';
+
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 
@@ -19,7 +23,25 @@ for (const [code, name] of Object.entries(countryMapping)) {
 }
 
 function Dashboard() {
-    const [countryFilters, setCountryFilters] = useState([]);
+  const [showChartCol, setShowChartCol] = useState(false);
+  const [showFilterCol, setShowFilterCol] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [mapMenuMetric, setMapMenuMetric] = useState("average");
+  const [countryFilters, setCountryFilters] = useState([]);
+
+  const toggleChartCol = () => {
+      setShowChartCol(prevChartState => !prevChartState);
+  };
+
+  const toggleFilterCol = () => {
+      setShowFilterCol(prevFilterState => !prevFilterState);
+  };
+
+  const toggleShowHelp = () => {
+      setShowHelp(prevHelpState => !prevHelpState);
+  }
+
+    
 
     const pushCountry = (data, countryName,regionName="ALL") =>{
       setCountryFilters((prevCards) => [
@@ -65,12 +87,18 @@ function Dashboard() {
       let del_arr = countryFilters.slice(0, index).concat(countryFilters.slice(index + 1));
       setCountryFilters(del_arr);
     }
+
+    function onCountryCopy(index){
+      let countryCard = countryFilters[index];
+      setCountryFilters((prevCards) => [
+        ...prevCards,
+        countryCard
+      ]);
+    }
     
     function onCountryFilterChange(countryName, isp, id, city){
       let request_endpoint = ''
       if(regions.includes(city)){
-        console.log("we got a region!!")
-        console.log(region_name_iso[city])
         request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=ALL&region=${region_name_iso[city]}`
       }
       else{
@@ -87,13 +115,21 @@ function Dashboard() {
         setCountryFilters(lockedCards)
     }
 
+    function onMapMenuMetricChange(metric){
+      setMapMenuMetric(metric)
+    }
+
     return (
       <Flex > 
-        <ChartCol countryFilters={countryFilters}/>
-        {/* <MapComponent onCountryClick={addCountryFilter}/> */}
-        <Map countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
-        <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange} filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback}/>
-      </Flex>  
+        <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <MetricSelect metricChangeCallback={onMapMenuMetricChange}></MetricSelect>
+        {showChartCol && <ChartCol countryFilters={countryFilters}/>}
+        {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
+         filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
+        {showHelp && <Help/>}
+        <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+        
+      </Flex>
     );
   }
   

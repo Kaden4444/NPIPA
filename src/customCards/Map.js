@@ -1,10 +1,13 @@
 
 import React, { useEffect,useRef, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import africa from '../json/africa_boundaries.json'
 import iso_metrics from '../json/iso_metrics.json'
 import countryMapping from '../json/countries.json'
+import country_metrics from '../json/country_metrics.json'
+import 'react-flagpack/dist/style.css'
+import Vec2 from '../classes/Vec2';
 
 const downloadSpeedToHexColor = {
     "0-5": "#FF6F6F",       // Brighter Red
@@ -20,19 +23,42 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-function createColorsObject(data){
+function createCountryColorsObject(metric){
     var object = {}
-    for(var item in data){
-        object[countryMapping[item]] = getHexColorForSpeed((data[item].average_download + data[item].average_download)/2)
+    for(var item in country_metrics){
+        if(metric === "average"){
+          object[countryMapping[item]] = getHexColorForSpeed((country_metrics[item].average_download + country_metrics[item].average_upload)/2)
+        }
+        else if(metric === "download"){
+          object[countryMapping[item]] = getHexColorForSpeed((country_metrics[item].average_download))
+        }
+        else if(metric === "upload"){
+          object[countryMapping[item]] = getHexColorForSpeed((country_metrics[item].average_upload))
+        }
+        else{
+          object[countryMapping[item]] = getHexColorForSpeed((country_metrics[item].average_download + country_metrics[item].average_upload)/2)
+        }
     }
     object["Somalia"] = object["Somaliland"]
     return object
+
 }
 
-function createProvinceColorsObject(){
+function createProvinceColorsObject(metric){
     let p_object = {}
     for(var item in iso_metrics){
-        p_object[item] = getHexColorForSpeed(parseInt(iso_metrics[item][0]) + parseInt(iso_metrics[item][1]))
+      if(metric === "average"){
+        p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][0]) + parseInt(iso_metrics[item][1]))/2)
+      }
+      else if(metric == "download"){
+        p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][0])))
+      }
+      else if(metric == "upload"){
+        p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][1])))
+      }
+      else{
+        p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][0]) + parseInt(iso_metrics[item][1]))/2)
+      }
     }
     return p_object;
 }
@@ -47,24 +73,21 @@ function getHexColorForSpeed(speed) {
     return downloadSpeedToHexColor["100+"];
 }
 
-const fetchCountryColors = async () => {
-    // Replace with your API endpoint
-    const response = await fetch('https://cadesayner.pythonanywhere.com/getGeoData');
-    const data = await response.json();
-    return createColorsObject(data); // Expected format: { "Country Name": "#ff0000", ... }
-};
-
 function SetViewOnClick() {
     const map = useMapEvent('click', (e) => {
-      map.setView(e.latlng, 4.5, {
-        animate: true,
-      })
+      const layer = e.target; // Access the layer that was clicke
+      const bounds = layer.getBounds(); // Get the bounds of the clicked feature
+      let southWest = new Vec2(bounds._southWest.lat, bounds._southWest.lng)
+      let northEast = new Vec2(bounds._northEast.lat, bounds._northEast.lng)
+      let center = southWest.add(northEast.subtract(southWest).scale(1/2))
+      console.log(center)
+      map.fitBounds(bounds)
     })
     return null
 }
 
 function onCountryClick(feature, setFocusedData){
-        fetch(`https://cadesayner.pythonanywhere.com/getCountryGeoJson?country=${feature.properties.NAME}`) // Replace with your API URL
+        fetch(`https://cadesayner.pythonanywhere.com/getCountryGeoJson?country=${feature.properties.NAME}`) 
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -79,14 +102,26 @@ function onCountryClick(feature, setFocusedData){
         });
 }
 
-function Map({countryClickCallback, provinceClickCallback}) {
+function calculatePolygonCentroid(polygonCoords) {
+  let x = 0;
+  let y = 0;
+  let numPoints = 0;
+
+  polygonCoords[0].forEach(([lng, lat]) => {
+    x += lng;
+    y += lat;
+    numPoints += 1;
+  });
+
+  return [x / numPoints, y / numPoints];
+}
+
+function Map({metric, countryClickCallback, provinceClickCallback}) {
     const [focusedData, setFocusedData] = useState(null);
     const [countryColors, setCountryColors] = useState({});
     const [focusedColors, setFocusedColors] = useState({});
     const [selectedFeature, setSelectedFeature] = useState(null);
-
     const [force, setForce] = useState(false)
-    const [refresh, setRefresh] = useState(false)
 
     const provinceGeoJsonStyle = (feature)=>({
         fillColor: focusedColors[feature.properties.iso_3166_2] || 'grey',
@@ -95,59 +130,100 @@ function Map({countryClickCallback, provinceClickCallback}) {
         fillOpacity: 0.65,
         opacity: 0.5,
     });
+    
+    
+    var countryGeoJsonStyle = (feature)=>({fillColor: countryColors[feature.properties.NAME] || 'grey',
+      color: 'black',           // Border color
+      weight: feature.properties.NAME === selectedFeature ? 2: 0.5,              
+      opacity: feature.properties.NAME === selectedFeature ? 1: 0.5,
+      fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 })
+
 
     useEffect(() => {
-        const loadColors = async () => {
-          const colors = await fetchCountryColors();
-          setCountryColors(colors);
-        };
-        loadColors();
-        let p_colors = createProvinceColorsObject();
+        let c_colors = createCountryColorsObject(metric)
+        setCountryColors(c_colors);
+        let p_colors = createProvinceColorsObject(metric);
         setFocusedColors(p_colors);
       },
-    []);
+    [metric]);
 
-    useEffect(()=>{
-        setRefresh(!refresh); // Need this to get the chartjs component to wake the fuck up
-    },[selectedFeature])
+    // useEffect(()=>{
+    //   let c_colors = createCountryColorsObject(metric)
+    //   setCountryColors(c_colors);
+    // },[metric])
 
     useEffect(()=>{
         console.log("Focused data", focusedData)
-        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? idk fuck it
+        setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? 
     },[focusedData])
 
     const onEachFeature = (feature, layer) => {
         layer.on({
-            click: () => {
+            click: (e) => {
+              let centroid = [0,0]
+              if(feature.geometry.type === "Polygon"){
+                centroid = calculatePolygonCentroid(feature.geometry.coordinates)
+              }
+             
+              else if(feature.geometry.type = "MultiPolygon"){
+                centroid = calculatePolygonCentroid(feature.geometry.coordinates[0])
+              }
+              let map = e.sourceTarget._map 
+              map.setView({lat:centroid[1], lng:centroid[0]}, 5.2)
+              console.log(feature)
+              if(feature != selectedFeature){
                 onCountryClick(feature, setFocusedData);
                 setSelectedFeature(feature.properties.NAME) // set the selected feature here
-                countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
-              },
-              mouseover: (e) => {
-                layer.setStyle({ fillOpacity: 0.8 });
-              },
-              mouseout: (e) => {
-                const layer = e.target;
-                layer.setStyle({
-                  fillOpacity: 0.65,
-                });
               }
+                
+              },
+              
+              mousedown: (e) =>{
+                if (e.originalEvent.button === 1) {
+                  countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
+                }
+              },
+
+              // mouseover: (e) => {
+              //   if(feature.properties.NAME != selectedFeature){
+              //     layer.setStyle({ fillOpacity: 0.8});
+              //   }
+              // },
+              // mouseout: (e) => {
+              //   const layer = e.target;
+              //   if(feature.properties.NAME != selectedFeature && layer.feature.properties.NAME != selectedFeature){
+              //     console.log("changed")
+              //     console.log(feature.properties.NAME, layer.feature.properties.NAME)
+              //     layer.setStyle({
+              //       fillOpacity: 0.65,
+              //     });
+              //   }
+              // }
             });
-            const tooltipContent = `<div class="leaflet-tooltip-style"><strong>${feature.properties.NAME ? feature.properties.NAME : feature.properties.name}</strong></div>`;
+
+            {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
+            const tooltipContent = `<div class="leaflet-tooltip-style">
+            <strong>${feature.properties.NAME ? feature.properties.NAME : feature.properties.name}</strong>
+            </div>`;
             layer.bindTooltip(tooltipContent, {
               permanent: false,
               direction: 'auto',
               className: 'leaflet-tooltip-style'
             });
     };
+
     const onEachFeatureProvince = (feature, layer) => {
       layer.on({
-            click: () => {
+
+            mousedown: (e) =>{
+              if (e.originalEvent.button === 1) {
                 provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
-            }, 
+              }
+            },
 
             mouseover: (e) => {
               layer.setStyle({ fillOpacity: 0.8 });
+
             },
             mouseout: (e) => {
               const layer = e.target;
@@ -168,24 +244,18 @@ function Map({countryClickCallback, provinceClickCallback}) {
           });
   };
     return (
-      <div style={{ height: "100vh", width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <MapContainer center={[0, 16]} zoom={3.8} minZoom={3.8} maxZoom={10} style={{ height: "100%", width: "100%" }}>
-        <TileLayer
-            url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
-            attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
-        />
-            
-
-          <GeoJSON onEachFeature={(feature, layer) => onEachFeature(feature, layer)} data={africa} 
-          style={(feature) => ({
-            key:{refresh},
-            fillColor: countryColors[feature.properties.NAME] || 'grey',
-            color: 'black',           // Border color
-            weight: feature.properties.NAME === selectedFeature ? 2: 0.5,                // Border thickness
-            opacity: feature.properties.NAME === selectedFeature ? 1: 0.5,
-            
-            fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 // Hide specific country
-          })}
+      
+      
+        <MapContainer zoomControl={false} center={[0, 16]} maxBounds={[
+          [-40, -40], // South-West corner
+          [40, 75],   // North-East corner
+        ]} zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
+           
+        
+          <GeoJSON 
+            onEachFeature={(feature, layer) => onEachFeature(feature, layer)} 
+            data={africa} 
+            style={countryGeoJsonStyle}
           />
 
           {focusedData && (<GeoJSON 
@@ -194,10 +264,16 @@ function Map({countryClickCallback, provinceClickCallback}) {
             style={provinceGeoJsonStyle}
             onEachFeature={(feature, layer) => onEachFeatureProvince(feature, layer)}
             data={focusedData}/>)}
-          
+
+{  
+        <TileLayer
+            url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
+            attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
+        />
+      }   
+
         <SetViewOnClick />
         </MapContainer>
-      </div>
     );
   }
 
