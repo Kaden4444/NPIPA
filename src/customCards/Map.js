@@ -80,13 +80,14 @@ function SetViewOnClick() {
       let southWest = new Vec2(bounds._southWest.lat, bounds._southWest.lng)
       let northEast = new Vec2(bounds._northEast.lat, bounds._northEast.lng)
       let center = southWest.add(northEast.subtract(southWest).scale(1/2))
-      console.log(center)
+      console.log(bounds)
       map.fitBounds(bounds)
     })
     return null
 }
 
 function onCountryClick(feature, setFocusedData){
+
         fetch(`https://cadesayner.pythonanywhere.com/getCountryGeoJson?country=${feature.properties.NAME}`) 
         .then(response => {
           if (!response.ok) {
@@ -122,6 +123,7 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
     const [focusedColors, setFocusedColors] = useState({});
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [force, setForce] = useState(false)
+    const [hoveredRegion, setHoveredRegion] = useState(null);
 
     const provinceGeoJsonStyle = (feature)=>({
         fillColor: focusedColors[feature.properties.iso_3166_2] || 'grey',
@@ -130,7 +132,6 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
         fillOpacity: 0.65,
         opacity: 0.5,
     });
-    
     
     var countryGeoJsonStyle = (feature)=>({fillColor: countryColors[feature.properties.NAME] || 'grey',
       color: 'black',           // Border color
@@ -147,11 +148,6 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
       },
     [metric]);
 
-    // useEffect(()=>{
-    //   let c_colors = createCountryColorsObject(metric)
-    //   setCountryColors(c_colors);
-    // },[metric])
-
     useEffect(()=>{
         console.log("Focused data", focusedData)
         setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? 
@@ -165,40 +161,33 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
                 centroid = calculatePolygonCentroid(feature.geometry.coordinates)
               }
              
-              else if(feature.geometry.type = "MultiPolygon"){
+              else if(feature.geometry.type === "MultiPolygon"){
                 centroid = calculatePolygonCentroid(feature.geometry.coordinates[0])
               }
               let map = e.sourceTarget._map 
               map.setView({lat:centroid[1], lng:centroid[0]}, 5.2)
-              console.log(feature)
               if(feature != selectedFeature){
-                onCountryClick(feature, setFocusedData);
-                setSelectedFeature(feature.properties.NAME) // set the selected feature here
+                if(feature.properties.NAME != "Eswatini" && feature.properties.NAME != "S. Sudan" && feature.properties.NAME != "Somaliland"){
+                  onCountryClick(feature, setFocusedData);
+                  setSelectedFeature(feature.properties.NAME) // set the selected feature here
+                }
               }
                 
               },
               
               mousedown: (e) =>{
                 if (e.originalEvent.button === 1) {
+
                   countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
                 }
               },
 
-              // mouseover: (e) => {
-              //   if(feature.properties.NAME != selectedFeature){
-              //     layer.setStyle({ fillOpacity: 0.8});
-              //   }
-              // },
-              // mouseout: (e) => {
-              //   const layer = e.target;
-              //   if(feature.properties.NAME != selectedFeature && layer.feature.properties.NAME != selectedFeature){
-              //     console.log("changed")
-              //     console.log(feature.properties.NAME, layer.feature.properties.NAME)
-              //     layer.setStyle({
-              //       fillOpacity: 0.65,
-              //     });
-              //   }
-              // }
+              mouseover: (e) => {
+                setHoveredRegion(feature.properties.NAME);
+              },
+              mouseout: (e) => {
+                setHoveredRegion(null);
+              }
             });
 
             {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
@@ -217,7 +206,10 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
 
             mousedown: (e) =>{
               if (e.originalEvent.button === 1) {
-                provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
+                if(iso_metrics[feature.properties.iso_3166_2])
+                {
+                  provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
+                }
               }
             },
 
@@ -249,7 +241,9 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
         <MapContainer zoomControl={false} center={[0, 16]} maxBounds={[
           [-40, -40], // South-West corner
           [40, 75],   // North-East corner
-        ]} zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
+        ]} 
+
+        zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
            
         
           <GeoJSON 
