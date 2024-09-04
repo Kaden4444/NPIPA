@@ -129,3 +129,41 @@ button {
   cursor: default;
 }
 
+.ContextMenuContent,
+.ContextMenuSubContent {
+  min-width: 220px;
+  background-color: rgb(205, 213, 253);
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 5px;
+  box-shadow: 0px 10px 38px -10px rgba(110, 117, 124, 0.35), 0px 10px 20px -15px rgba(83, 149, 207, 0.986);
+}
+
+.ContextMenuItem[data-highlighted],
+.ContextMenuCheckboxItem[data-highlighted],
+.ContextMenuRadioItem[data-highlighted],
+.ContextMenuSubTrigger[data-highlighted] {
+  background-color: rgb(167, 180, 255);
+  color: black;
+}
+
+.ContextMenuItem,
+.ContextMenuCheckboxItem,
+.ContextMenuRadioItem,
+.ContextMenuSubTrigger {
+  font-size: 13px;
+  line-height: 1;
+  color: rgb(57, 53, 80);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 25px;
+  user-select: none;
+  outline: none;
+}
+
+
+

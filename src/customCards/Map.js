@@ -1,13 +1,16 @@
 
 import React, { useEffect,useRef, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent, useMapEvents, ZoomControl } from 'react-leaflet';
+import {Card, Flex} from '@radix-ui/themes';
 import 'leaflet/dist/leaflet.css';
 import africa from '../json/africa_boundaries.json'
 import iso_metrics from '../json/iso_metrics.json'
 import countryMapping from '../json/countries.json'
 import country_metrics from '../json/country_metrics.json'
+import * as ContextMenu from '@radix-ui/react-context-menu';
 import 'react-flagpack/dist/style.css'
 import Vec2 from '../classes/Vec2';
+import '../index.css';
 
 const downloadSpeedToHexColor = {
     "0-5": "#FF6F6F",       // Brighter Red
@@ -83,6 +86,14 @@ function SetViewOnClick() {
       console.log(bounds)
       map.fitBounds(bounds)
     })
+
+    // useMapEvents({
+    //   contextmenu: (event) => {
+    //       event.originalEvent.preventDefault(); // Prevent the default right-click menu
+    //       // console.log("Right-clicked on the map at:", event.latlng);
+    //       // Here, you can show your custom context menu if needed
+    //   }
+    // });
     return null
 }
 
@@ -123,7 +134,16 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
     const [focusedColors, setFocusedColors] = useState({});
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [force, setForce] = useState(false)
-    const [hoveredRegion, setHoveredRegion] = useState(null);
+    const [currentlyHovered, setCurrentlyHovered] = useState(null);
+    const [canDisplayContextMenu, setCanDisplayContext] = useState(true);
+
+    const [featureCounter, setFeatureCounter] = useState(0);
+    const [contextCounter, setContextCounter] = useState(0);
+    const countRef = useRef(contextCounter);
+    // Context menu state
+    const [contextMenuFeature, setCMFeature] = useState(null);
+    const [contextMenuType, setContextMenuType] = useState(null);
+    const [contextMenuAdmin, setCMAdmin] = useState(null);
 
     const provinceGeoJsonStyle = (feature)=>({
         fillColor: focusedColors[feature.properties.iso_3166_2] || 'grey',
@@ -132,13 +152,28 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
         fillOpacity: 0.65,
         opacity: 0.5,
     });
+
+    function contextMenuHandler(option){
+        switch(option){
+          case "Add":
+            if(contextMenuType === "COUNTRY"){
+              countryClickCallback(contextMenuFeature) ;
+            }
+            else if(contextMenuType === "REGION"){
+              provinceClickCallback(contextMenuAdmin, contextMenuFeature);
+            }
+        }
+    }
+
+    function updateFeatureCounter(){
+      setFeatureCounter(countRef.current + 1);
+    }
     
     var countryGeoJsonStyle = (feature)=>({fillColor: countryColors[feature.properties.NAME] || 'grey',
       color: 'black',           // Border color
       weight: feature.properties.NAME === selectedFeature ? 2: 0.5,              
       opacity: feature.properties.NAME === selectedFeature ? 1: 0.5,
       fillOpacity: feature.properties.NAME === selectedFeature ? 0 : 0.65 })
-
 
     useEffect(() => {
         let c_colors = createCountryColorsObject(metric)
@@ -147,6 +182,21 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
         setFocusedColors(p_colors);
       },
     [metric]);
+
+    useEffect(() => {
+      countRef.current = contextCounter
+    },
+    [contextCounter]);
+
+    useEffect(() => {
+      if(contextCounter === featureCounter){
+        setCanDisplayContext(true);
+      }
+      else{
+        setCanDisplayContext(false);
+      }
+    },
+    [contextCounter, featureCounter]);
 
     useEffect(()=>{
         console.log("Focused data", focusedData)
@@ -176,18 +226,15 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
               },
               
               mousedown: (e) =>{
-                if (e.originalEvent.button === 1) {
-
-                  countryClickCallback(feature.properties.NAME) // send data back so that it can populate the cards with that sweet sweet goodness
+                if(e.originalEvent.button === 2){
+                  // Right click:
+                  updateFeatureCounter()
+                  setCMFeature(feature.properties.NAME)
+                  setContextMenuType("COUNTRY")
                 }
               },
 
-              mouseover: (e) => {
-                setHoveredRegion(feature.properties.NAME);
-              },
-              mouseout: (e) => {
-                setHoveredRegion(null);
-              }
+
             });
 
             {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
@@ -210,6 +257,13 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
                 {
                   provinceClickCallback(feature.properties.admin, feature.properties.name) // send data back so that it can populate the cards with that sweet sweet goodness
                 }
+              }
+              if(e.originalEvent.button === 2){
+                // Right click:
+                updateFeatureCounter();
+                setCMFeature(feature.properties.name);
+                setCMAdmin(feature.properties.admin);
+                setContextMenuType("REGION");
               }
             },
 
@@ -236,38 +290,55 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
           });
   };
     return (
-      
-      
-        <MapContainer zoomControl={false} center={[0, 16]} maxBounds={[
-          [-40, -40], // South-West corner
-          [40, 75],   // North-East corner
-        ]} 
+            <ContextMenu.Root>
+              <ContextMenu.Trigger onContextMenu={() => setContextCounter(contextCounter+1)}>
+                <MapContainer zoomControl={false} center={[0, 16]} maxBounds={[
+                  [-40, -40], // South-West corner
+                  [40, 75],   // North-East corner
+                ]} 
 
-        zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
-           
-        
-          <GeoJSON 
-            onEachFeature={(feature, layer) => onEachFeature(feature, layer)} 
-            data={africa} 
-            style={countryGeoJsonStyle}
-          />
+                zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
+                  
+                  <GeoJSON 
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer)} 
+                    data={africa} 
+                    style={countryGeoJsonStyle}
+                  />
 
-          {focusedData && (<GeoJSON 
-            // onEachFeature={onEachFeature} 
-            key={force}
-            style={provinceGeoJsonStyle}
-            onEachFeature={(feature, layer) => onEachFeatureProvince(feature, layer)}
-            data={focusedData}/>)}
+                  {focusedData && (<GeoJSON 
+                    // onEachFeature={onEachFeature} 
+                    key={force}
+                    style={provinceGeoJsonStyle}
+                    onEachFeature={(feature, layer) => onEachFeatureProvince(feature, layer)}
+                    data={focusedData}/>)}
 
-{  
-        <TileLayer
-            url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
-            attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
-        />
-      }   
+                {  
+                <TileLayer
+                    url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=NX3QDTlTJcKS9eKWCLUy"
+                    attribution='&copy; <a href="https://www.maptiler.com/copyright">MapTiler</a>'
+                />
+                }   
 
-        <SetViewOnClick />
-        </MapContainer>
+                <SetViewOnClick />
+
+                </MapContainer>
+              </ContextMenu.Trigger>
+              <ContextMenu.Portal>
+                {canDisplayContextMenu && (<ContextMenu.Content className='ContextMenuContent'>
+                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => {contextMenuHandler("Add")}}>
+                    Add to Comparison
+                  </ContextMenu.Item>
+                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => alert('Not implemented yet')}>
+                    Blah Blah
+                  </ContextMenu.Item>
+                  <ContextMenu.Separator />
+                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => alert('Not implemented yet')}>
+                    Blah Blah
+                  </ContextMenu.Item>
+                </ContextMenu.Content>)}
+                </ContextMenu.Portal>
+            </ContextMenu.Root>
+
     );
   }
 
