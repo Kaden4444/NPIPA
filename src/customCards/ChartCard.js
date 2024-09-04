@@ -30,7 +30,14 @@ ChartJS.register(
 
 function ChartCard({ chartTitle, chartData, labels }) {
   const [data, setData] = useState([]);
-
+  const y_axis_callback = (value) => {
+    if(chartTitle.split(" ")[1] === "Speed"){
+      return `${value.toFixed(0)} Mbps`
+    }
+    else{
+      return `${value.toFixed(0)} ms`
+    }
+  }
   useEffect(() => {
     setData({
       labels: labels,
@@ -92,7 +99,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
           font: {
             size: 12
           },
-          callback: (value) => `${value} Mbps`
+          callback: y_axis_callback
         }
       }
     },

@@ -21,6 +21,10 @@ const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
   reversedMapping[name] = code;
 }
+reversedMapping["Central African Republic"] = "CF";
+reversedMapping["Democratic Republic of the Congo"] = "CD";
+reversedMapping["Somalia"] = "SO";
+reversedMapping["United Republic of Tanzania"] = "TZ";
 
 function Dashboard() {
   const [showChartCol, setShowChartCol] = useState(false);
