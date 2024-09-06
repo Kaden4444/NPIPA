@@ -164,7 +164,9 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
             }
 
           case "ISP-Leaderboard":
-            leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
+            if(option != "Add"){
+              leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
+            }
         }
     }
 
