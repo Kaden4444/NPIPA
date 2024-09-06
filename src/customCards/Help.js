@@ -3,29 +3,81 @@ import Draggable from "react-draggable";
 
 function  Help(){
     return(
-        <Draggable>
-            <Card size={3} variant='classic' content='center' style={{ height:"50vh", width:"40vh", position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "50%", left:"50%", top: "30%"}} >
-                <Flex  direction={"column"} gap={"2"} > 
+<Card
+  size={3}
+  variant='classic'
+  content='center'
+  style={{
+    position: 'fixed',
+    top: '10%',
+    left: '50%',
+    transform: 'translate(-50%, 0)',
+    height: '75vh',
+    width: '25vw', 
+    overflowY: 'auto', 
+    padding: '20px', 
+    border: '1px solid #ccc',
+    borderRadius: '8px', 
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+    backgroundColor: '#fff', 
+  }}
+>
+  <Flex direction={"column"} gap={"2"}>
+    <h1 style={{ margin: '0 0 20px 0', fontSize: '1.5em', color: '#333' }}>Welcome to NPIP!</h1>
 
-                    <title>Welcome to NPIP!</title>
-                    <Inset clip="border-box" side="top" pb="current">
-                        <img src="../imgs/Select.png" alt="Select" style={{display: 'flex', objectFit: 'contain', width: '100%', height: "100%", backgroundColor: 'var(--gray-5)'}}/>
-                        <h1>Select your country on the map!</h1>
-                    </Inset>
-                    
-                    <Inset clip="padding-box" side="top" pb="current">
-                        <img src="../imgs/Country.png" alt="Filter" style={{display: 'flex', objectFit: 'cover', width: '100%', height: "100%", backgroundColor: 'var(--gray-5)'}}/>
-                        <h1>See your selections on the right!</h1>
-                    </Inset>
+    <Inset clip="border-box" side="top" pb="current">
+      <img
+        src="/imgs/Select.png"
+        alt="Select"
+        style={{
+          display: 'block',
+          objectFit: 'contain',
+          width: '100%',
+          height: 'auto', // maintain aspect ratio ?
+          maxHeight: '150px', 
+          marginBottom: '10px', 
+          backgroundColor: 'var(--gray-5)',
+        }}
+      />
+      <h2 style={{ margin: '0', fontSize: '1.2em', color: '#555' }}>Select your country on the map!</h2>
+    </Inset>
+    
+    <Inset clip="padding-box" side="top" pb="current">
+      <img
+        src="/imgs/Country.png"
+        alt="Filter"
+        style={{
+          display: 'block',
+          objectFit: 'contain',
+          width: '100%',
+          height: 'auto',
+          maxHeight: '150px',
+          marginBottom: '10px',
+          backgroundColor: 'var(--gray-5)',
+        }}
+      />
+      <h2 style={{ margin: '0', fontSize: '1.2em', color: '#555' }}>See your selections on the right!</h2>
+    </Inset>
 
-                    <Inset clip="padding-box" side="top" pb="current">
-                        <img src="../imgs/Chart.png" alt="Chart" style={{display: 'flex', objectFit: 'cover', width: '100%', height: "100%", backgroundColor: 'var(--gray-5)'}}/>
-                        <h1>See their data on the left!</h1>
-                    </Inset>
-                </Flex>
-            </Card>
+    <Inset clip="padding-box" side="top" pb="current">
+      <img
+        src="/imgs/Chart.png"
+        alt="Chart"
+        style={{
+          display: 'block',
+          objectFit: 'contain',
+          width: '100%',
+          height: 'auto',
+          maxHeight: '150px',
+          marginBottom: '10px',
+          backgroundColor: 'var(--gray-5)',
+        }}
+      />
+      <h2 style={{ margin: '0', fontSize: '1.2em', color: '#555' }}>See their data on the left!</h2>
+    </Inset>
+  </Flex>
+</Card>
 
-        </Draggable>
         
     )
 }

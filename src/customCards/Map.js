@@ -128,7 +128,7 @@ function calculatePolygonCentroid(polygonCoords) {
   return [x / numPoints, y / numPoints];
 }
 
-function Map({metric, countryClickCallback, provinceClickCallback}) {
+function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCallback}) {
     const [focusedData, setFocusedData] = useState(null);
     const [countryColors, setCountryColors] = useState({});
     const [focusedColors, setFocusedColors] = useState({});
@@ -157,11 +157,14 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
         switch(option){
           case "Add":
             if(contextMenuType === "COUNTRY"){
-              countryClickCallback(contextMenuFeature) ;
+              countryClickCallback(contextMenuFeature);
             }
             else if(contextMenuType === "REGION"){
               provinceClickCallback(contextMenuAdmin, contextMenuFeature);
             }
+
+          case "ISP-Leaderboard":
+            leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
         }
     }
 
@@ -320,7 +323,6 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
                 }   
 
                 <SetViewOnClick />
-
                 </MapContainer>
               </ContextMenu.Trigger>
               <ContextMenu.Portal>
@@ -328,8 +330,8 @@ function Map({metric, countryClickCallback, provinceClickCallback}) {
                   <ContextMenu.Item className="ContextMenuItem" onSelect={() => {contextMenuHandler("Add")}}>
                     Add to Comparison
                   </ContextMenu.Item>
-                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => alert('Not implemented yet')}>
-                    Blah Blah
+                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => {contextMenuHandler("ISP-Leaderboard")}}>
+                    ISP Leaderboard
                   </ContextMenu.Item>
                   <ContextMenu.Separator />
                   <ContextMenu.Item className="ContextMenuItem" onSelect={() => alert('Not implemented yet')}>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
@@ -12,6 +12,7 @@ import Map from './Map';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json'
 import ComponentBar from './ComponentBar';
+import Leaderboard from './Leaderboard'
 import Help from './Help';
 
 
@@ -33,6 +34,9 @@ function Dashboard() {
   const [mapMenuMetric, setMapMenuMetric] = useState("average");
   const [countryFilters, setCountryFilters] = useState([]);
 
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardType, setLeaderboardType] = useState(null);
   const toggleChartCol = () => {
       setShowChartCol(prevChartState => !prevChartState);
   };
@@ -44,8 +48,11 @@ function Dashboard() {
   const toggleShowHelp = () => {
       setShowHelp(prevHelpState => !prevHelpState);
   }
+  
+  useEffect(() => {
+    console.log(leaderboardData)
+  }, [leaderboardData]);
 
-    
 
     const pushCountry = (data, countryName,regionName="ALL") =>{
       setCountryFilters((prevCards) => [
@@ -123,14 +130,34 @@ function Dashboard() {
       setMapMenuMetric(metric)
     }
 
+    function hideLeaderboard(){
+      setShowLeaderboard(false);
+      setLeaderboardData([])
+    }
+    
+    function leaderboardCallback(contextMenuType, featureName, leaderboardType){
+      switch(leaderboardType){
+        case "ISP":
+          if (contextMenuType === "COUNTRY"){
+            let requestEndpoint = `${api_endpoint}/getCountryISPLeaderboard?country=${reversedMapping[featureName]}`;
+            axios.get(requestEndpoint)
+            .then(response => setLeaderboardData(response.data)) //
+            .catch(error => console.error(error));
+          }
+      }
+      setShowLeaderboard(true)
+      setLeaderboardType("ISP")
+    }
+
     return (
       <Flex > 
-        <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region}/>
+        <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region} leaderboardCallback={leaderboardCallback}/>
         <MetricSelect metricChangeCallback={onMapMenuMetricChange}></MetricSelect>
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
+        {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
         <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
         
       </Flex>
