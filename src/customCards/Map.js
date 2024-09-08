@@ -82,18 +82,10 @@ function SetViewOnClick() {
       const bounds = layer.getBounds(); // Get the bounds of the clicked feature
       let southWest = new Vec2(bounds._southWest.lat, bounds._southWest.lng)
       let northEast = new Vec2(bounds._northEast.lat, bounds._northEast.lng)
-      let center = southWest.add(northEast.subtract(southWest).scale(1/2))
       console.log(bounds)
       map.fitBounds(bounds)
     })
 
-    // useMapEvents({
-    //   contextmenu: (event) => {
-    //       event.originalEvent.preventDefault(); // Prevent the default right-click menu
-    //       // console.log("Right-clicked on the map at:", event.latlng);
-    //       // Here, you can show your custom context menu if needed
-    //   }
-    // });
     return null
 }
 
@@ -154,22 +146,26 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
     });
 
     function contextMenuHandler(option){
-        switch(option){
-          case "Add":
-            if(contextMenuType === "COUNTRY"){
-              countryClickCallback(contextMenuFeature);
-            }
-            else if(contextMenuType === "REGION"){
-              provinceClickCallback(contextMenuAdmin, contextMenuFeature);
-            }
-
-          case "ISP-Leaderboard":
-            if(option != "Add"){
-              leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
-            }
+        if(option === "Add"){
+          if(contextMenuType === "COUNTRY"){
+            countryClickCallback(contextMenuFeature);
+          }
+          else if(contextMenuType === "REGION"){
+            provinceClickCallback(contextMenuAdmin, contextMenuFeature);
+          }
+        }
+        else if(option === "ISP-Leaderboard"){
+          if(option != "Add"){
+            leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
+          }
+        }
+        else if(option === "Region-Leaderboard"){
+          leaderboardCallback(contextMenuType, contextMenuFeature, "REGION")
+        }
+        else{
+          console.error("Invalid context menu selection.")
         }
     }
-
     function updateFeatureCounter(){
       setFeatureCounter(countRef.current + 1);
     }
@@ -221,8 +217,8 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
               }
               let map = e.sourceTarget._map 
               map.setView({lat:centroid[1], lng:centroid[0]}, 5.2)
-              if(feature != selectedFeature){
-                if(feature.properties.NAME != "Eswatini" && feature.properties.NAME != "S. Sudan" && feature.properties.NAME != "Somaliland"){
+              if(feature !== selectedFeature){
+                if(feature.properties.NAME !== "Eswatini" && feature.properties.NAME !== "S. Sudan" && feature.properties.NAME !== "Somaliland"){
                   onCountryClick(feature, setFocusedData);
                   setSelectedFeature(feature.properties.NAME) // set the selected feature here
                 }
@@ -333,16 +329,15 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
                     Add to Comparison
                   </ContextMenu.Item>
                   <ContextMenu.Item className="ContextMenuItem" onSelect={() => {contextMenuHandler("ISP-Leaderboard")}}>
-                    ISP Leaderboard
+                    ISP Rankings
                   </ContextMenu.Item>
                   <ContextMenu.Separator />
-                  <ContextMenu.Item className="ContextMenuItem" onSelect={() => alert('Not implemented yet')}>
-                    Blah Blah
-                  </ContextMenu.Item>
+                  {contextMenuType==="COUNTRY" && <ContextMenu.Item className="ContextMenuItem" onSelect={() => contextMenuHandler("Region-Leaderboard")}>
+                    Region Rankings
+                  </ContextMenu.Item>}
                 </ContextMenu.Content>)}
                 </ContextMenu.Portal>
             </ContextMenu.Root>
-
     );
   }
 

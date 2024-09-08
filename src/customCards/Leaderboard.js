@@ -5,7 +5,7 @@ import Draggable from "react-draggable";
 import {Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@radix-ui/themes';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross1Icon} from '@radix-ui/react-icons';
-
+import iso_region_map from '../json/iso_to_region_name.json'
 const SelectItem = React.forwardRef(({ children, className, ...props }, forwardedRef) => {
     return (
       <Select.Item className={classnames('SelectItem', className)} {...props} ref={forwardedRef}>
@@ -16,7 +16,6 @@ const SelectItem = React.forwardRef(({ children, className, ...props }, forwarde
       </Select.Item>
     );
   });
-
 
 function  Leaderboard({hide, data, Type}){
     const [selectedValue, setSelectedValue] = useState("Download Speed")
@@ -98,18 +97,25 @@ function  Leaderboard({hide, data, Type}){
 
         <Table.Body >
             {lb_data.map((entry, index) => (
+            (Type!=="REGION" || entry.iso in iso_region_map) && (Type!=="ISP" || entry.isp_name) ?
             <Table.Row key={index}>
-                <Table.RowHeaderCell>{entry.isp_name}</Table.RowHeaderCell>
+                <Table.RowHeaderCell>
+                    <Flex style={{width:'100%'}}>
+                    {`${index+1}) `} 
+                    {(Type === "ISP" ? entry.isp_name : iso_region_map[entry.iso])}
+                    {index === 0 && <img src="imgs/gold.png" style={{
+                    maxHeight: '35px',
+                    marginRight:'10px'
+                    }}/>}
+                    </Flex>
+                </Table.RowHeaderCell>
                 <Table.Cell> {selectedValue==="Download Speed"?entry.download_speed.toFixed(2):entry.upload_speed.toFixed(2)} mbps </Table.Cell>
-            </Table.Row>
+            </Table.Row> : ''
             ))}
-            
         </Table.Body>
         </Table.Root>
 
 </Card>
-
     )
 }
-
 export default Leaderboard;

@@ -88,7 +88,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
 
     return (
-    <Box  width="40vh">
+    <Box width="20vw">
       <Card size="2">
         <Box position="relative">
           <Flex direction="column" gap="1">

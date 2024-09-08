@@ -33,10 +33,10 @@ function Dashboard() {
   const [showHelp, setShowHelp] = useState(false);
   const [mapMenuMetric, setMapMenuMetric] = useState("average");
   const [countryFilters, setCountryFilters] = useState([]);
-
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardType, setLeaderboardType] = useState(null);
+
   const toggleChartCol = () => {
       setShowChartCol(prevChartState => !prevChartState);
   };
@@ -62,14 +62,16 @@ function Dashboard() {
     }
 
     const addCountryFilter = (countryName) => {
-      console.log(countryName)
+      setShowChartCol(true);
+      setShowFilterCol(true);
       axios.get(`${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL&region=ALL`)
       .then(response => pushCountry(response.data, countryName)) //
       .catch(error => console.error(error));
     }
 
     const addCountryFilter_Region = (countryName, regionName) => {
-      console.log(countryName, regionName)
+      setShowChartCol(true);
+      setShowFilterCol(true);
       let request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL&region=${region_name_iso[regionName]}`
       axios.get(request_endpoint)
       .then(response => pushCountry(response.data, countryName, regionName)) //
@@ -77,7 +79,6 @@ function Dashboard() {
     }
 
     const insertCountry = (countryName, id, data, isp, city) =>{
-      console.log("trying to enter the following data", data)
       setCountryFilters(prevCards =>
         prevCards.map((card, i) =>
           i === parseInt(id) ? { countryName, locked:false, isp:isp, countryData:data, city:city} : card
@@ -100,6 +101,7 @@ function Dashboard() {
     }
 
     function onCountryCopy(index){
+      setShowChartCol(true);
       let countryCard = countryFilters[index];
       setCountryFilters((prevCards) => [
         ...prevCards,
@@ -115,7 +117,7 @@ function Dashboard() {
       else{
         request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=${isp}&city=${city}&region=ALL`
       }
-      console.log(request_endpoint)
+      setShowChartCol(true);
       axios.get(request_endpoint)
       .then(response => insertCountry(countryName, id, response.data, isp, city)) //
       .catch(error => console.error(error));
@@ -136,17 +138,36 @@ function Dashboard() {
     }
     
     function leaderboardCallback(contextMenuType, featureName, leaderboardType){
-      switch(leaderboardType){
-        case "ISP":
-          if (contextMenuType === "COUNTRY"){
-            let requestEndpoint = `${api_endpoint}/getCountryISPLeaderboard?country=${reversedMapping[featureName]}`;
-            axios.get(requestEndpoint)
-            .then(response => setLeaderboardData(response.data)) //
-            .catch(error => console.error(error));
-          }
+      if (leaderboardType === "ISP")
+      {
+        if (contextMenuType === "COUNTRY"){
+          let requestEndpoint = `${api_endpoint}/getCountryISPLeaderboard?country=${reversedMapping[featureName]}`;
+          axios.get(requestEndpoint)
+          .then(response => setLeaderboardData(response.data)) //
+          .catch(error => console.error(error));
+        }
+        else if(contextMenuType === "REGION"){
+          let requestEndpoint = `${api_endpoint}/getRegionISPLeaderboard?region=${region_name_iso[featureName]}`;
+          axios.get(requestEndpoint)
+          .then(response => setLeaderboardData(response.data)) //
+          .catch(error => console.error(error));
+        }
+        setShowLeaderboard(true);
+        setLeaderboardType("ISP");
       }
-      setShowLeaderboard(true)
-      setLeaderboardType("ISP")
+      else if (leaderboardType === "REGION"){
+        if(contextMenuType === "REGION"){
+          console.error("Region menu can only be requested by a country call back")
+          return;
+        }
+        let requestEndpoint = `${api_endpoint}/getRegionLeaderboard?country=${reversedMapping[featureName]}`;
+          axios.get(requestEndpoint)
+          .then(response => setLeaderboardData(response.data)) //
+          .catch(error => console.error(error));
+        setShowLeaderboard(true);
+        setLeaderboardType("REGION");
+      }
+          
     }
 
     return (
@@ -159,7 +180,6 @@ function Dashboard() {
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
         <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
-        
       </Flex>
     );
   }

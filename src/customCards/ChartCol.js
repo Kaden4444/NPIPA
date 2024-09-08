@@ -167,26 +167,11 @@ export function ChartCol({countryFilters}) {
   const [uploadChartData, setUploadChartData] = useState([]);
   const [downloadLatencyChartData, setDownloadLatencyChartData] = useState([]);
   const [uploadLatencyChartData, setUploadLatencyChartData] = useState([]);
-  const [showColumn, setShowColumn] = useState(true);
+
   const [timeScale, setTimeScale] = useState("0");
   const [labels, setLabels] = useState([]); // The labels used by all charts in this column
   const [selectedValue, setSelectedValue] = useState("0")
 
-  const handleHideClick = () => {
-    setShowColumn(false);
-  };
-
-  const handleShowClick = () => {
-    setShowColumn(true);
-  };
-
-  const expandGraph = (value) => {
-      <Portal.Root >
-        <Box width="50vh" height="50vh" top="5" left="5">
-          
-        </Box>  
-      </Portal.Root>;  
-  }
 
   const onSave = () => {
     htmlToImage.toPng(document.getElementById('chart-group'), { quality: 1 })
