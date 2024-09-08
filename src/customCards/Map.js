@@ -136,6 +136,17 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
     const [contextMenuFeature, setCMFeature] = useState(null);
     const [contextMenuType, setContextMenuType] = useState(null);
     const [contextMenuAdmin, setCMAdmin] = useState(null);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setScreenWidth(window.innerWidth);
+      };
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     const provinceGeoJsonStyle = (feature)=>({
         fillColor: focusedColors[feature.properties.iso_3166_2] || 'grey',
@@ -190,6 +201,11 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
     [contextCounter]);
 
     useEffect(() => {
+      console.log(screenWidth)
+    },
+    [screenWidth]);
+
+    useEffect(() => {
       if(contextCounter === featureCounter){
         setCanDisplayContext(true);
       }
@@ -234,8 +250,6 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
                   setContextMenuType("COUNTRY")
                 }
               },
-
-
             });
 
             {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
@@ -298,7 +312,7 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
                   [40, 75],   // North-East corner
                 ]} 
 
-                zoom={4} minZoom={4} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
+                zoom={screenWidth > 1440 ? 4 : 3} minZoom={screenWidth > 1440 ? 4 : 3} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>
                   
                   <GeoJSON 
                     onEachFeature={(feature, layer) => onEachFeature(feature, layer)} 

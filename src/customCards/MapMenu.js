@@ -8,7 +8,7 @@ import Draggable from 'react-draggable';
 import SelectDemo from './Select';
 
 const MapMenu = ({metricChangeCallback}) => (
-        <Flex style={{position:"absolute", left:'27%', bottom:'82%', zIndex : 10}}>
+        <Flex style={{position:"fixed", left:'60%', top:'3%', zIndex : 10}}>
             <Flex width={"200px"} height={"160px"}>
                 <SelectDemo handleMetricChange={metricChangeCallback}> </SelectDemo>
             </Flex>

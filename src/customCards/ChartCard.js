@@ -110,7 +110,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
   const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
 
   return (
-    <div style={{ position: 'relative', height: '300px', width: '50vh', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
+    <div style={{ position: 'relative', height: '35vh', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
       <Dialog.Root>
         <Dialog.Trigger asChild>
           <Button size={1} style={{ position: "absolute", margin: '10px' }}>
@@ -132,7 +132,9 @@ function ChartCard({ chartTitle, chartData, labels }) {
       </Dialog.Root>
 
       {hasData ? (
-        <Line data={data} options={options} />
+        <div className="chart-container" style={{ width: '95%', height: '100%', marginTop:'10px'}}>
+          <Line data={data} options={options} />
+        </div>
       ) : (
         <div style={{ textAlign: 'center', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
           No data available

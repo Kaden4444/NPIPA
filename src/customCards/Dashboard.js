@@ -14,6 +14,7 @@ import region_name_iso from '../json/region_name_to_iso366.json'
 import ComponentBar from './ComponentBar';
 import Leaderboard from './Leaderboard'
 import Help from './Help';
+import Legend from './Legend';
 
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
@@ -179,6 +180,7 @@ function Dashboard() {
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
+        <Legend/>
         <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
       </Flex>
     );

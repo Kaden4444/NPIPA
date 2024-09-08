@@ -8,6 +8,7 @@ import axios from 'axios';
 import * as htmlToImage from 'html-to-image';
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { jsPDF } from "jspdf";
+import html2pdf from 'html2pdf.js';
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {
@@ -174,19 +175,31 @@ export function ChartCol({countryFilters}) {
 
 
   const onSave = () => {
-    htmlToImage.toPng(document.getElementById('chart-group'), { quality: 1 })
+    const pdf = new jsPDF();
+    pdf.setFontSize(12);  // Set font size for the title
+    pdf.text('Network Performance Insights Report', pdf.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+  
+    htmlToImage.toPng(document.getElementById(`chart-group-1`), { quality: 1 })
         .then(function (dataUrl) {
-          
-          const pdf = new jsPDF();
           const imgProps= pdf.getImageProperties(dataUrl);
           const pdfWidth = pdf.internal.pageSize.getWidth()/2;
           const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width);
-          
-          pdf.addImage(dataUrl, 'PNG', 50, 5,pdfWidth, pdfHeight);
-          let date = new Date().toString().split(' ')
-          date = date[1] + '-' + date[2]
-          pdf.save(`NPIP-Report-${date}.pdf`); 
+          pdf.addImage(dataUrl, 'PNG', 50, 25, pdfWidth, pdfHeight);
+          pdf.addPage();
+          htmlToImage.toPng(document.getElementById(`chart-group-2`), { quality: 1 })
+        .then(function (dataUrl) {
+          const imgProps= pdf.getImageProperties(dataUrl);
+          const pdfWidth = pdf.internal.pageSize.getWidth()/2;
+          const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width);
+          pdf.addImage(dataUrl, 'PNG', 50, 10, pdfWidth, pdfHeight);
+          let date = new Date().toString().split(' ');
+          date = date[1] + '-' + date[2];
+          pdf.save(`NPIP-Report-${date}.pdf`);
+        })
         });
+
+    
+
   }
 
   useEffect(() => {
@@ -209,30 +222,31 @@ export function ChartCol({countryFilters}) {
   return (
     <>
  (
-      
-        <Card size={3} variant='classic' style={{ alignContent:"center", position:"fixed", padding: '25px', borderRight: '1px solid #ccc'}} >
-
-          <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
-
-          <SegmentedControl.Root id="timeScaleSelect" content='center' value={selectedValue} onValueChange={e => setSelectedValue(e)} >
-            <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
-            <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
-            <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
-          </SegmentedControl.Root>
-
-          <Button style={{position:'relative', left:"10%"}} onClick={onSave}> <FaSave/></Button>
+          <Card size={3} variant='classic' style={{width:'25vw', display: 'flex', flexDirection: 'column', gap: '10px', height: '100vh', padding: '10px' }} >
+          <div>
+            <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
+            <Button style={{position:'relative'}} onClick={onSave}> <FaSave/></Button>
+          </div>
+          <Flex style={{width:'80%'}}>
+            <SegmentedControl.Root variant="surface"  size="1" id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)} >
+              <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
+              <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
+              <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
+            </SegmentedControl.Root>
+          </Flex>
           
-          <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
-            
-            <div id="chart-group">
-            <Flex direction="column" gapY="1">
-                <Box><ChartCard chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></Box>
-                <Box><ChartCard chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></Box>
-                <Box><ChartCard chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></Box>
-                <Box><ChartCard chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></Box>        
-            </Flex>
+          <ScrollArea  type="hover" scrollbars="vertical" style={{ height:"85vh", width:'100%', flex:1}}>
+            <div id="chart-group-1">
+              <div id="chart-1" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></div>
+              <div id="chart-2" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></div>
+              <div id="chart-3" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></div>
+              <br></br>
+              </div>
+            <div id="chart-group-2"> 
+             <div id="chart-4" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></div>        
+             <br></br>
             </div>
-        </ScrollArea>
+          </ScrollArea>
         </Card>
       
   )</>);
