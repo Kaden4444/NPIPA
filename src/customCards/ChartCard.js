@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Button, Box } from '@radix-ui/themes';
-import { FaExpandArrowsAlt, FaCross } from "react-icons/fa";
+import { FaExpandArrowsAlt, FaSave } from "react-icons/fa";
 import { Cross1Icon } from '@radix-ui/react-icons';
 import * as Dialog from '@radix-ui/react-dialog';
 
@@ -140,6 +140,8 @@ function ChartCard({ chartTitle, chartData, labels }) {
           No data available
         </div>
       )}
+
+    <Button style={{position: "absolute", margin: '10px', right: "0", top: "0" }} > <FaSave/></Button>
     </div>
   );
 }

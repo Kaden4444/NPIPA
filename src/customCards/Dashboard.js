@@ -3,6 +3,7 @@ import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
 import { Flex, Card} from '@radix-ui/themes';
+import Navbar from './Navbar';
 
 import MetricSelect from './MapMenu'
 
@@ -181,7 +182,8 @@ function Dashboard() {
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
         <Legend/>
-        <ComponentBar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+         <Navbar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+
       </Flex>
     );
   }

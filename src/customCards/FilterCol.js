@@ -5,7 +5,6 @@ import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
 export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback, onCountryCopyCallback}) {
-  const [showColumn, setShowColumn] = useState(true);
 
   function onIspSelect(countryName, isp, id, city){
     // on_card_change_callback(countryName, isp, id)
@@ -23,14 +22,6 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
     console.log(countryFilters)
   };
 
-  const handleHideClick = () => {
-    setShowColumn(false);
-  };
-
-  const handleShowClick = () => {
-    setShowColumn(true);
-  };
-
   function onDelete(index){
     onCountryDeleteCallback(index)
   } 
@@ -41,7 +32,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
 
   return (
     <> 
-        <Card size={2} variant='classic' content='center' style={{ position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0"}} >
+        <Card size={2} variant='surface' content='center' style={{ height:"90vh" ,position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0", marginTop: "5rem"}} >
             <Flex gap="5" align="center" direction="column" >
               <Box maxWidth="400px">           
 
@@ -51,7 +42,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                 
               </Box>
               
-              <ScrollArea type="hover" scrollbars="vertical" style={{ height:"85vh" }}>
+              <ScrollArea type="hover" scrollbars="vertical" style={{ height:"75vh" }}>
                 <Flex gap="5" align="center" direction="column" >
                   {countryFilters.map((country, index) => (
                   <FilterCard
@@ -70,7 +61,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                   
                   <AlertDialog.Root>
             <AlertDialog.Trigger>
-            <Button variant="soft" color='red' >Delete Unlocked Cards</Button>
+            <Button variant="classic" color='red' >Delete Unlocked Cards</Button>
             </AlertDialog.Trigger>
             <AlertDialog.Content maxWidth="450px">
               <AlertDialog.Title>Delete Unlocked Cards</AlertDialog.Title>

@@ -222,27 +222,28 @@ export function ChartCol({countryFilters}) {
   return (
     <>
  (
-          <Card size={3} variant='classic' style={{width:'25vw', display: 'flex', flexDirection: 'column', gap: '10px', height: '100vh', padding: '10px' }} >
+          <Card size={3} variant='classic' style={{width:'25vw',position:"fixed", display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '90vh', padding: '10px', marginTop: "5rem" }} >
           <div>
             <h1 style={{textAlign: 'center', fontSize:"30px"}} >Charts</h1> 
-            <Button style={{position:'relative'}} onClick={onSave}> <FaSave/></Button>
           </div>
-          <Flex style={{width:'80%'}}>
-            <SegmentedControl.Root variant="surface"  size="1" id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)} >
+          <Flex style={{width:'100%', right:"0", left:"0"} } direction={"row"} justify={'center'} align={'center'}>
+            
+            <SegmentedControl.Root variant="classic"  size="3"  id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)} >
               <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
               <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
               <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >
             </SegmentedControl.Root>
+            
           </Flex>
           
           <ScrollArea  type="hover" scrollbars="vertical" style={{ height:"85vh", width:'100%', flex:1}}>
             <div id="chart-group-1">
               <div id="chart-1" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Speed"} chartData={downloadChartData} labels={labels}/></div>
               <div id="chart-2" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Speed"} chartData={uploadChartData} labels={labels}/></div>
-              <div id="chart-3" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></div>
               <br></br>
               </div>
             <div id="chart-group-2"> 
+              <div id="chart-3" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></div>
              <div id="chart-4" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></div>        
              <br></br>
             </div>

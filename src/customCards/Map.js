@@ -306,8 +306,8 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
   };
     return (
             <ContextMenu.Root>
-              <ContextMenu.Trigger onContextMenu={() => setContextCounter(contextCounter+1)}>
-                <MapContainer zoomControl={false} center={[0, 16]} maxBounds={[
+              <ContextMenu.Trigger onContextMenu={() => setContextCounter(contextCounter+1)} >
+                <MapContainer  zoomControl={false} center={[0, 16]} maxBounds={[
                   [-40, -40], // South-West corner
                   [40, 75],   // North-East corner
                 ]} 
