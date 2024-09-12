@@ -1,6 +1,6 @@
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
-import { Flex, Box, Card, Button,ScrollArea  } from '@radix-ui/themes';
+import { Flex, Box, Card, Button, ScrollArea, AlertDialog  } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 
 
@@ -45,8 +45,8 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
             <Flex gap="5" align="center" direction="column" >
               <Box maxWidth="400px">           
 
-                  <h1 style={{textAlign: 'center', fontSize:"20px"}} >
-                    Your Countries
+                  <h1 style={{textAlign: 'center', fontSize:"30px"}} >
+                    Countries
                   </h1> 
                 
               </Box>
@@ -67,7 +67,32 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
                     onCopy={() => onCopy(index)}
                   />
                   ))}
-                  <Button variant="soft" color='red' onClick={onPurgeCards}>Purge</Button>
+                  
+                  <AlertDialog.Root>
+            <AlertDialog.Trigger>
+            <Button variant="soft" color='red' >Delete Unlocked Cards</Button>
+            </AlertDialog.Trigger>
+            <AlertDialog.Content maxWidth="450px">
+              <AlertDialog.Title>Delete Unlocked Cards</AlertDialog.Title>
+              <AlertDialog.Description size="2">
+                Are you sure? This will delete all country cards not locked with the blue lock icon.
+              </AlertDialog.Description>
+                          
+              <Flex gap="3" mt="4" justify="end">
+                <AlertDialog.Cancel>
+                  <Button variant="soft" color="gray">
+                    Cancel
+                  </Button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action>
+                  <Button variant="solid" color="red" onClick={onPurgeCards}>
+                    Yes, Delete
+                  </Button>
+                </AlertDialog.Action>
+              </Flex>
+            </AlertDialog.Content>
+          </AlertDialog.Root>  
+
                 </Flex>
               </ScrollArea>
             </Flex>

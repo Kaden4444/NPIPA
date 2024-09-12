@@ -224,7 +224,7 @@ export function ChartCol({countryFilters}) {
  (
           <Card size={3} variant='classic' style={{width:'25vw', display: 'flex', flexDirection: 'column', gap: '10px', height: '100vh', padding: '10px' }} >
           <div>
-            <h1 style={{textAlign: 'center', fontSize:"20px"}} >Your Charts</h1> 
+            <h1 style={{textAlign: 'center', fontSize:"30px"}} >Charts</h1> 
             <Button style={{position:'relative'}} onClick={onSave}> <FaSave/></Button>
           </div>
           <Flex style={{width:'80%'}}>
