@@ -4,29 +4,30 @@ import * as Select from '@radix-ui/react-select';
 import classnames from 'classnames';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import '../index.css';
+import { Theme } from '@radix-ui/themes';
 
 
 const SelectDemo = ({handleMetricChange}) => (
   // Handler function to update the selected value
-  
-  <Select.Root onValueChange={handleMetricChange} defaultValue='average'>
-    <Select.Trigger className="SelectTrigger" aria-label="Metrics">
-      <Select.Value placeholder="Change Map Metrics" />
+
+  <Select.Root   onValueChange={handleMetricChange} defaultValue='average' >
+    <Select.Trigger className="SelectTrigger" aria-label="Metrics" color='black'>
+      <Select.Value placeholder="Metrics" color='black' />
       <Select.Icon className="SelectIcon">
         <ChevronDownIcon />
       </Select.Icon>
     </Select.Trigger>
     <Select.Portal>
-      <Select.Content className="SelectContent">
+      <Select.Content color='black' className="SelectContent">
         <Select.ScrollUpButton className="SelectScrollButton">
           <ChevronUpIcon />
         </Select.ScrollUpButton>
         <Select.Viewport className="SelectViewport">
           <Select.Group>
-            <Select.Label className="SelectLabel">Metrics</Select.Label>
-            <SelectItem value="download">Download Speed</SelectItem>
-            <SelectItem value="upload">Upload Speed</SelectItem>
-            <SelectItem value="average">Average Network Performance</SelectItem>
+            
+            <SelectItem value="download" color='black'>Download Speed</SelectItem>
+            <SelectItem value="upload" color='black'>Upload Speed</SelectItem>
+            <SelectItem value="average" color='black'>Average</SelectItem>
           </Select.Group>
         </Select.Viewport>
         <Select.ScrollDownButton className="SelectScrollButton">
@@ -34,7 +35,8 @@ const SelectDemo = ({handleMetricChange}) => (
         </Select.ScrollDownButton>
       </Select.Content>
     </Select.Portal>
-  </Select.Root>
+  </Select.Root >
+
 );
 
 const SelectItem = React.forwardRef(({ children, className, ...props }, forwardedRef) => {

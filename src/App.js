@@ -6,9 +6,8 @@ import  Dashboard  from './customCards/Dashboard';
 
 function App() {
   return (
-    <Theme appearance="inherit">
+    <Theme appearance="dark" panelBackground='solid'>
       <Dashboard/>
-      
     </Theme> 
   );
 }

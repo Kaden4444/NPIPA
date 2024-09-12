@@ -2,17 +2,16 @@ import React, {useEffect, useState} from 'react'
 import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import { Flex, Card} from '@radix-ui/themes';
+import { Flex, Card, Box} from '@radix-ui/themes';
 import Navbar from './Navbar';
 
-import MetricSelect from './MapMenu'
+import MapMenu from './MapMenu'
 
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
 import regions from '../json/regions.json'
-import region_name_iso from '../json/region_name_to_iso366.json'
-import ComponentBar from './ComponentBar';
+import region_name_iso from '../json/region_name_to_iso366.json';
 import Leaderboard from './Leaderboard'
 import Help from './Help';
 import Legend from './Legend';
@@ -175,14 +174,18 @@ function Dashboard() {
     return (
       <Flex > 
         <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region} leaderboardCallback={leaderboardCallback}/>
-        <MetricSelect metricChangeCallback={onMapMenuMetricChange}></MetricSelect>
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
-        <Legend/>
-         <Navbar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+        <Flex direction={"column"} align={'center'} justify={'center'}>
+          <Box><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Box>
+          <Box><Legend/></Box>
+
+        </Flex>
+        
+        <Navbar  showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
 
       </Flex>
     );

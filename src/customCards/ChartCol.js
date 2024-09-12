@@ -1,5 +1,5 @@
 import '@radix-ui/themes/styles.css';
-import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal} from '@radix-ui/themes';
+import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal, Theme} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
 import {FaSave} from 'react-icons/fa'; 
 import ChartCard from './ChartCard';
@@ -220,8 +220,6 @@ export function ChartCol({countryFilters}) {
   },[selectedValue])
 
   return (
-    <>
- (
           <Card size={3} variant='classic' style={{width:'25vw',position:"fixed", display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '90vh', padding: '10px', marginTop: "5rem" }} >
           <div>
             <h1 style={{textAlign: 'center', fontSize:"30px"}} >Charts</h1> 
@@ -249,7 +247,6 @@ export function ChartCol({countryFilters}) {
             </div>
           </ScrollArea>
         </Card>
-      
-  )</>);
+);
   
 } 

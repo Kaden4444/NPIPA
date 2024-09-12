@@ -31,7 +31,7 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   }
 
   return (
-    <> 
+  
         <Card size={2} variant='surface' content='center' style={{ height:"90vh" ,position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0", marginTop: "5rem"}} >
             <Flex gap="5" align="center" direction="column" >
               <Box maxWidth="400px">           
@@ -88,6 +88,5 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
               </ScrollArea>
             </Flex>
           </Card>
-    </>
   );
 }
