@@ -1,6 +1,7 @@
 import '@radix-ui/themes/styles.css';
 import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal, Theme} from '@radix-ui/themes';
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import {FaSave} from 'react-icons/fa'; 
 import ChartCard from './ChartCard';
 import countryMapping from '../json/countries.json'
@@ -173,6 +174,11 @@ export function ChartCol({countryFilters}) {
   const [labels, setLabels] = useState([]); // The labels used by all charts in this column
   const [selectedValue, setSelectedValue] = useState("0")
 
+  const screenWidth = window.innerWidth;
+  const card_style = {width:'25vw',position:"fixed", display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '90vh', padding: '10px', marginTop: "4rem" }
+  if(screenWidth >= 1000 && screenWidth <=1440){
+    card_style.width='30vw'
+  }
 
   const onSave = () => {
     const pdf = new jsPDF();
@@ -218,7 +224,14 @@ export function ChartCol({countryFilters}) {
   },[selectedValue])
 
   return (
-          <Card size={3} variant='classic' style={{width:'25vw',position:"fixed", display: 'flex', flexDirection: 'column', gap: '0.5rem', height: '90vh', padding: '10px', marginTop: "5rem" }} >
+        <motion.div
+          initial={{ x: -300, opacity: 0 }}  // Start from offscreen left
+          animate={{ x: 0, opacity: 1 }}     // Animate to visible position
+          exit={{ x: -300, opacity: 0 }}      // Animate out back to the left
+          transition={{ duration: 0.5 }}      // Animation duration
+        >
+
+<Card size={3} variant='classic' style={card_style} >
           <div>
             <h1 style={{textAlign: 'center', fontSize:"30px"}} >Charts</h1> 
           </div>
@@ -245,6 +258,8 @@ export function ChartCol({countryFilters}) {
             </div>
           </ScrollArea>
         </Card>
+        </motion.div>
+          
 );
   
 } 

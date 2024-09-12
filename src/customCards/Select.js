@@ -24,7 +24,6 @@ const SelectDemo = ({handleMetricChange}) => (
         </Select.ScrollUpButton>
         <Select.Viewport className="SelectViewport">
           <Select.Group>
-            
             <SelectItem value="download" color='black'>Download Speed</SelectItem>
             <SelectItem value="upload" color='black'>Upload Speed</SelectItem>
             <SelectItem value="average" color='black'>Average</SelectItem>

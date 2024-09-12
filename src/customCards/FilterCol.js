@@ -2,10 +2,14 @@ import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { Flex, Box, Card, Button, ScrollArea, AlertDialog  } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
-
+import { motion } from 'framer-motion';
 
 export function FilterCol({countryFilters, onCountryLockChange, filter_change_callback, purgeCards, onCountryDeleteCallback, onCountryCopyCallback}) {
-
+  const screenWidth = window.innerWidth;
+  const card_style = {minWidth:'23vw', height:"90vh" ,position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0", marginTop: "4rem"}
+  if(screenWidth >= 1000 && screenWidth <=1440){
+    card_style.minWidth='30vw'
+  }
   function onIspSelect(countryName, isp, id, city){
     // on_card_change_callback(countryName, isp, id)
     filter_change_callback(countryName,isp,id, city)
@@ -31,21 +35,23 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
   }
 
   return (
-  
-        <Card size={2} variant='surface' content='center' style={{ height:"90vh" ,position:"fixed", padding: '25px', borderRight: '1px solid #ccc', right: "0", marginTop: "5rem"}} >
+        <motion.div initial={{ x: '120vw', opacity: 0 }}  // Start from offscreen left
+        animate={{ x: '100vw', opacity: 1 }}     // Animate to visible position
+        exit={{ x: -300, opacity: 0 }}      // Animate out back to the left
+        transition={{ duration: 0.5 }}>  
+        <Card  size={2} variant='surface' content='center' style={card_style} >
             <Flex gap="5" align="center" direction="column" >
               <Box maxWidth="400px">           
 
                   <h1 style={{textAlign: 'center', fontSize:"30px"}} >
                     Countries
                   </h1> 
-                
               </Box>
-              
               <ScrollArea type="hover" scrollbars="vertical" style={{ height:"75vh" }}>
                 <Flex gap="5" align="center" direction="column" >
                   {countryFilters.map((country, index) => (
                   <FilterCard
+                    screenwidth={card_style.minWidth}
                     key={index}
                     card_index={index}
                     initialRegion={country.city}
@@ -88,5 +94,6 @@ export function FilterCol({countryFilters, onCountryLockChange, filter_change_ca
               </ScrollArea>
             </Flex>
           </Card>
+        </motion.div>
   );
 }

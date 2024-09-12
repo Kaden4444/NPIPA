@@ -174,19 +174,19 @@ function Dashboard() {
 
     return (
       <Flex > 
+        <Navbar  showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
         <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region} leaderboardCallback={leaderboardCallback}/>
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
-        <NetworkTest/>
-        <Flex direction={"column"} align={'center'} justify={'center'}>
-          <Box><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Box>
-          <Box><Legend/></Box>
+        
+        <Flex style={{width:'auto', justifyContent:'center', alignContent:'center'}}>
+          <Flex><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Flex>
+          <Flex><Legend/></Flex>
         </Flex>
         
-        <Navbar  showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
 
       </Flex>
     );

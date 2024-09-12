@@ -58,11 +58,11 @@ function  Leaderboard({hide, data, Type}){
     border: '1px solid #ccc',
     borderRadius: '8px', // Add rounded corners for a softer look
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Add subtle shadow for depth
-    backgroundColor: '#fff', // Ensure background color contrasts with content
+    backgroundColor: '#000', // Ensure background color contrasts with content
   }}
 >       <Flex>
             <Select.Root onValueChange={onSelectChange} defaultValue='Download Speed'>
-                <Select.Trigger className="SelectTrigger" aria-label="Metrics">
+                <Select.Trigger style={{backgroundColor:'black'}} className="SelectTrigger" aria-label="Metrics">
                 <Select.Value placeholder="Change Map Metrics" />
                 <Select.Icon className="SelectIcon">
                     <ChevronDownIcon />

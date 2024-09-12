@@ -25,33 +25,33 @@ function NetworkTest(){
                 },
                 downloadMeasurement: function (data) {
                     if (data.Source === 'client') {
-                        setDownloadSpeed(data.Data.MeanClientMbps.toFixed(2));
+                        setDownloadSpeed(data.Data.MeanClientMbps.toFixed(1));
                     }
                 },
                 downloadComplete: function (data) {
                     // (bytes/second) * (bits/byte) / (megabits/bit) = Mbps
-                    const serverBw = data.LastServerMeasurement.BBRInfo.BW * 8 / 1000000;
-                    const clientGoodput = data.LastClientMeasurement.MeanClientMbps;
-                    console.log(
-                        `Download test is complete:
-    Instantaneous server bottleneck bandwidth estimate: ${serverBw} Mbps
-    Mean client goodput: ${clientGoodput} Mbps`);
-                    setDownloadSpeed(clientGoodput.toFixed(2));
+                    if(data.LastServerMeasurement){
+                        const serverBw = data.LastServerMeasurement.BBRInfo.BW * 8 / 1000000;
+                        const clientGoodput = data.LastClientMeasurement.MeanClientMbps;
+                        setDownloadSpeed(clientGoodput.toFixed(1));
+                    }
                 },
                 uploadMeasurement: function (data) {
                     if (data.Source === 'server') {
-                        setUploadSpeed((data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8).toFixed(2));
+                        setUploadSpeed((data.Data.TCPInfo.BytesReceived / data.Data.TCPInfo.ElapsedTime * 8).toFixed(1));
                     }
                 },
                 uploadComplete: function(data) {
-                    const bytesReceived = data.LastServerMeasurement.TCPInfo.BytesReceived;
-                    const elapsed = data.LastServerMeasurement.TCPInfo.ElapsedTime;
-                    // bytes * bits/byte / microseconds = Mbps
-                    const throughput =
-                    bytesReceived * 8 / elapsed;
-                    console.log(
-                        `Upload test completed in ${(elapsed / 1000000).toFixed(2)}s
-        Mean server throughput: ${throughput} Mbps`);
+                    if(data.LastServerMeasurement){
+                        const bytesReceived = data.LastServerMeasurement.TCPInfo.BytesReceived;
+                        const elapsed = data.LastServerMeasurement.TCPInfo.ElapsedTime;
+                        // bytes * bits/byte / microseconds = Mbps
+                        const throughput =
+                        bytesReceived * 8 / elapsed;
+                        console.log(
+                            `Upload test completed in ${(elapsed / 1000000).toFixed(1)}s
+            Mean server throughput: ${throughput} Mbps`);
+                    }
                 },
                 error: function (err) {
                     console.log('Error while running the test:', err.message);
@@ -62,9 +62,10 @@ function NetworkTest(){
         });
     },[])
     return ( 
-        <Card style={{position:'absolute', left:'100px', top:'200px', fontWeight:'bold' , fontSize:'14px', height:'22px', display:'flex', alignItems:'center'}}> 
-            <Flex> <img style={{width:'20px'}} src='imgs/download.svg'/> Download: {downloadSpeed} mbps </Flex>
-            <Flex> <img style={{width:'20px'}} src='imgs/upload.svg'/>  Upload: {uploadSpeed} mbps </Flex>
+        <Card style={{backgroundColor:'#373f3d', width:'20vw', height:'3.5rem', fontWeight:'bold' , fontSize:'14px', display:'flex', alignItems:'center', justifyContent:'center'}}> 
+            <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'white'}} src='imgs/download.png'/> {downloadSpeed} mbps </Flex>
+            <span style={{width:'20px'}}> </span>
+            <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'#ceecee'}} src='imgs/upload.png'/> {uploadSpeed} mbps </Flex>
         </Card>)
 }
 

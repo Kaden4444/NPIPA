@@ -6,6 +6,7 @@ import regions_cities from '../json/regions_and_cities.json';
 import countryMapping from '../json/countries.json';
 import Flag from 'react-flagpack';
 import 'react-flagpack/dist/style.css'
+import { motion } from 'framer-motion';
 
 function searchCities(countryCode, searchQuery) {
   const country = regions_cities.find(d => d.country_code === countryCode);
@@ -28,7 +29,7 @@ for (const [code, name] of Object.entries(countryMapping)) {
     reversedMapping[name] = code;
 }
 
-export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index, onDelete, initialRegion, initialISP, onCopy}) {
+export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, card_index, onDelete, initialRegion, initialISP, onCopy, screenwidth}) {
     const [ispSearch, setIspSearch] = useState('');
     const [ispOptions, setIspOptions] = useState([]);
     const [region_or_city_search, setCitySearch] = useState('');
@@ -88,67 +89,73 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
 
 
     return (
-    <Box width="20vw">
-      <Card size="2" >
-        <Box position="relative">
-          <Flex direction="column" gap="1">
-            <Flex direction="row" gap="2" minWidth="350px" width="350px">
-              <Flex direction={"row"} gapX="2" align={"center"}>
-                <Text as="div" size="2" weight="bold" >{CountryName}</Text>  
-                <Flag hasDropShadow="true" code={reversedMapping[CountryName]} hasBorder="True"/>
+    <motion.div initial={{opacity:0}}
+    animate={{opacity:1}}
+    exit={{opacity:1}}
+    transition={{duration: 0.8}}>
+        <Box width={screenwidth==='23vw'? "20vw":"27vw"}>
+        <Card size="2">
+          <Box position="relative">
+            <Flex direction="column" gap="1">
+              <Flex direction="row" gap="2" >
+                <Flex direction={"row"} gapX="2" align={"center"}>
+                  <Text as="div" size="2" weight="bold" >{CountryName}</Text>  
+                  <Flag hasDropShadow="true" code={reversedMapping[CountryName]} hasBorder="True"/>
+                </Flex>
+              </Flex>
+
+              <Box position="absolute" top="0" right="0">
+                <Flex direction="row" gap="2">
+                  <Button variant="soft" onClick={onCopy} color='purple' size={'1'}><FaCopy/></Button>
+                  <Button variant="soft" onClick={onDelete} color='red' size={'1'}><FaTrash /></Button>
+                  <Button onClick={onToggleLock} size={"1"} variant={ isLocked ? 'solid' : "outline"}   >{isLocked ? <FaLock /> : <FaUnlock />}</Button>
+                </Flex>
+              </Box>
+
+              <Flex direction="column" gap="" align="left">
+                <Text> City/Region: {current_city_or_region_selection}</Text>
+                <input type="text" placeholder="Search City or Region" value={region_or_city_search} onChange={handleCityInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
+              </Flex>
+
+              <Flex gap="4" direction="column" style={{marginTop: '10px' }}> 
+                {region_or_city_options.length > 0 &&(
+                  <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '2px solid #444', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
+                    {region_or_city_options.map((city, index) => (
+                      <li
+                        key={index}
+                        style={{ padding: '5px', cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#191919' : '#000' }}
+                        onClick={() => handleCitySelect(city)}>
+                        {city}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Flex>
+
+              <Flex direction="column" gap="" align="left">
+              <Text>ISP: {current_isp_selection}</Text>
+                <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleISPInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
               </Flex>
             </Flex>
+          </Box>
 
-            <Box position="absolute" top="0" right="0">
-              <Flex direction="row" gap="2">
-                <Button variant="soft" onClick={onCopy} color='purple' size={'1'}><FaCopy/></Button>
-                <Button variant="soft" onClick={onDelete} color='red' size={'1'}><FaTrash /></Button>
-                <Button onClick={onToggleLock} size={"1"} variant={ isLocked ? 'solid' : "outline"}   >{isLocked ? <FaLock /> : <FaUnlock />}</Button>
+          <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
+                {ispOptions.length > 0 && (
+                  <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '2px solid #444', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
+                    {ispOptions.map((isp, index) => (
+                      <li
+                        key={index}
+                        style={{ padding: '5px', cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#191919' : '#000' }}
+                        onClick={() => handleIspSelect(isp)}>
+                        {isp}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </Flex>
-            </Box>
-
-            <Flex direction="column" gap="" align="left">
-              <Text> City/Region: {current_city_or_region_selection}</Text>
-              <input type="text" placeholder="Search City or Region" value={region_or_city_search} onChange={handleCityInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
-            </Flex>
-
-            <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
-              {region_or_city_options.length > 0 &&(
-                <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
-                  {region_or_city_options.map((city, index) => (
-                    <li
-                      key={index}
-                      style={{ padding: '5px', cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }}
-                      onClick={() => handleCitySelect(city)}>
-                      {city}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Flex>
-
-            <Flex direction="column" gap="" align="left">
-            <Text>ISP: {current_isp_selection}</Text>
-              <input type="text" placeholder="Search ISP..."value={ispSearch} onChange={handleISPInputChange} style={{ width: '100%', padding: '3px', marginTop: '5px' }} />
-            </Flex>
-          </Flex>
-        </Box>
-
-        <Flex gap="4" direction="column" style={{ marginTop: '10px' }}> 
-              {ispOptions.length > 0 && (
-                <ul style={{ listStyleType: 'none', padding: 0, margin: 0, border: '5px solid #ddd', borderRadius: '5px', maxHeight: '150px', overflowY: 'auto' }}>
-                  {ispOptions.map((isp, index) => (
-                    <li
-                      key={index}
-                      style={{ padding: '5px', cursor: 'pointer', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }}
-                      onClick={() => handleIspSelect(isp)}>
-                      {isp}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Flex>
-      </Card>
-    </Box>
+        </Card>
+      </Box>
+    </motion.div>
+    
   );
 }
