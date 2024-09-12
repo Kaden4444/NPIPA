@@ -198,8 +198,6 @@ export function ChartCol({countryFilters}) {
         })
         });
 
-    
-
   }
 
   useEffect(() => {
@@ -228,7 +226,7 @@ export function ChartCol({countryFilters}) {
           </div>
           <Flex style={{width:'100%', right:"0", left:"0"} } direction={"row"} justify={'center'} align={'center'}>
             
-            <SegmentedControl.Root variant="classic"  size="3"  id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)} >
+            <SegmentedControl.Root variant="classic"  size="1"  id="timeScaleSelect" value={selectedValue} onValueChange={e => setSelectedValue(e)} >
               <SegmentedControl.Item value="0">Last 5 Years</SegmentedControl.Item>
               <SegmentedControl.Item value="2">Last 12 Months</SegmentedControl.Item >
               <SegmentedControl.Item value="1">Last 6 Months</SegmentedControl.Item >

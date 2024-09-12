@@ -16,6 +16,7 @@ import ComponentBar from './ComponentBar';
 import Leaderboard from './Leaderboard'
 import Help from './Help';
 import Legend from './Legend';
+import NetworkTest from './NetworkTest';
 
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
@@ -182,6 +183,7 @@ function Dashboard() {
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
         <Legend/>
+        <NetworkTest/>
          <Navbar showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
 
       </Flex>
