@@ -15,6 +15,7 @@ import region_name_iso from '../json/region_name_to_iso366.json';
 import Leaderboard from './Leaderboard'
 import Help from './Help';
 import Legend from './Legend';
+import NetworkTest from './NetworkTest';
 
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
@@ -179,10 +180,10 @@ function Dashboard() {
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
+        <NetworkTest/>
         <Flex direction={"column"} align={'center'} justify={'center'}>
           <Box><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Box>
           <Box><Legend/></Box>
-
         </Flex>
         
         <Navbar  showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
