@@ -16,6 +16,8 @@ import Leaderboard from './Leaderboard'
 import Help from './Help';
 import Legend from './Legend';
 import NetworkTest from './NetworkTest';
+import MapSettings from './MapSettings';
+import __WEBPACK_EXTERNAL_MODULE_jspdf__ from 'html2pdf.js';
 
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
@@ -29,7 +31,7 @@ reversedMapping["Democratic Republic of the Congo"] = "CD";
 reversedMapping["Somalia"] = "SO";
 reversedMapping["United Republic of Tanzania"] = "TZ";
 
-function Dashboard() {
+function Dashboard({country}) {
   const [showChartCol, setShowChartCol] = useState(false);
   const [showFilterCol, setShowFilterCol] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -38,7 +40,7 @@ function Dashboard() {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardType, setLeaderboardType] = useState(null);
-
+  const [showMapSettings, setShowMapSettings] = useState(false);
   const toggleChartCol = () => {
       setShowChartCol(prevChartState => !prevChartState);
   };
@@ -50,10 +52,37 @@ function Dashboard() {
   const toggleShowHelp = () => {
       setShowHelp(prevHelpState => !prevHelpState);
   }
+
+  const toggleShowMapSettings= () => {
+    setShowMapSettings(!showMapSettings);
+  }
   
+  useEffect(()=>{
+    let previousSession = window.localStorage.getItem("countryFilters")
+    if(previousSession != null){
+      let sessionData = JSON.parse(previousSession)
+      if(sessionData.length !== 0){
+        setCountryFilters(JSON.parse(previousSession))
+        setShowChartCol(true);
+        setShowFilterCol(true);
+      }
+      else if(countryMapping[country]){
+        addCountryFilter(countryMapping[country])
+      }
+    }
+    else if(countryMapping[country]){
+      addCountryFilter(countryMapping[country])
+    }
+  }, [country])
+
+
   useEffect(() => {
     console.log(leaderboardData)
   }, [leaderboardData]);
+
+  useEffect(()=>{
+    window.localStorage.setItem("countryFilters", JSON.stringify(countryFilters))
+  },[countryFilters])
 
 
     const pushCountry = (data, countryName,regionName="ALL") =>{
@@ -77,6 +106,15 @@ function Dashboard() {
       let request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=ALL&region=${region_name_iso[regionName]}`
       axios.get(request_endpoint)
       .then(response => pushCountry(response.data, countryName, regionName)) //
+      .catch(error => console.error(error));
+    }
+
+    const addCountryFilter_City = (countryName, cityName) => {
+      setShowChartCol(true);
+      setShowFilterCol(true);
+      let request_endpoint = `${api_endpoint}/getCountryData?country=${reversedMapping[countryName]}&isp=ALL&city=${cityName}&region=ALL`
+      axios.get(request_endpoint)
+      .then(response => pushCountry(response.data, countryName, cityName)) //
       .catch(error => console.error(error));
     }
 
@@ -138,6 +176,7 @@ function Dashboard() {
       setShowLeaderboard(false);
       setLeaderboardData([])
     }
+
     
     function leaderboardCallback(contextMenuType, featureName, leaderboardType){
       if (leaderboardType === "ISP")
@@ -174,20 +213,20 @@ function Dashboard() {
 
     return (
       <Flex > 
-        <Navbar  showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}/>
+        <Navbar showMapSettings={showMapSettings} toggleShowMapSettings={toggleShowMapSettings} metricChangeCallback={onMapMenuMetricChange} showChartCol={showChartCol} 
+        toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} 
+        showHelp={showHelp} toggleShowHelp={toggleShowHelp} countryClickCallback={addCountryFilter} 
+        provinceClickCallback={addCountryFilter_Region} cityClickCallback={addCountryFilter_City}/>
         <Map metric={mapMenuMetric} countryClickCallback={addCountryFilter} provinceClickCallback={addCountryFilter_Region} leaderboardCallback={leaderboardCallback}/>
         {showChartCol && <ChartCol countryFilters={countryFilters}/>}
         {showFilterCol && <FilterCol countryFilters={countryFilters} onCountryLockChange={onCountryLockChange}
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
-        
+        {showMapSettings && <MapSettings metricChangeCallback={onMapMenuMetricChange}/>}
         <Flex style={{width:'auto', justifyContent:'center', alignContent:'center'}}>
           <Flex><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Flex>
-          <Flex><Legend/></Flex>
         </Flex>
-        
-
       </Flex>
     );
   }

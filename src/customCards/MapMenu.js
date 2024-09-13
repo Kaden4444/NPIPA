@@ -7,14 +7,12 @@ const MapMenu = ({metricChangeCallback}) => {
     const right = (3/703)*windowSize + 12.506;
     console.log(right)
     const Style = {
-        position:"fixed", right:right+'%', bottom:'0%', zIndex : 10
+        zIndex : 10,
     }
     return(
-    <Theme appearance='light'>
+    <Theme appearance='dark'>
         <Flex style={Style}>
-            <Flex width={"200px"} height={"160px"}>
-                <SelectDemo handleMetricChange={metricChangeCallback}> </SelectDemo>
-            </Flex>
+            <SelectDemo handleMetricChange={metricChangeCallback}> </SelectDemo>
         </Flex>
         </Theme>
     )

@@ -10,7 +10,7 @@ import { Theme } from '@radix-ui/themes';
 const SelectDemo = ({handleMetricChange}) => (
   // Handler function to update the selected value
 
-  <Select.Root   onValueChange={handleMetricChange} defaultValue='average' >
+  <Select.Root onValueChange={handleMetricChange} defaultValue='average' >
     <Select.Trigger className="SelectTrigger" aria-label="Metrics" color='black'>
       <Select.Value placeholder="Metrics" color='black' />
       <Select.Icon className="SelectIcon">

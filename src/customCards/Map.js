@@ -277,7 +277,7 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
                 // Right click:
                 updateFeatureCounter();
                 setCMFeature(feature.properties.name);
-                setCMAdmin(feature.properties.admin);
+                setCMAdmin(feature.properties.admin !== "Democratic Republic of the Congo" ? feature.properties.admin : "Dem. Rep. Congo");
                 setContextMenuType("REGION");
               }
             },
@@ -311,8 +311,8 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
                   [-40, -40], // South-West corner
                   [40, 75],   // North-East corner
                 ] : [
-                  [-30, -40], // South-West corner
-                  [40, 75],   // North-East corner
+                  [-40, -40], // South-West corner
+                  [50, 75],   // North-East corner
                 ]} 
 
                 zoom={screenWidth > 1440 ? 4 : 3} minZoom={screenWidth > 1440 ? 4 : 3} maxZoom={10} style={{position:"fixed", height: "100vh", width: "100%" }}>

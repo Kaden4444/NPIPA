@@ -2,8 +2,9 @@ import { Flex, Card, IconButton, Tooltip } from '@radix-ui/themes';
 import { MagnifyingGlassIcon, BarChartIcon, QuestionMarkIcon  } from '@radix-ui/react-icons';
 import { FaE, FaEarthAfrica } from "react-icons/fa6";
 import Draggable from 'react-draggable';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
-function ComponentBar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, showHelp, toggleShowHelp}) {
+function ComponentBar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, showHelp, toggleShowHelp, showMapSettings, toggleShowMapSettings}) {
     return(
             
         <Flex as="componentCard" padding="1rem" align ="center" style={{height: '5rem', position: "relative" }} >
@@ -13,6 +14,12 @@ function ComponentBar({ showChartCol, toggleChartCol, showFilterCol, toggleFilte
                      <Tooltip content="Connectivity Data">
                        <IconButton onClick={toggleChartCol} variant={showChartCol ? "solid" : "outline"} radius='full'>
                          <BarChartIcon width="18" height="18" />
+                       </IconButton>
+                     </Tooltip>
+
+                     <Tooltip content="Map Settings">
+                       <IconButton onClick={toggleShowMapSettings} variant={showMapSettings ? "solid" : "outline"} radius='full'>
+                         <FaMapMarkerAlt width="18" height="18" />
                        </IconButton>
                      </Tooltip>
 

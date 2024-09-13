@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Flex, Box, Card } from '@radix-ui/themes';
 import SelectDemo from './Select';
 
-function Legend({metricChangeCallback}) {
+function Legend({}) {
     return (
-
-
-        <Card size={3} style={{position:'fixed', right: "25%", bottom:'2%', fontStyle:'italic', fontSize:'12px', height:'100px', display:'flex', alignItems:'center'}}>
+        <Card size={3} style={{borderRadius:'5px', outline:'1px solid white', fontStyle:'italic', width:'120px', fontSize:'12px', marginLeft:'20px', height:'100px', display:'flex', alignItems:'center'}}>
             <Flex direction="column" >
                 <Flex direction="row" style={{alignItems:'center', paddingRight:'10px'}} >
                     <Box style={{borderRadius:'10px', backgroundColor:"#FF6F6F", width:'15px', height:'15px'}}> </Box>
