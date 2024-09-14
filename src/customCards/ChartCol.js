@@ -52,65 +52,32 @@ const graphLineColors = [
     'rgba(249, 168, 37, 0.1)'    // Bright Amber
 ];
 
-
-function getDownloadChartData(cards, timeScale){ // Needs to return an array of arrays 
-    var out = []
-    for(var i =0; i < cards.length; i++)
-    {
-        let download_data = cards[i].countryData[parseInt(timeScale)].download_data
-        let label = cards[i].countryName;
-        if (cards[i].city != "ALL"){
-          label += `-${cards[i].city}`
-        }
-        if (cards[i].isp != "ALL"){
-          label += `-${cards[i].isp}`
-        }
-        const item = {
-            borderColor: graphLineColors[i],
-            backgroundColor: graphLineColors_alpha[i],
-            pointRadius: 1,
-            label: label,
-            data:download_data,
-            fill:true,
-            tension:0.15
-        }
-        out.push(item)
+function vecAdd(v1, v2, scalar){
+  let res = []
+  for(let i = 0; i < v1.length; i++){
+    if(v1[i] !== null && v2[i] !== null){
+      res[i] = scalar*(v1[i] + v2[i]);
     }
-    return out
-}
-
-function getUploadChartData(cards, timeScale){
-  var out = []
-  for(var i =0; i < cards.length; i++)
-  {
-      let upload_data = cards[i].countryData[parseInt(timeScale)].upload_data
-      let label = cards[i].countryName;
-      if (cards[i].city != "ALL"){
-        label += `-${cards[i].city}`
-      }
-      if (cards[i].isp != "ALL"){
-        label += `-${cards[i].isp}`
-      }
-      const item = {
-          borderColor: graphLineColors[i],
-          backgroundColor: graphLineColors_alpha[i],
-          pointRadius: 1,
-          label: label,
-          data:upload_data,
-          fill:true,
-          tension:0.15
-      }
-      out.push(item)
+    else{
+      res[i] = null;
+    }
   }
-  return out
+  return res;
 }
 
-function getUploadLatencyChartData(cards, timeScale){
+function getChartData(cards, timeScale, metric){
   var out = []
   for(var i =0; i < cards.length; i++)
   {
-      let upload_latency_data = cards[i].countryData[parseInt(timeScale)].upload_latency_data
+      let data = metric==="DOWNLOAD" ? cards[i].countryData[parseInt(timeScale)].download_data : metric === "UPLOAD" ? 
+      cards[i].countryData[parseInt(timeScale)].upload_data : metric==="DOWNLOAD_L" ? cards[i].countryData[parseInt(timeScale)].download_latency_data :
+      metric==="UPLOAD_L" ? cards[i].countryData[parseInt(timeScale)].upload_latency_data : vecAdd(cards[i].countryData[parseInt(timeScale)].download_data, 
+      cards[i].countryData[parseInt(timeScale)].upload_data, 0.5);
+
+      data = data.map((item)=>item?.toFixed(2)); // Round everything to 2 
+
       let label = cards[i].countryName;
+
       if (cards[i].city != "ALL"){
         label += `-${cards[i].city}`
       }
@@ -122,33 +89,7 @@ function getUploadLatencyChartData(cards, timeScale){
           backgroundColor: graphLineColors_alpha[i],
           pointRadius: 1,
           label: label,
-          fill:true,
-          data:upload_latency_data,
-          tension:0.15
-      }
-      out.push(item)
-  }
-  return out
-}
-
-function getDownloadLatencyChartData(cards, timeScale){
-  var out = []
-  for(var i =0; i < cards.length; i++)
-  {
-      let download_latency_data = cards[i].countryData[parseInt(timeScale)].download_latency_data
-      let label = cards[i].countryName;
-      if (cards[i].city != "ALL"){
-        label += `-${cards[i].city}`
-      }
-      if (cards[i].isp != "ALL"){
-        label += `-${cards[i].isp}`
-      }
-      const item = {
-          borderColor: graphLineColors[i],
-          backgroundColor: graphLineColors_alpha[i],
-          pointRadius: 1,
-          label: label,
-          data:download_latency_data,
+          data:data,
           fill:true,
           tension:0.15
       }
@@ -169,6 +110,7 @@ export function ChartCol({countryFilters}) {
   const [uploadChartData, setUploadChartData] = useState([]);
   const [downloadLatencyChartData, setDownloadLatencyChartData] = useState([]);
   const [uploadLatencyChartData, setUploadLatencyChartData] = useState([]);
+  const [throughputChartData, setThroughputChartData] = useState([]);
 
   const [timeScale, setTimeScale] = useState("0");
   const [labels, setLabels] = useState([]); // The labels used by all charts in this column
@@ -180,37 +122,12 @@ export function ChartCol({countryFilters}) {
     card_style.width='30vw'
   }
 
-  const onSave = () => {
-    const pdf = new jsPDF();
-    pdf.setFontSize(12);  // Set font size for the title
-    pdf.text('Network Performance Insights Report', pdf.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-  
-    htmlToImage.toPng(document.getElementById(`chart-group-1`), { quality: 1 })
-        .then(function (dataUrl) {
-          const imgProps= pdf.getImageProperties(dataUrl);
-          const pdfWidth = pdf.internal.pageSize.getWidth()/2;
-          const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width);
-          pdf.addImage(dataUrl, 'PNG', 50, 25, pdfWidth, pdfHeight);
-          pdf.addPage();
-          htmlToImage.toPng(document.getElementById(`chart-group-2`), { quality: 1 })
-        .then(function (dataUrl) {
-          const imgProps= pdf.getImageProperties(dataUrl);
-          const pdfWidth = pdf.internal.pageSize.getWidth()/2;
-          const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width);
-          pdf.addImage(dataUrl, 'PNG', 50, 10, pdfWidth, pdfHeight);
-          let date = new Date().toString().split(' ');
-          date = date[1] + '-' + date[2];
-          pdf.save(`NPIP-Report-${date}.pdf`);
-        })
-        });
-
-  }
-
   useEffect(() => {
-      setDownloadChartData(getDownloadChartData(countryFilters, timeScale))
-      setUploadChartData(getUploadChartData(countryFilters, timeScale))
-      setDownloadLatencyChartData(getDownloadLatencyChartData(countryFilters, timeScale))
-      setUploadLatencyChartData(getUploadLatencyChartData(countryFilters, timeScale))
+      setDownloadChartData(getChartData(countryFilters, timeScale,"DOWNLOAD"))
+      setUploadChartData(getChartData(countryFilters, timeScale, "UPLOAD"))
+      setDownloadLatencyChartData(getChartData(countryFilters, timeScale, "DOWNLOAD_L"))
+      setUploadLatencyChartData(getChartData(countryFilters, timeScale, "UPLOAD_L"))
+      setThroughputChartData(getChartData(countryFilters, timeScale, "THROUGHPUT"))
 
       axios.get(`https://cadesayner.pythonanywhere.com/getLabels?q=${timeScaleIndexToQueryMap[timeScale]}`)
       .then(response => setLabels(response.data)) //
@@ -253,7 +170,8 @@ export function ChartCol({countryFilters}) {
               </div>
             <div id="chart-group-2"> 
               <div id="chart-3" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Download Latency"} chartData={downloadLatencyChartData} labels={labels}/></div>
-             <div id="chart-4" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></div>        
+              <div id="chart-4" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Upload Latency"} chartData={uploadLatencyChartData} labels={labels}/></div> 
+              <div id="chart-5" style={{ width:'100%', flex:1}}><ChartCard  chartTitle={"Average Throughput"} chartData={throughputChartData} labels={labels}/></div>             
              <br></br>
             </div>
           </ScrollArea>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Button, Box } from '@radix-ui/themes';
 import { FaExpandArrowsAlt, FaSave } from "react-icons/fa";
@@ -30,8 +30,17 @@ ChartJS.register(
 
 function ChartCard({ chartTitle, chartData, labels }) {
   const [data, setData] = useState([]);
+  let ref = useRef(null);
+
+  const downloadImage = useCallback(()=>{
+    const link = document.createElement("a");
+    link.download = `NPIP-Chart-${chartTitle}.jpeg`;
+    link.href = ref.current.toBase64Image();
+    link.click();
+  },[])
+
   const y_axis_callback = (value) => {
-    if(chartTitle.split(" ")[1] === "Speed"){
+    if(chartTitle.split(" ")[1] === "Speed" || chartTitle.split(" ")[1]==="Throughput"){
       return `${value.toFixed(0)} Mbps`
     }
     else{
@@ -51,6 +60,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
       duration: 500,
       easing: 'linear',
     },
+    
     spanGaps: true,
     plugins: {
       title: {
@@ -74,7 +84,8 @@ function ChartCard({ chartTitle, chartData, labels }) {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem) => `Speed: ${tooltipItem.raw} Mbps`
+          
+          label: (tooltipItem) => `${tooltipItem.raw}`
         }
       }
     },
@@ -113,7 +124,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
     <div style={{ position: 'relative', height: '35vh', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <Button size={1} style={{ position: "absolute", margin: '10px' }}>
+          <Button color='violet' size={1} style={{ position: "absolute", margin: '10px' }}>
             <FaExpandArrowsAlt />
           </Button>
         </Dialog.Trigger>
@@ -133,15 +144,15 @@ function ChartCard({ chartTitle, chartData, labels }) {
 
       {hasData ? (
         <div className="chart-container" style={{ width: '95%', height: '100%', marginTop:'10px'}}>
-          <Line data={data} options={options} />
+          <Line ref={ref} data={data} options={options} />
+          <Button color='violet' onClick={downloadImage} style={{position: "absolute", margin: '10px', right: "0", top: "0" }} > <FaSave/></Button>
         </div>
       ) : (
         <div style={{ textAlign: 'center', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
           No data available
         </div>
       )}
-
-    <Button style={{position: "absolute", margin: '10px', right: "0", top: "0" }} > <FaSave/></Button>
+    
     </div>
   );
 }
@@ -162,6 +173,11 @@ function ExpandedCard({ expandedTitle, expandedData, expandedLabels }) {
       duration: 500,
       easing: 'linear',
     },
+
+    layout: {
+      backgroundColor: 'black' 
+    },
+
     spanGaps: true,
     plugins: {
       title: {
@@ -225,7 +241,7 @@ function ExpandedCard({ expandedTitle, expandedData, expandedLabels }) {
       {hasData ? (
         <Line data={data} options={options} />
       ) : (
-        <div style={{ textAlign: 'center', height:'70vh', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
+        <div style={{ textAlign: 'center', height:'70vh', marginTop: '10px', paddingTop: '100px', color: '#fff', backgroundColor:'black' }}>
           No data available
         </div>
       )}
