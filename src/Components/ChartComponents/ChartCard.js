@@ -124,9 +124,11 @@ function ChartCard({ chartTitle, chartData, labels }) {
     <div style={{ position: 'relative', height: '35vh', width: '100%', borderRadius: 7, backgroundColor: '#E1E5EA' }}>
       <Dialog.Root>
         <Dialog.Trigger asChild>
+        {hasData ? (
           <Button color='violet' size={1} style={{ position: "absolute", margin: '10px' }}>
             <FaExpandArrowsAlt />
           </Button>
+        ) : (<></>) }
         </Dialog.Trigger>
 
         <Dialog.Portal>
@@ -159,13 +161,24 @@ function ChartCard({ chartTitle, chartData, labels }) {
 
 function ExpandedCard({ expandedTitle, expandedData, expandedLabels }) {
   const [data, setData] = useState([]);
+  const IMGref = useRef(null);
+
+  const downloadImage = useCallback(() => {
+    if (IMGref.current && IMGref.current.toBase64Image) {
+      const link = document.createElement('a');
+      link.download = `NPIP-Chart-${expandedTitle}.jpeg`;
+      link.href = IMGref.current.toBase64Image();
+      link.click();
+    } else {
+      console.error('Chart is not ready for export');
+    }
+  }, [expandedTitle]);
 
   useEffect(() => {
     setData({
       labels: expandedLabels,
       datasets: expandedData
     });
-    console.log("trying to update graphs");
   }, [expandedData, expandedLabels]);
 
   const options = {
@@ -173,11 +186,9 @@ function ExpandedCard({ expandedTitle, expandedData, expandedLabels }) {
       duration: 500,
       easing: 'linear',
     },
-
     layout: {
-      backgroundColor: 'black' 
+      backgroundColor: 'black'
     },
-
     spanGaps: true,
     plugins: {
       title: {
@@ -234,14 +245,19 @@ function ExpandedCard({ expandedTitle, expandedData, expandedLabels }) {
     maintainAspectRatio: false
   };
 
-  const hasData = data && data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0;
+  const hasData = data && data.datasets && data.datasets.length > 0 && data.datasets[0].data.length > 0;
 
   return (
     <Box width={"80vh"} height={"65vh"}>
       {hasData ? (
-        <Line data={data} options={options} />
+        <>
+          <Line ref={IMGref} data={data} options={options} />
+          <Button  color='violet' onClick={downloadImage} style={{position: "absolute", marginTop: '10px', marginRight:"30px", right: "0", top: "0"}} >
+            <FaSave />
+          </Button>
+        </>
       ) : (
-        <div style={{ textAlign: 'center', height:'70vh', marginTop: '10px', paddingTop: '100px', color: '#fff', backgroundColor:'black' }}>
+        <div style={{ textAlign: 'center', height: '70vh', marginTop: '10px', paddingTop: '100px', color: '#fff', backgroundColor: '' }}>
           No data available
         </div>
       )}
