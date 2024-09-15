@@ -63,6 +63,7 @@ export function FilterCard({ CountryName, isLocked, onToggleLock, onIspSelect, c
         if(initialISP){
           setCurrentISP(initialISP)
         }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       },[])
 
       useEffect(() => {

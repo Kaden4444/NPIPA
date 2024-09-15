@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { Flex, Box, Card } from '@radix-ui/themes';
-import SelectDemo from './Select';
 
+
+// eslint-disable-next-line no-empty-pattern
 function Legend({}) {
     return (
         <Card size={3} style={{borderRadius:'5px', outline:'1px solid white', fontStyle:'italic', width:'120px', fontSize:'12px', marginLeft:'20px', height:'100px', display:'flex', alignItems:'center'}}>

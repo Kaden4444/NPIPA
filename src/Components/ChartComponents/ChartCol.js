@@ -74,9 +74,11 @@ function getChartData(cards, timeScale, metric){
 
       let label = cards[i].countryName;
 
+      // eslint-disable-next-line eqeqeq
       if (cards[i].city != "ALL"){
         label += `-${cards[i].city}`
       }
+      // eslint-disable-next-line eqeqeq
       if (cards[i].isp != "ALL"){
         label += `-${cards[i].isp}`
       }
