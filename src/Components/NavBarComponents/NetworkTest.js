@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 import { Flex, Button, Card } from '@radix-ui/themes';
 import {test} from '@m-lab/ndt7/src/ndt7'
@@ -32,7 +33,6 @@ function NetworkTest(){
                     downloadComplete: function (data) {
                         // (bytes/second) * (bits/byte) / (megabits/bit) = Mbps
                         if(data.LastServerMeasurement){
-                            const serverBw = data.LastServerMeasurement.BBRInfo.BW * 8 / 1000000;
                             const clientGoodput = data.LastClientMeasurement.MeanClientMbps;
                             setDownloadSpeed(clientGoodput.toFixed(1));
                         }
@@ -66,12 +66,17 @@ function NetworkTest(){
     },[runTest])
     return ( 
         <Flex style={{ height:'3.5rem', fontWeight:'bold' , fontSize:'14px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-            <Card style={{backgroundColor:'#373f3d', width:'20vw', height:'3.5rem', fontWeight:'bold' , fontSize:'14px', display:'flex', alignItems:'center', justifyContent:'center'}}>  
-            <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'white'}} src='imgs/download.png'/> {downloadSpeed} mbps </Flex>
-            <span style={{width:'20px'}}> </span>
-            <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'#ceecee'}} src='imgs/upload.png'/> {uploadSpeed} mbps </Flex>
+            <Card style={{backgroundColor:'#373f3d', width:'21vw', height:'3.5rem', fontWeight:'bold' , fontSize:'14px', display:'flex', alignItems:'center', justifyContent:'center'}}> 
+            <Flex direction={"row"} gapX={1} align={"center"} >
+
+                <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'white'}} src='imgs/download.png'/> {downloadSpeed} mbps </Flex>
+                <span style={{width:'20px'}}> </span>
+                <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'#ceecee'}} src='imgs/upload.png'/> {uploadSpeed} mbps </Flex>
+                <Flex style={{ marginLeft:'20px'}}> <Button style={{justifySelf:"right"}} onClick={()=>setRunTest(true)} disabled={runTest} color='violet'> Begin Test </Button></Flex>
+
+            </Flex>
             </Card>
-            <Flex style={{justifyContent:'center', alignContent:'center', marginLeft:'20px'}}> <Button onClick={()=>setRunTest(true)} disabled={runTest} color='violet'> Begin Test </Button></Flex>
+            
         </Flex>
         )
 }

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { Card, Flex} from "@radix-ui/themes";
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';

@@ -8,7 +8,6 @@ import countryMapping from '../../json/countries.json'
 import country_metrics from '../../json/country_metrics.json'
 import * as ContextMenu from '@radix-ui/react-context-menu';
 import 'react-flagpack/dist/style.css'
-import Vec2 from '../../classes/Vec2';
 import '../../index.css';
 
 const downloadSpeedToHexColor = {
@@ -52,10 +51,11 @@ function createProvinceColorsObject(metric){
       if(metric === "average"){
         p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][0]) + parseInt(iso_metrics[item][1]))/2)
       }
-      else if(metric == "download"){
+      else if(metric === "download"){
         p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][0])))
       }
-      else if(metric == "upload"){
+      
+      else if(metric === "upload"){
         p_object[item] = getHexColorForSpeed((parseInt(iso_metrics[item][1])))
       }
       else{
@@ -79,8 +79,6 @@ function SetViewOnClick() {
     const map = useMapEvent('click', (e) => {
       const layer = e.target; // Access the layer that was clicke
       const bounds = layer.getBounds(); // Get the bounds of the clicked feature
-      let southWest = new Vec2(bounds._southWest.lat, bounds._southWest.lng)
-      let northEast = new Vec2(bounds._northEast.lat, bounds._northEast.lng)
       console.log(bounds)
       map.fitBounds(bounds)
     })
@@ -125,7 +123,6 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
     const [focusedColors, setFocusedColors] = useState({});
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [force, setForce] = useState(false)
-    const [currentlyHovered, setCurrentlyHovered] = useState(null);
     const [canDisplayContextMenu, setCanDisplayContext] = useState(true);
 
     const [featureCounter, setFeatureCounter] = useState(0);
@@ -165,7 +162,7 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
           }
         }
         else if(option === "ISP-Leaderboard"){
-          if(option != "Add"){
+          if(option !== "Add"){
             leaderboardCallback(contextMenuType, contextMenuFeature, "ISP")
           }
         }
@@ -217,6 +214,7 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
     useEffect(()=>{
         console.log("Focused data", focusedData)
         setForce(!force) // This is to force a rerender of the relevant feature, might not be necessary? 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[focusedData])
 
     const onEachFeature = (feature, layer) => {
@@ -251,7 +249,6 @@ function Map({metric, countryClickCallback, provinceClickCallback, leaderboardCa
               },
             });
 
-            {/* <Flag code=${reversedMapping[feature.properties.NAME]}</Flag> */} //Need to get this flag into the tooltip, remake?
             const tooltipContent = `<div class="leaflet-tooltip-style">
             <strong>${feature.properties.NAME ? feature.properties.NAME : feature.properties.name}</strong>
             </div>`;

@@ -71,9 +71,9 @@ function Navbar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, 
       </Box>
 
       {/* Center item */}
-      <Flex maxWidth={"300px"} 
+      <Flex 
         style={{
-          color: 'white',
+          justifySelf:"left",
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -83,8 +83,7 @@ function Navbar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, 
           zIndex: 20
         }}>
 
-          {/* Add the autocomplete here */}
-          <TextField.Root size="3" radius="large" placeholder="Search for a place..." onChange={handleSearchChange} value={searchQuery} >
+          <TextField.Root style={{justifySelf:"start"}} size="3" radius="large" placeholder="Search for a place..." onChange={handleSearchChange} value={searchQuery} >
             <TextField.Slot>
               <MagnifyingGlassIcon height="16" width="16" />
             </TextField.Slot>
@@ -107,7 +106,7 @@ function Navbar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, 
 
 
       {/* Right item */}
-      <Flex style={{ backgroundColor: 'black', height: '50px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: '1rem'}}>
+      <Flex style={{  height: '50px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: '1rem'}}>
         <NetworkTest/>
         <span style={{width:'20px'}}></span>
         <ComponentBar showMapSettings={showMapSettings} toggleShowMapSettings={toggleShowMapSettings} showChartCol={showChartCol} toggleChartCol={toggleChartCol} showFilterCol={showFilterCol} toggleFilterCol={toggleFilterCol} showHelp={showHelp} toggleShowHelp={toggleShowHelp}></ComponentBar>
