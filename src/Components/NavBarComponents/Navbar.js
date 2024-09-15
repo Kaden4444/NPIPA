@@ -73,7 +73,7 @@ function Navbar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, 
       {/* Center item */}
       <Flex 
         style={{
-          justifySelf:"left",
+          
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -83,7 +83,7 @@ function Navbar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, 
           zIndex: 20
         }}>
 
-          <TextField.Root style={{justifySelf:"start"}} size="3" radius="large" placeholder="Search for a place..." onChange={handleSearchChange} value={searchQuery} >
+          <TextField.Root  size="3" radius="large" placeholder="Search for a place..." onChange={handleSearchChange} value={searchQuery} >
             <TextField.Slot>
               <MagnifyingGlassIcon height="16" width="16" />
             </TextField.Slot>

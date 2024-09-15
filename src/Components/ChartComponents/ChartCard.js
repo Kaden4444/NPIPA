@@ -134,7 +134,7 @@ function ChartCard({ chartTitle, chartData, labels }) {
           <Dialog.Content style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '90vh', height: "70vh", backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
             <ExpandedCard expandedTitle={chartTitle} expandedData={chartData} expandedLabels={labels} />
             <Dialog.Close asChild>
-              <Button size={1} style={{ position: "absolute", top: '10px', right: '10px' }}>
+            <Button size={1} style={{ position: "absolute", top: '10px', right: '10px' }} variant="soft" color='purple' >
                 <Cross1Icon />
               </Button>
             </Dialog.Close>

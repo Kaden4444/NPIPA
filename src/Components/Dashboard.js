@@ -167,6 +167,8 @@ function Dashboard({country}) {
       setMapMenuMetric(metric)
     }
 
+
+
     function hideLeaderboard(){
       setShowLeaderboard(false);
       setLeaderboardData([])
@@ -218,7 +220,7 @@ function Dashboard({country}) {
          filter_change_callback={onCountryFilterChange} purgeCards={onPurge} onCountryDeleteCallback={onCountryDeleteCallback} onCountryCopyCallback={onCountryCopy}/>}
         {showHelp && <Help/>}
         {showLeaderboard && <Leaderboard hide={hideLeaderboard} data={leaderboardData} Type={leaderboardType}/>}
-        {showMapSettings && <MapSettings metricChangeCallback={onMapMenuMetricChange}/>}
+        {showMapSettings && <MapSettings metricChangeCallback={onMapMenuMetricChange} closeCallback={toggleShowMapSettings}/>}
         <Flex style={{width:'auto', justifyContent:'center', alignContent:'center'}}>
           <Flex><MapMenu metricChangeCallback={onMapMenuMetricChange}></MapMenu></Flex>
         </Flex>

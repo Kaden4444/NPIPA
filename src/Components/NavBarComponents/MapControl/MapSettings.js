@@ -1,8 +1,9 @@
-import { Flex, Card } from '@radix-ui/themes';
+import { Flex, Card, Button } from '@radix-ui/themes';
 import Legend from './Legend'
 import MapMenu from './MapMenu';
+import { Cross1Icon } from '@radix-ui/react-icons';
 
-function MapSettings({metricChangeCallback}){
+function MapSettings({metricChangeCallback, closeCallback}){
     return (
         <Card
   size={3}
@@ -22,7 +23,10 @@ function MapSettings({metricChangeCallback}){
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Add subtle shadow for depth
     backgroundColor: '#000', // Ensure background color contrasts with content
   }}
->       <Flex style={{alignContent:'center', justifyContent:'center', fontWeight:'bold', marginBottom:'20px'}}> Map Settings: </Flex>
+>       <Flex gapX = "2" style={{alignContent:'center', justifyContent:'center', fontWeight:'bold', marginBottom:'20px', marginRight:"10px"}}>
+           Map Settings: 
+           <Button variant="soft" color='purple' size={'1'} onClick={closeCallback} style={{justifySelf:"end"}}><Cross1Icon/></Button> 
+        </Flex>
         <Flex style={{alignContent:'center', justifyContent:'center', fontWeight:'bold', marginBottom:'20px'}}>
                 <MapMenu metricChangeCallback={metricChangeCallback}/>
         </Flex>

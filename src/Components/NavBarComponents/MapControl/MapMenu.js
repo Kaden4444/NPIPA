@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Theme } from '@radix-ui/themes';
 import SelectDemo from './Select';
 
-const MapMenu = ({metricChangeCallback}) => {
+const MapMenu = ({metricChangeCallback, closeCallback}) => {
     const windowSize = window.innerWidth;
     const right = (3/703)*windowSize + 12.506;
     console.log(right)
