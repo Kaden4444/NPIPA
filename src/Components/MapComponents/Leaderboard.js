@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import {Button, Table } from '@radix-ui/themes';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross1Icon} from '@radix-ui/react-icons';
-import iso_region_map from '../json/iso_to_region_name.json'
+import iso_region_map from '../../json/iso_to_region_name.json'
 const SelectItem = React.forwardRef(({ children, className, ...props }, forwardedRef) => {
     return (
       <Select.Item className={classnames('SelectItem', className)} {...props} ref={forwardedRef}>

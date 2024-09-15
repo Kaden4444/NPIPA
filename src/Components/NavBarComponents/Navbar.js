@@ -4,8 +4,8 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Logo from './logo';
 import ComponentBar from './ComponentBar';
 import NetworkTest from './NetworkTest';
-import regions_cities from '../json/regions_and_cities.json';
-import countryMapping from '../json/countries.json';
+import regions_cities from '../../json/regions_and_cities.json';
+import countryMapping from '../../json/countries.json';
 import Fuse from 'fuse.js';
 
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import './App.css';
 import '@radix-ui/themes/styles.css';
-import {Theme, ThemePanel } from '@radix-ui/themes';
-import  Dashboard  from './customCards/Dashboard';
+import {Theme } from '@radix-ui/themes';
+import  Dashboard  from './Components/Dashboard';
 
 function App() {
   const [userCountry, setUserCountry] = useState();

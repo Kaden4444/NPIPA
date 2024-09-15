@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import '@radix-ui/themes/styles.css';
-import { ChartCol } from './ChartCol';
-import { FilterCol } from './FilterCol';
+import { ChartCol } from './ChartComponents/ChartCol.js';
+import { FilterCol } from './FilterComponents/FilterCol.js';
 import { Flex} from '@radix-ui/themes';
-import Navbar from './Navbar';
-import MapMenu from './MapMenu'
+import Navbar from './NavBarComponents/Navbar.js';
+import MapMenu from './NavBarComponents/MapControl/MapMenu.js'
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
-import Map from './Map';
+import Map from './MapComponents/Map.js';
 import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json';
-import Leaderboard from './Leaderboard'
-import Help from './Help';
-import MapSettings from './MapSettings';
+import Leaderboard from './MapComponents/Leaderboard.js'
+import Help from './NavBarComponents/Tutorial/Help.js';
+import MapSettings from './NavBarComponents/MapControl/MapSettings.js';
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 

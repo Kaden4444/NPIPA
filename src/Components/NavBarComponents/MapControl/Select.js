@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import * as Select from '@radix-ui/react-select';
 import classnames from 'classnames';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import '../index.css';
+import '../../../index.css';
 import { Theme } from '@radix-ui/themes';
 
 

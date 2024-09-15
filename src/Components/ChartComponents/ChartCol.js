@@ -2,8 +2,8 @@ import '@radix-ui/themes/styles.css';
 import { Flex, Card, ScrollArea, SegmentedControl} from '@radix-ui/themes';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import ChartCard  from '../Components/ChartComponents/ChartCard.js';
-import countryMapping from '../json/countries.json';
+import ChartCard  from './ChartCard.js';
+import countryMapping from '../../json/countries.json';
 import axios from 'axios';
 
 

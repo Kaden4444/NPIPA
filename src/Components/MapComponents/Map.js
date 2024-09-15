@@ -2,14 +2,14 @@
 import React, { useEffect,useRef, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMapEvent } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import africa from '../json/africa_boundaries.json'
-import iso_metrics from '../json/iso_metrics.json'
-import countryMapping from '../json/countries.json'
-import country_metrics from '../json/country_metrics.json'
+import africa from '../../json/africa_boundaries.json'
+import iso_metrics from '../../json/iso_metrics.json'
+import countryMapping from '../../json/countries.json'
+import country_metrics from '../../json/country_metrics.json'
 import * as ContextMenu from '@radix-ui/react-context-menu';
 import 'react-flagpack/dist/style.css'
-import Vec2 from '../classes/Vec2';
-import '../index.css';
+import Vec2 from '../../classes/Vec2';
+import '../../index.css';
 
 const downloadSpeedToHexColor = {
     "0-5": "#FF6F6F",       // Brighter Red
