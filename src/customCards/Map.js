@@ -1,7 +1,6 @@
 
 import React, { useEffect,useRef, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvent, useMapEvents, ZoomControl } from 'react-leaflet';
-import {Card, Flex} from '@radix-ui/themes';
+import { MapContainer, TileLayer, GeoJSON, useMapEvent } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import africa from '../json/africa_boundaries.json'
 import iso_metrics from '../json/iso_metrics.json'

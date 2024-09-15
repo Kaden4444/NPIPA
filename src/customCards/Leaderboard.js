@@ -1,8 +1,7 @@
-import { Card, Inset, Flex, ScrollArea} from "@radix-ui/themes";
+import { Card, Flex} from "@radix-ui/themes";
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import Draggable from "react-draggable";
-import {Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@radix-ui/themes';
+import {Button, Table } from '@radix-ui/themes';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross1Icon} from '@radix-ui/react-icons';
 import iso_region_map from '../json/iso_to_region_name.json'

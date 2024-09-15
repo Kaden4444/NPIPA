@@ -1,5 +1,4 @@
 import '@radix-ui/themes/styles.css';
-import { useState } from 'react';
 import { Flex, Box, Card, Button, ScrollArea, AlertDialog  } from '@radix-ui/themes';
 import { FilterCard } from './FilterCard'; // Ensure the path is correct
 import { motion } from 'framer-motion';

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Flex, Box, Card } from '@radix-ui/themes';
-import SelectDemo from './Select';
+import { Flex, Card } from '@radix-ui/themes';
 import Legend from './Legend'
 import MapMenu from './MapMenu';
 

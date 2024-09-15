@@ -1,15 +1,11 @@
 import '@radix-ui/themes/styles.css';
-import { Flex, Box, Card, Button, ScrollArea, SegmentedControl, Portal, Theme} from '@radix-ui/themes';
-import React, { useEffect, useRef, useState } from 'react';
+import { Flex, Card, ScrollArea, SegmentedControl} from '@radix-ui/themes';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import {FaSave} from 'react-icons/fa'; 
-import ChartCard from './ChartCard';
-import countryMapping from '../json/countries.json'
+import ChartCard  from '../Components/ChartComponents/ChartCard.js';
+import countryMapping from '../json/countries.json';
 import axios from 'axios';
-import * as htmlToImage from 'html-to-image';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
-import { jsPDF } from "jspdf";
-import html2pdf from 'html2pdf.js';
+
 
 const reversedMapping = {};
 for (const [code, name] of Object.entries(countryMapping)) {

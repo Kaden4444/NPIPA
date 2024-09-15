@@ -2,11 +2,9 @@ import React, {useEffect, useState} from 'react'
 import '@radix-ui/themes/styles.css';
 import { ChartCol } from './ChartCol';
 import { FilterCol } from './FilterCol';
-import { Flex, Card, Box} from '@radix-ui/themes';
+import { Flex} from '@radix-ui/themes';
 import Navbar from './Navbar';
-
 import MapMenu from './MapMenu'
-
 import axios from 'axios';
 import countryMapping from '../json/countries.json'
 import Map from './Map';
@@ -14,11 +12,7 @@ import regions from '../json/regions.json'
 import region_name_iso from '../json/region_name_to_iso366.json';
 import Leaderboard from './Leaderboard'
 import Help from './Help';
-import Legend from './Legend';
-import NetworkTest from './NetworkTest';
 import MapSettings from './MapSettings';
-import __WEBPACK_EXTERNAL_MODULE_jspdf__ from 'html2pdf.js';
-
 
 const api_endpoint = "https://cadesayner.pythonanywhere.com"
 

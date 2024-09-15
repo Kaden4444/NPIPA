@@ -1,7 +1,7 @@
 import { Flex, Card, IconButton, Tooltip } from '@radix-ui/themes';
-import { MagnifyingGlassIcon, BarChartIcon, QuestionMarkIcon  } from '@radix-ui/react-icons';
-import { FaE, FaEarthAfrica } from "react-icons/fa6";
-import Draggable from 'react-draggable';
+import { BarChartIcon, QuestionMarkIcon  } from '@radix-ui/react-icons';
+import { FaEarthAfrica } from "react-icons/fa6";
+
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 function ComponentBar({ showChartCol, toggleChartCol, showFilterCol, toggleFilterCol, showHelp, toggleShowHelp, showMapSettings, toggleShowMapSettings}) {

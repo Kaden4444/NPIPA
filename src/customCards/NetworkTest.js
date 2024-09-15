@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Flex, Box, Button, Card } from '@radix-ui/themes';
+import { Flex, Button, Card } from '@radix-ui/themes';
 import {test} from '@m-lab/ndt7/src/ndt7'
-import { FaPlay } from "react-icons/fa";
 
 function NetworkTest(){
     const [downloadSpeed, setDownloadSpeed] = useState("-");

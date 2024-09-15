@@ -1,5 +1,4 @@
-import { Card, Inset, Flex, ScrollArea} from "@radix-ui/themes";
-import Draggable from "react-draggable";
+import { Card, Inset, Flex} from "@radix-ui/themes";
 
 function  Help(){
     return(
