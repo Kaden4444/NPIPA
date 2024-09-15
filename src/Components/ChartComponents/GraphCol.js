@@ -2,7 +2,7 @@ import '@radix-ui/themes/styles.css';
 import { Flex, Card, ScrollArea, SegmentedControl} from '@radix-ui/themes';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import ChartCard  from './ChartCard.js';
+import ChartCard  from './GraphCard.js';
 import countryMapping from '../../json/countries.json';
 import axios from 'axios';
 
@@ -148,7 +148,7 @@ export function ChartCol({countryFilters}) {
 
 <Card size={3} variant='classic' style={card_style} >
           <div>
-            <h1 style={{textAlign: 'center', fontSize:"30px"}} >Charts</h1> 
+            <h1 style={{textAlign: 'center', fontSize:"30px"}} >Graphs</h1> 
           </div>
           <Flex style={{width:'100%', right:"0", left:"0"} } direction={"row"} justify={'center'} align={'center'}>
             

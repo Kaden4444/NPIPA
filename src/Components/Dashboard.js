@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react'
 import '@radix-ui/themes/styles.css';
-import { ChartCol } from './ChartComponents/ChartCol.js';
+import { ChartCol } from './ChartComponents/GraphCol.js';
 import { FilterCol } from './FilterComponents/FilterCol.js';
 import { Flex} from '@radix-ui/themes';
 import Navbar from './NavBarComponents/Navbar.js';

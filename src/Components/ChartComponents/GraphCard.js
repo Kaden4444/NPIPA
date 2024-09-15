@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Button, Box } from '@radix-ui/themes';
+import { Button, Box, Flex } from '@radix-ui/themes';
 import { FaExpandArrowsAlt, FaSave } from "react-icons/fa";
 import { Cross1Icon } from '@radix-ui/react-icons';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -145,9 +145,11 @@ function ChartCard({ chartTitle, chartData, labels }) {
       </Dialog.Root>
 
       {hasData ? (
+        
         <div className="chart-container" style={{ width: '95%', height: '100%', marginTop:'10px'}}>
           <Line ref={ref} data={data} options={options} />
           <Button color='violet' onClick={downloadImage} style={{position: "absolute", margin: '10px', right: "0", top: "0" }} > <FaSave/></Button>
+          
         </div>
       ) : (
         <div style={{ textAlign: 'center', marginTop: '10px', paddingTop: '100px', color: '#999' }}>
