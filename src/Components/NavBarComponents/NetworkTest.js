@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 import { Flex, Button, Card } from '@radix-ui/themes';
+import { FaRegPlayCircle } from 'react-icons/fa';
 import {test} from '@m-lab/ndt7/src/ndt7'
 
 function NetworkTest(){
@@ -72,7 +73,7 @@ function NetworkTest(){
                 <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'white'}} src='imgs/download.png'/> {downloadSpeed} mbps </Flex>
                 <span style={{width:'20px'}}> </span>
                 <Flex> <img style={{marginRight:'5px', width:'20px', height:'20px', fill:'#ceecee'}} src='imgs/upload.png'/> {uploadSpeed} mbps </Flex>
-                <Flex style={{ marginLeft:'20px'}}> <Button style={{justifySelf:"right"}} onClick={()=>setRunTest(true)} disabled={runTest} color='violet'> Begin Test </Button></Flex>
+                <Flex style={{ marginLeft:'20px', marginRight:'20px'}}> <Button style={{justifySelf:"right"}} onClick={()=>setRunTest(true)} disabled={runTest} color='violet'> <FaRegPlayCircle /> Begin Test </Button></Flex>
 
             </Flex>
             </Card>
