@@ -58,7 +58,7 @@ function Help() {
             </Text>
             
             <Text as="p" size="4" style={{ marginTop: '10px' }}>
-              <strong>2.</strong> Your selection will appear in the Countries column, along with your selections data in the graphs column. These graphs can be expanded and downloaded as pngs.
+              <strong>2.</strong> Your selection will appear in the Countries column, along with your selections data in the Graphs column. These graphs can be expanded and downloaded as pngs.
             </Text>
 
             <Text as="p" size="4" style={{ marginTop: '10px' }}>
